@@ -1,20 +1,44 @@
+import { useState } from "react";
 import "./App.css";
+import Header from "./components/Header";
+import MessageInput from "./components/MessageInput";
+import ReplyBox from "./components/ReplyBox";
+import { generateReply } from "./services/gemini";
 
 function App() {
+  const [message, setMessage] = useState("");
+  const [reply, setReply] = useState("");
+
+  const handleGenerateReply = async () => {
+    if (!message.trim()) {
+      alert("Please enter a message.");
+      return;
+    }
+
+    try {
+      const aiReply = await generateReply(message);
+      setReply(aiReply);
+    } catch (error) {
+      console.error(error);
+      setReply("Something went wrong while generating the reply.");
+    }
+  };
+
   return (
     <div className="app">
       <div className="card">
-        <h1>ReplyForge AI 🚀</h1>
+        <Header />
 
-        <p>
-          Generate the perfect AI reply for any message in seconds.
-        </p>
+        <MessageInput
+          message={message}
+          setMessage={setMessage}
+        />
 
-        <textarea
-          placeholder="Paste the message here..."
-        ></textarea>
+        <button onClick={handleGenerateReply}>
+          Generate Reply
+        </button>
 
-        <button>Generate Reply</button>
+        <ReplyBox reply={reply} />
       </div>
     </div>
   );
