@@ -109,3 +109,25 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+.history-card{
+margin-top:20px;
+padding:15px;
+border:1px solid #ddd;
+border-radius:12px;
+background:#fafafa;
+}
+
+.history-card strong{
+display:block;
+margin-bottom:5px;
+color:#4f46e5;
+}
+
+.history-card p{
+margin-bottom:10px;
+word-break:break-word;
+}
+
+.history-card small{
+color:#666;
+}
