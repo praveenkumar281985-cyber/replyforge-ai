@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./App.css";
 
 import Header from "./components/Header";
 import MessageInput from "./components/MessageInput";
@@ -16,13 +15,12 @@ import { generateReply } from "./services/gemini";
 function App() {
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState("");
-
   const [tone, setTone] = useState("Professional");
   const [length, setLength] = useState("Medium");
   const [language, setLanguage] = useState("English");
-
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [error, setError] = useState("");
 
   const [darkMode, setDarkMode] = useLocalStorage(
     "darkMode",
@@ -39,13 +37,29 @@ function App() {
     []
   );
 
+  const filteredHistory = history.filter((item) => {
+    const searchText = search.trim().toLowerCase();
+
+    if (!searchText) {
+      return true;
+    }
+
+    return (
+      (item.message || "").toLowerCase().includes(searchText) ||
+      (item.reply || "").toLowerCase().includes(searchText) ||
+      (item.tone || "").toLowerCase().includes(searchText) ||
+      (item.language || "").toLowerCase().includes(searchText)
+    );
+  });
+
   const createReply = async () => {
     if (!message.trim()) {
-      alert("Please enter a message");
+      setError("Please enter a message before generating a reply.");
       return;
     }
 
     setLoading(true);
+    setError("");
 
     try {
       const aiReply = await generateReply(
@@ -69,26 +83,22 @@ function App() {
         },
         ...previousHistory,
       ]);
-    } catch (error) {
-      console.error(error);
-      setReply("Something went wrong while generating the reply.");
+    } catch (requestError) {
+      console.error(requestError);
+
+      setError(
+        requestError.message ||
+          "Something went wrong while generating the reply."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredHistory = history.filter((item) => {
-    const searchText = search.toLowerCase();
-
-    return (
-      (item.reply || "").toLowerCase().includes(searchText) ||
-      (item.message || "").toLowerCase().includes(searchText)
-    );
-  });
-
   const clearAll = () => {
     setMessage("");
     setReply("");
+    setError("");
   };
 
   const deleteHistoryItem = (indexToDelete) => {
@@ -100,55 +110,74 @@ function App() {
   };
 
   return (
-    <div className={darkMode ? "app dark" : "app"}>
-      <div className="dashboard">
-        <Sidebar
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-          favorites={favorites}
-          setFavorites={setFavorites}
-          search={search}
-          setSearch={setSearch}
-        />
-
-        <main className="main-panel">
-          <Header />
-
-          <MessageInput
-            message={message}
-            setMessage={setMessage}
-          />
-
-          <Controls
-            tone={tone}
-            setTone={setTone}
-            length={length}
-            setLength={setLength}
-            language={language}
-            setLanguage={setLanguage}
-          />
-
-          <ButtonGroup
-            createReply={createReply}
-            loading={loading}
-            clearAll={clearAll}
-          />
-
-          <ReplyBox reply={reply} />
-
-          <FavoriteButton
-            reply={reply}
+    <div className={darkMode ? "dark" : ""}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 px-4 py-5 transition-colors sm:px-6 sm:py-8">
+        <div className="mx-auto grid w-full max-w-7xl gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <Sidebar
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
             favorites={favorites}
             setFavorites={setFavorites}
+            search={search}
+            setSearch={setSearch}
           />
 
-          <HistoryList
-            history={filteredHistory}
-            setReply={setReply}
-            setMessage={setMessage}
-            deleteHistoryItem={deleteHistoryItem}
-          />
-        </main>
+          <main className="min-w-0 rounded-3xl border border-white/20 bg-white/95 p-5 shadow-2xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/95 sm:p-8 lg:p-10">
+            <Header />
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70 sm:p-7">
+              <MessageInput
+                message={message}
+                setMessage={setMessage}
+              />
+
+              <Controls
+                tone={tone}
+                setTone={setTone}
+                length={length}
+                setLength={setLength}
+                language={language}
+                setLanguage={setLanguage}
+              />
+
+              {error && (
+                <div
+                  role="alert"
+                  className="mt-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+                >
+                  {error}
+                </div>
+              )}
+
+              <ButtonGroup
+                createReply={createReply}
+                loading={loading}
+                clearAll={clearAll}
+              />
+
+              <ReplyBox reply={reply} />
+
+              <div className="mt-4">
+                <FavoriteButton
+                  reply={reply}
+                  favorites={favorites}
+                  setFavorites={setFavorites}
+                />
+              </div>
+            </div>
+
+            <HistoryList
+              history={filteredHistory}
+              setReply={setReply}
+              setMessage={setMessage}
+              deleteHistoryItem={deleteHistoryItem}
+            />
+          </main>
+        </div>
+
+        <footer className="mx-auto mt-6 max-w-7xl text-center text-xs text-slate-400">
+          ReplyForge AI • Smart replies powered by artificial intelligence
+        </footer>
       </div>
     </div>
   );

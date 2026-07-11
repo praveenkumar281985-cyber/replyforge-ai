@@ -17,16 +17,29 @@ export async function generateReply(
     }),
   });
 
-  const data = await response.json();
+  const responseText = await response.text();
+
+  let data = {};
+
+  if (responseText) {
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      throw new Error(
+        "API server is unavailable here. Please test on the live Vercel website."
+      );
+    }
+  }
 
   if (!response.ok) {
     throw new Error(
-      data.error || "Unable to generate reply"
+      data.error ||
+        `API request failed with status ${response.status}`
     );
   }
 
   if (!data.reply) {
-    throw new Error("No reply was generated");
+    throw new Error("No reply was returned by the API.");
   }
 
   return data.reply;

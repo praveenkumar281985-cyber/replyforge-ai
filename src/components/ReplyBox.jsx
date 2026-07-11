@@ -22,39 +22,62 @@ function ReplyBox({ reply }) {
     });
 
     const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "replyforge-reply.txt";
-    a.click();
+    link.href = url;
+    link.download = "replyforge-reply.txt";
+    link.click();
 
     URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="reply-section">
-      <textarea
-        value={reply}
-        placeholder="Your AI-generated reply will appear here..."
-        readOnly
-      />
+    <section className="mt-8">
+      <div className="mb-2 flex items-center justify-between">
+        <label className="text-sm font-semibold text-slate-700 dark:text-slate-200">
+          Generated Reply
+        </label>
 
-      <div className="button-group">
-        <button onClick={handleCopy}>
-          📋 Copy Reply
-        </button>
+        {reply && (
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            {reply.length} characters
+          </span>
+        )}
+      </div>
 
-        <button onClick={handleDownload}>
-          📄 Download TXT
-        </button>
+      <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
+        <textarea
+          value={reply}
+          placeholder="Your AI-generated reply will appear here..."
+          readOnly
+          className="min-h-48 w-full resize-y rounded-2xl border-0 bg-white px-4 py-4 text-base leading-7 text-slate-900 outline-none dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500"
+        />
+
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+          <button
+            onClick={handleCopy}
+            disabled={!reply}
+            className="flex-1 rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {copied ? "✅ Copied" : "📋 Copy Reply"}
+          </button>
+
+          <button
+            onClick={handleDownload}
+            disabled={!reply}
+            className="flex-1 rounded-2xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+          >
+            📄 Download TXT
+          </button>
+        </div>
       </div>
 
       {copied && (
-        <p className="toast">
-          ✅ Reply copied successfully
-        </p>
+        <div className="mt-3 rounded-2xl bg-emerald-50 px-4 py-3 text-center text-sm font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+          Reply copied successfully
+        </div>
       )}
-    </div>
+    </section>
   );
 }
 
