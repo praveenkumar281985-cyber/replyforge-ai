@@ -1,0 +1,1094 @@
+
+/* ReplyForge v2.6 — Persistent Chrome Side Panel */
+html,
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.popup-shell {
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.popup-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+#message {
+  min-height: 150px;
+}
+
+.rf-reply,
+#singleReply {
+  min-height: 135px;
+}
+
+@media (min-width: 520px) {
+  .popup-shell {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 360px) {
+  .popup-shell {
+    padding: 12px;
+  }
+
+  .popup-header {
+    margin: -12px -12px 12px;
+    padding: 13px 12px;
+  }
+
+  .rf-template-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-grid,
+  .rf-risk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand p {
+    display: none;
+  }
+}
+
+
+/* ReplyForge v2.8 — Platform Detection */
+.rf-platform-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e5ef;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 10px 12px;
+  box-shadow: 0 8px 20px rgba(31, 41, 55, 0.05);
+}
+
+.rf-platform-strip > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-platform-label {
+  color: #8b92a3;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+#platformName {
+  overflow: hidden;
+  color: #2f3547;
+  font-size: 10px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-platform-badge {
+  display: inline-flex;
+  min-width: 76px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.rf-platform-badge.gmail {
+  border: 1px solid rgba(234, 67, 53, 0.18);
+  background: rgba(234, 67, 53, 0.08);
+  color: #b42318;
+}
+
+.rf-platform-badge.whatsapp {
+  border: 1px solid rgba(37, 211, 102, 0.22);
+  background: rgba(37, 211, 102, 0.1);
+  color: #128c4a;
+}
+
+.rf-platform-badge.linkedin {
+  border: 1px solid rgba(10, 102, 194, 0.2);
+  background: rgba(10, 102, 194, 0.09);
+  color: #075a9c;
+}
+
+.rf-platform-badge.outlook {
+  border: 1px solid rgba(0, 120, 212, 0.2);
+  background: rgba(0, 120, 212, 0.09);
+  color: #0067b8;
+}
+
+.rf-platform-badge.unknown {
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+
+/* ReplyForge v2.8.2 — Conversation Debugger */
+.rf-context-debugger {
+  margin-bottom: 12px;
+  border: 1px solid #e2e5ef;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 11px 12px;
+  box-shadow: 0 8px 20px rgba(31, 41, 55, 0.05);
+}
+
+.rf-context-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rf-context-heading > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rf-context-heading span {
+  color: #2f3547;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.rf-context-heading small {
+  overflow: hidden;
+  color: #8b92a3;
+  font-size: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-context-button {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 8px;
+}
+
+.rf-context-preview {
+  margin-top: 10px;
+  border-top: 1px solid #eceef4;
+  padding-top: 10px;
+}
+
+.rf-context-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 7px;
+}
+
+.rf-context-meta span {
+  border-radius: 999px;
+  background: #f5f3ff;
+  padding: 5px 7px;
+  color: #6d28d9;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+#contextPreviewText {
+  max-height: 260px;
+  overflow: auto;
+  margin: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+  padding: 10px;
+  color: #374151;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  font-size: 8px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+
+/* ReplyForge v2.10 — Clear Controls and Local History */
+.rf-message-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.rf-clear-message,
+.rf-clear-all {
+  min-height: 34px;
+  padding: 0 9px;
+  font-size: 8px;
+}
+
+.rf-clear-all {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: #fff7f7;
+  color: #b91c1c;
+}
+
+.rf-clear-all:hover:not(:disabled) {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.rf-history-section {
+  margin-top: 14px;
+  border: 1px solid #e2e5ef;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  box-shadow: 0 10px 26px rgba(31, 41, 55, 0.055);
+}
+
+.rf-history-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rf-history-heading > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rf-history-heading span {
+  color: #2f3547;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.rf-history-heading small {
+  color: #8b92a3;
+  font-size: 8px;
+}
+
+.rf-history-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rf-history-button {
+  min-height: 30px;
+  padding: 0 9px;
+  font-size: 8px;
+}
+
+.rf-history-clear {
+  border: 0;
+  border-radius: 999px;
+  background: #fef2f2;
+  padding: 6px 8px;
+  color: #b91c1c;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.rf-history-panel {
+  margin-top: 11px;
+  border-top: 1px solid #eceef4;
+  padding-top: 10px;
+}
+
+.rf-history-empty {
+  border: 1px dashed #d9dce6;
+  border-radius: 11px;
+  background: #f9fafb;
+  padding: 14px;
+  color: #8b92a3;
+  text-align: center;
+  font-size: 8px;
+}
+
+.rf-history-list {
+  display: grid;
+  gap: 8px;
+}
+
+.rf-history-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px;
+}
+
+.rf-history-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rf-history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.rf-history-chip {
+  border-radius: 999px;
+  background: #f5f3ff;
+  padding: 4px 6px;
+  color: #6d28d9;
+  font-size: 7px;
+  font-weight: 850;
+}
+
+.rf-history-time {
+  color: #9ca3af;
+  font-size: 7px;
+  white-space: nowrap;
+}
+
+.rf-history-message {
+  margin: 0 0 7px;
+  color: #4b5563;
+  font-size: 8px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.rf-history-reply {
+  max-height: 68px;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 9px;
+  background: #f9fafb;
+  padding: 8px;
+  color: #374151;
+  font-size: 8px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.rf-history-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.rf-history-actions button {
+  border: 1px solid #e1dbfb;
+  border-radius: 8px;
+  background: #faf8ff;
+  padding: 6px 8px;
+  color: #6d28d9;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.rf-history-actions button[data-history-action="delete"] {
+  border-color: rgba(239, 68, 68, 0.18);
+  background: #fff7f7;
+  color: #b91c1c;
+}
+
+@media (max-width: 360px) {
+  .rf-message-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .rf-history-heading {
+    flex-direction: column;
+  }
+}
+
+
+/* ReplyForge v3.0 — Per-Tab Workspace Manager */
+.rf-platform-badges {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.rf-workspace-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.08);
+  padding: 6px 8px;
+  color: #6d28d9;
+  font-size: 8px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .rf-platform-badges {
+    align-items: flex-end;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+
+/* ReplyForge v3.1 — Compact Premium UI */
+:root {
+  --rf-compact-gap: 9px;
+}
+
+body {
+  min-width: 300px;
+}
+
+.popup-shell {
+  padding: 11px;
+}
+
+.popup-header {
+  margin: -11px -11px 10px;
+  padding: 10px 11px;
+}
+
+.brand {
+  gap: 8px;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  font-size: 15px;
+}
+
+.brand h1 {
+  font-size: 14px;
+}
+
+.brand p {
+  margin-top: 2px;
+  font-size: 8px;
+}
+
+.status-badge {
+  padding: 5px 8px;
+  font-size: 8px;
+}
+
+.rf-platform-strip,
+.rf-context-debugger,
+.field-group,
+.rf-template-section,
+.settings-grid,
+.reply-section,
+.multiple-replies-section,
+.rf-history-section {
+  border-radius: 13px;
+  box-shadow: 0 7px 18px rgba(31, 41, 55, 0.045);
+}
+
+.rf-platform-strip {
+  margin-bottom: var(--rf-compact-gap);
+  padding: 8px 10px;
+}
+
+.rf-platform-label {
+  font-size: 7px;
+}
+
+#platformName {
+  font-size: 9px;
+}
+
+.rf-platform-badges {
+  gap: 4px;
+}
+
+.rf-workspace-badge,
+.rf-platform-badge {
+  min-width: auto;
+  padding: 5px 7px;
+  font-size: 7px;
+}
+
+.rf-context-debugger {
+  margin-bottom: var(--rf-compact-gap);
+  padding: 9px 10px;
+}
+
+.rf-context-heading span {
+  font-size: 9px;
+}
+
+.rf-context-heading small {
+  font-size: 7px;
+}
+
+.rf-context-button {
+  min-height: 27px;
+  padding: 0 8px;
+  font-size: 7px;
+}
+
+.rf-context-preview {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.rf-context-meta {
+  margin-bottom: 6px;
+}
+
+.rf-context-meta span {
+  padding: 4px 6px;
+  font-size: 7px;
+}
+
+#contextPreviewText {
+  max-height: 190px;
+  padding: 8px;
+  font-size: 7px;
+  line-height: 1.45;
+}
+
+.field-group,
+.rf-template-section,
+.settings-grid {
+  margin-bottom: var(--rf-compact-gap);
+  padding: 10px;
+}
+
+.field-group > label,
+.settings-grid label > span {
+  margin-bottom: 5px;
+  font-size: 8px;
+}
+
+#message {
+  min-height: 92px;
+  max-height: 170px;
+  padding: 10px 11px;
+  font-size: 10px;
+  line-height: 1.48;
+}
+
+.field-footer {
+  margin-top: 7px;
+}
+
+.secondary-button {
+  min-height: 34px;
+  border-radius: 9px;
+}
+
+.rf-message-actions {
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.rf-clear-message,
+.rf-clear-all {
+  min-height: 30px;
+  font-size: 7px;
+}
+
+.rf-template-heading {
+  margin-bottom: 8px;
+}
+
+.rf-template-heading span {
+  font-size: 9px;
+}
+
+.rf-template-heading small {
+  font-size: 7px;
+}
+
+.rf-template-grid {
+  gap: 5px;
+}
+
+.rf-template-button {
+  min-height: 29px;
+  border-radius: 8px;
+  padding: 5px 6px;
+  font-size: 7px;
+}
+
+.rf-template-status {
+  margin-top: 7px;
+  padding: 6px 8px;
+  font-size: 7px;
+}
+
+.settings-grid {
+  gap: 8px;
+}
+
+select {
+  height: 35px;
+  border-radius: 9px;
+  padding: 0 9px;
+  font-size: 9px;
+}
+
+.primary-button {
+  min-height: 40px;
+  border-radius: 10px;
+  font-size: 9px;
+}
+
+.reply-section,
+.multiple-replies-section {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.reply-heading {
+  margin-bottom: 7px;
+}
+
+.reply-heading > span,
+.multiple-replies-header span {
+  font-size: 9px;
+}
+
+.multiple-replies-header small {
+  font-size: 7px;
+}
+
+.rf-card {
+  margin-top: 8px;
+  border-radius: 11px;
+  padding: 9px;
+}
+
+.rf-card-header {
+  margin-bottom: 7px;
+}
+
+.rf-title {
+  font-size: 9px;
+}
+
+.rf-card-subtitle {
+  font-size: 7px;
+}
+
+.rf-analyze,
+.rf-copy {
+  padding: 5px 7px;
+  font-size: 7px;
+}
+
+.rf-reply,
+#singleReply {
+  min-height: 96px;
+  height: 104px;
+  padding: 8px 9px;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.rf-rewrite-toolbar {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.rf-rewrite-label {
+  margin-bottom: 6px;
+  font-size: 7px;
+}
+
+.rf-rewrite-options {
+  gap: 4px;
+}
+
+.rf-rewrite-button {
+  padding: 5px 7px;
+  font-size: 7px;
+}
+
+.rf-coach-panel {
+  margin-top: 8px;
+  border-radius: 11px;
+  padding: 9px;
+}
+
+.rf-coach-score {
+  width: 48px;
+  height: 48px;
+  border-width: 4px;
+  padding-top: 11px;
+}
+
+.rf-coach-score strong {
+  font-size: 16px;
+}
+
+.rf-coach-title {
+  font-size: 9px;
+}
+
+.rf-coach-top p,
+.rf-coach-metric-heading,
+.rf-risk-item,
+.rf-coach-suggestions ul {
+  font-size: 7px;
+}
+
+.rf-history-section {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.rf-history-heading span {
+  font-size: 9px;
+}
+
+.rf-history-heading small {
+  font-size: 7px;
+}
+
+.rf-history-button,
+.rf-history-clear {
+  min-height: 27px;
+  padding: 0 8px;
+  font-size: 7px;
+}
+
+.rf-history-panel {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.rf-history-item {
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.rf-history-chip,
+.rf-history-time,
+.rf-history-message,
+.rf-history-reply,
+.rf-history-actions button {
+  font-size: 7px;
+}
+
+.popup-footer {
+  margin-top: 10px;
+  font-size: 7px;
+}
+
+
+/* ReplyForge v3.2 — Launch Settings, Dark Mode and Quick Commands */
+.rf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rf-settings-icon,
+.rf-settings-close {
+  display: grid;
+  place-items: center;
+  border: 1px solid #e1dcf7;
+  background: rgba(255, 255, 255, 0.82);
+  color: #6d28d9;
+  cursor: pointer;
+}
+
+.rf-settings-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.rf-settings-icon:hover {
+  border-color: #c4b5fd;
+  background: #f7f3ff;
+}
+
+.rf-quick-command-hint {
+  margin-top: 6px;
+  color: #8b92a3;
+  font-size: 7px;
+  line-height: 1.35;
+}
+
+.rf-settings-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  background: rgba(17, 24, 39, 0.28);
+  padding: 12px;
+  overscroll-behavior: contain;
+}
+
+.rf-settings-dialog {
+  width: min(100%, 430px);
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  margin: 0 auto;
+  border: 1px solid rgba(221, 214, 254, 0.9);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 24px 60px rgba(17, 24, 39, 0.25);
+  transform: none;
+}
+
+.rf-settings-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #eceef4;
+  padding: 13px;
+}
+
+.rf-settings-dialog-header h2 {
+  margin: 0;
+  color: #242938;
+  font-size: 14px;
+}
+
+.rf-settings-dialog-header p {
+  margin: 3px 0 0;
+  color: #8b92a3;
+  font-size: 8px;
+}
+
+.rf-settings-close {
+  width: 29px;
+  height: 29px;
+  border-radius: 9px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.rf-settings-body {
+  display: grid;
+  gap: 0;
+  padding: 0 13px;
+}
+
+.rf-setting-row,
+.rf-setting-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #f0f1f5;
+  padding: 11px 0;
+}
+
+.rf-setting-row > span,
+.rf-setting-toggle > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rf-setting-row strong,
+.rf-setting-toggle strong {
+  color: #303647;
+  font-size: 9px;
+}
+
+.rf-setting-row small,
+.rf-setting-toggle small {
+  color: #8b92a3;
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+.rf-setting-row select {
+  width: 126px;
+  flex: 0 0 auto;
+}
+
+.rf-setting-toggle input {
+  width: 34px;
+  height: 18px;
+  accent-color: #7c3aed;
+}
+
+.rf-settings-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 13px;
+}
+
+.rf-settings-footer .primary-button,
+.rf-settings-footer .secondary-button {
+  margin: 0;
+  min-height: 36px;
+}
+
+/* Dark theme */
+html[data-rf-theme="dark"],
+html[data-rf-theme="dark"] body {
+  color-scheme: dark;
+  background: #11131a;
+}
+
+html[data-rf-theme="dark"] body {
+  background:
+    radial-gradient(circle at 92% 2%, rgba(124, 58, 237, 0.22), transparent 30%),
+    linear-gradient(180deg, #151722, #10121a);
+  color: #e5e7eb;
+}
+
+html[data-rf-theme="dark"] .popup-header {
+  border-color: #2b2f3c;
+  background: rgba(20, 22, 32, 0.94);
+}
+
+html[data-rf-theme="dark"] .brand h1,
+html[data-rf-theme="dark"] .rf-title,
+html[data-rf-theme="dark"] .reply-heading > span,
+html[data-rf-theme="dark"] .multiple-replies-header span,
+html[data-rf-theme="dark"] .rf-template-heading span,
+html[data-rf-theme="dark"] .rf-history-heading span,
+html[data-rf-theme="dark"] .rf-context-heading span,
+html[data-rf-theme="dark"] #platformName,
+html[data-rf-theme="dark"] .rf-setting-row strong,
+html[data-rf-theme="dark"] .rf-setting-toggle strong,
+html[data-rf-theme="dark"] .rf-settings-dialog-header h2 {
+  color: #f3f4f6;
+}
+
+html[data-rf-theme="dark"] .rf-platform-strip,
+html[data-rf-theme="dark"] .rf-context-debugger,
+html[data-rf-theme="dark"] .field-group,
+html[data-rf-theme="dark"] .rf-template-section,
+html[data-rf-theme="dark"] .settings-grid,
+html[data-rf-theme="dark"] .reply-section,
+html[data-rf-theme="dark"] .multiple-replies-section,
+html[data-rf-theme="dark"] .rf-history-section,
+html[data-rf-theme="dark"] .rf-card,
+html[data-rf-theme="dark"] .rf-settings-dialog {
+  border-color: #303442;
+  background: rgba(25, 28, 39, 0.94);
+  color: #e5e7eb;
+}
+
+html[data-rf-theme="dark"] textarea,
+html[data-rf-theme="dark"] select,
+html[data-rf-theme="dark"] #contextPreviewText,
+html[data-rf-theme="dark"] .rf-history-reply {
+  border-color: #383d4c;
+  background: #171a24;
+  color: #e5e7eb;
+}
+
+html[data-rf-theme="dark"] .secondary-button,
+html[data-rf-theme="dark"] .rf-settings-icon,
+html[data-rf-theme="dark"] .rf-settings-close,
+html[data-rf-theme="dark"] .rf-template-button,
+html[data-rf-theme="dark"] .rf-rewrite-button,
+html[data-rf-theme="dark"] .rf-history-actions button {
+  border-color: #3a3f50;
+  background: #202330;
+  color: #c4b5fd;
+}
+
+html[data-rf-theme="dark"] .rf-settings-dialog-header,
+html[data-rf-theme="dark"] .rf-setting-row,
+html[data-rf-theme="dark"] .rf-setting-toggle,
+html[data-rf-theme="dark"] .rf-history-panel,
+html[data-rf-theme="dark"] .rf-context-preview {
+  border-color: #303442;
+}
+
+html[data-rf-theme="dark"] .brand p,
+html[data-rf-theme="dark"] small,
+html[data-rf-theme="dark"] .rf-quick-command-hint,
+html[data-rf-theme="dark"] #characterCount {
+  color: #9ca3af;
+}
+
+html[data-rf-motion="off"] *,
+html[data-rf-motion="off"] *::before,
+html[data-rf-motion="off"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+@media (max-width: 360px) {
+  .rf-setting-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rf-setting-row select {
+    width: 100%;
+  }
+
+  .rf-settings-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ReplyForge v3.2.1 — Settings Overlay Position and Blur Fix */
+body:has(.rf-settings-backdrop:not([hidden])) {
+  overflow: hidden;
+}
+
+.rf-settings-backdrop[hidden] {
+  display: none !important;
+}
+
+.rf-settings-backdrop {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+.rf-settings-dialog {
+  position: relative;
+  isolation: isolate;
+}
+
+@media (max-height: 620px) {
+  .rf-settings-backdrop {
+    padding: 8px;
+  }
+
+  .rf-settings-dialog {
+    max-height: calc(100dvh - 16px);
+  }
+}

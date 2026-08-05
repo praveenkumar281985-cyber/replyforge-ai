@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReplyForge AI Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="settings-shell">
+      <section class="settings-card">
+        <div class="settings-header">
+          <div class="brand-icon">R</div>
+          <div>
+            <h1>ReplyForge AI Settings</h1>
+            <p>Add your AI provider keys for the browser extension.</p>
+          </div>
+        </div>
+
+        <div class="notice">
+          Keys are stored in Chrome extension storage on this browser.
+        </div>
+
+        <form id="settingsForm">
+          <label class="field">
+            <span>OpenRouter API Key</span>
+            <input
+              id="openRouterApiKey"
+              type="password"
+              placeholder="sk-or-v1-..."
+              autocomplete="off"
+            />
+            <small>Primary AI provider</small>
+          </label>
+
+          <label class="field">
+            <span>Groq API Key</span>
+            <input
+              id="groqApiKey"
+              type="password"
+              placeholder="gsk_..."
+              autocomplete="off"
+            />
+            <small>Automatic fallback provider</small>
+          </label>
+
+          <div class="button-row">
+            <button id="saveButton" type="submit" class="primary-button">
+              Save Settings
+            </button>
+            <button id="clearButton" type="button" class="secondary-button">
+              Clear Keys
+            </button>
+          </div>
+
+          <div id="statusMessage" class="status-message" hidden></div>
+        </form>
+      </section>
+    </main>
+
+    <script src="options.js"></script>
+  </body>
+</html>

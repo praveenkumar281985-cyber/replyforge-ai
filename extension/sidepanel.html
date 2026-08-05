@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReplyForge AI Side Panel</title>
+    <link rel="stylesheet" href="ai-coach-ui.css" />
+    <link rel="stylesheet" href="popup.css" />
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="popup-header">
+        <div class="brand">
+          <div class="brand-icon">R</div>
+          <div>
+            <h1>ReplyForge AI</h1>
+            <p>Your AI communication workspace.</p>
+          </div>
+        </div>
+        <div class="rf-header-actions">
+          <button
+            id="openSettingsButton"
+            type="button"
+            class="rf-settings-icon"
+            title="ReplyForge settings"
+            aria-label="Open settings"
+          >
+            ⚙
+          </button>
+
+          <span class="status-badge">Ready</span>
+        </div>
+      </header>
+
+
+      <section class="rf-platform-strip">
+        <div>
+          <span class="rf-platform-label">Current platform</span>
+          <strong id="platformName">Detecting...</strong>
+        </div>
+
+        <div class="rf-platform-badges">
+          <span id="workspaceBadge" class="rf-workspace-badge">
+            Tab workspace
+          </span>
+
+          <span id="platformBadge" class="rf-platform-badge unknown">
+            Unknown
+          </span>
+        </div>
+      </section>
+
+
+      <section class="rf-context-debugger">
+        <div class="rf-context-heading">
+          <div>
+            <span>Conversation Context</span>
+            <small id="contextSummary">Not checked yet</small>
+          </div>
+
+          <button
+            id="previewContextButton"
+            type="button"
+            class="secondary-button rf-context-button"
+          >
+            Preview
+          </button>
+        </div>
+
+        <div id="contextPreview" class="rf-context-preview" hidden>
+          <div class="rf-context-meta">
+            <span id="contextPlatform">Platform: —</span>
+            <span id="contextMessageCount">Messages: 0</span>
+          </div>
+
+          <pre id="contextPreviewText">No conversation context detected.</pre>
+        </div>
+      </section>
+
+      <section class="field-group">
+        <label for="message">Incoming message</label>
+        <textarea
+          id="message"
+          placeholder="Select a message on the page, or paste it here..."
+          maxlength="5000"
+        ></textarea>
+
+        <div id="quickCommandHint" class="rf-quick-command-hint">
+          Try: /short, /formal, /friendly, /firm, /apology
+        </div>
+
+        <div class="field-footer">
+          <button id="readSelection" type="button" class="secondary-button">
+            Use selected text
+          </button>
+          <span id="characterCount">0/5000</span>
+        </div>
+
+        <div class="rf-message-actions">
+          <button
+            id="clearMessageButton"
+            type="button"
+            class="secondary-button rf-clear-message"
+          >
+            Clear message
+          </button>
+
+          <button
+            id="clearAllButton"
+            type="button"
+            class="secondary-button rf-clear-all"
+          >
+            New conversation
+          </button>
+        </div>
+
+      </section>
+
+      <section class="rf-template-section">
+        <div class="rf-template-heading">
+          <div>
+            <span>Smart Templates</span>
+            <small>Choose the reply intent before generating.</small>
+          </div>
+          <button
+            id="clearTemplateButton"
+            type="button"
+            class="rf-template-clear"
+            hidden
+          >
+            Clear
+          </button>
+        </div>
+
+        <div id="templateButtons" class="rf-template-grid">
+          <button type="button" class="rf-template-button" data-template="professional">Professional</button>
+          <button type="button" class="rf-template-button" data-template="friendly">Friendly</button>
+          <button type="button" class="rf-template-button" data-template="apology">Apology</button>
+          <button type="button" class="rf-template-button" data-template="approval">Approval</button>
+          <button type="button" class="rf-template-button" data-template="reject">Reject</button>
+          <button type="button" class="rf-template-button" data-template="clarify">Clarify</button>
+          <button type="button" class="rf-template-button" data-template="followup">Follow-up</button>
+          <button type="button" class="rf-template-button" data-template="escalate">Escalate</button>
+          <button type="button" class="rf-template-button" data-template="thankyou">Thank You</button>
+        </div>
+
+        <div id="selectedTemplateStatus" class="rf-template-status" hidden></div>
+      </section>
+
+      <section class="settings-grid">
+        <label>
+          <span>Length</span>
+          <select id="length">
+            <option>Short</option>
+            <option selected>Medium</option>
+            <option>Long</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Mode</span>
+          <select id="generationMode">
+            <option value="multiple" selected>4 Suggestions</option>
+            <option value="single">Single Reply</option>
+          </select>
+        </label>
+      </section>
+
+      <button id="generateButton" type="button" class="primary-button">
+        Generate Suggestions
+      </button>
+
+      <div id="errorBox" class="error-box" hidden></div>
+
+      <section id="singleReplySection" class="reply-section" hidden>
+        <div class="reply-heading">
+          <span>Generated reply</span>
+          <div class="rf-heading-actions">
+            <button id="singleAnalyzeButton" type="button">Analyze</button>
+            <button id="singleCopyButton" type="button">Copy</button>
+          </div>
+        </div>
+
+        <textarea
+          id="singleReply"
+          readonly
+          placeholder="Your reply will appear here..."
+        ></textarea>
+
+        <div id="singleCoachPanel" class="rf-coach-panel" hidden></div>
+
+        <button
+          id="singleInsertButton"
+          type="button"
+          class="secondary-button full-width"
+        >
+          Insert into page
+        </button>
+      </section>
+
+      <section id="multipleRepliesSection" class="multiple-replies-section" hidden>
+        <div class="multiple-replies-header">
+          <div>
+            <span>AI suggestions</span>
+            <small>Choose, analyze, improve or rewrite the best reply.</small>
+          </div>
+          <span id="replyCountBadge">4 replies</span>
+        </div>
+
+        <div id="replyCardsContainer"></div>
+      </section>
+
+
+      <section class="rf-history-section">
+        <div class="rf-history-heading">
+          <div>
+            <span>Recent History</span>
+            <small>Saved only in this browser</small>
+          </div>
+
+          <div class="rf-history-heading-actions">
+            <button
+              id="toggleHistoryButton"
+              type="button"
+              class="secondary-button rf-history-button"
+            >
+              View history
+            </button>
+
+            <button
+              id="clearHistoryButton"
+              type="button"
+              class="rf-history-clear"
+              hidden
+            >
+              Clear history
+            </button>
+          </div>
+        </div>
+
+        <div id="historyPanel" class="rf-history-panel" hidden>
+          <div id="historyEmptyState" class="rf-history-empty">
+            No saved replies yet.
+          </div>
+
+          <div id="historyList" class="rf-history-list"></div>
+        </div>
+      </section>
+<footer class="popup-footer">ReplyForge AI Side Panel v3.2.1</footer>
+    </main>
+
+    <div id="settingsBackdrop" class="rf-settings-backdrop" hidden>
+        <section
+          class="rf-settings-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="settingsTitle"
+        >
+          <div class="rf-settings-dialog-header">
+            <div>
+              <h2 id="settingsTitle">ReplyForge Settings</h2>
+              <p>Saved locally in this browser.</p>
+            </div>
+
+            <button
+              id="closeSettingsButton"
+              type="button"
+              class="rf-settings-close"
+              aria-label="Close settings"
+            >
+              ×
+            </button>
+          </div>
+
+          <div class="rf-settings-body">
+            <label class="rf-setting-row">
+              <span>
+                <strong>Theme</strong>
+                <small>Choose the side-panel appearance.</small>
+              </span>
+
+              <select id="themeSetting">
+                <option value="system">System</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+
+            <label class="rf-setting-row">
+              <span>
+                <strong>Default length</strong>
+                <small>Used for every new conversation.</small>
+              </span>
+
+              <select id="defaultLengthSetting">
+                <option value="Short">Short</option>
+                <option value="Medium">Medium</option>
+                <option value="Long">Long</option>
+              </select>
+            </label>
+
+            <label class="rf-setting-row">
+              <span>
+                <strong>Default mode</strong>
+                <small>Single reply or four suggestions.</small>
+              </span>
+
+              <select id="defaultModeSetting">
+                <option value="multiple">4 Suggestions</option>
+                <option value="single">Single Reply</option>
+              </select>
+            </label>
+
+            <label class="rf-setting-toggle">
+              <span>
+                <strong>Save reply history</strong>
+                <small>Keep the latest 20 sessions locally.</small>
+              </span>
+
+              <input id="saveHistorySetting" type="checkbox" />
+            </label>
+
+            <label class="rf-setting-toggle">
+              <span>
+                <strong>Quick commands</strong>
+                <small>Enable /short, /formal, /firm and more.</small>
+              </span>
+
+              <input id="quickCommandsSetting" type="checkbox" />
+            </label>
+
+            <label class="rf-setting-toggle">
+              <span>
+                <strong>Motion effects</strong>
+                <small>Use animations and loading shimmer.</small>
+              </span>
+
+              <input id="motionSetting" type="checkbox" />
+            </label>
+          </div>
+
+          <div class="rf-settings-footer">
+            <button
+              id="resetSettingsButton"
+              type="button"
+              class="secondary-button"
+            >
+              Reset defaults
+            </button>
+
+            <button
+              id="saveSettingsButton"
+              type="button"
+              class="primary-button"
+            >
+              Save settings
+            </button>
+          </div>
+        </section>
+      </div>
+
+    <script src="sidepanel.js"></script>
+  </body>
+</html>

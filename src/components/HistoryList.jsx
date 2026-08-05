@@ -6,7 +6,7 @@ function HistoryList({
   toggleFavorite,
 }) {
   return (
-    <section className="mt-10">
+    <section className="">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
@@ -24,7 +24,7 @@ function HistoryList({
       </div>
 
       {history.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-900/60">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-12 text-center dark:border-slate-700 dark:bg-slate-900/60">
           <div className="text-4xl">🕘</div>
 
           <h3 className="mt-3 text-lg font-bold text-slate-900 dark:text-white">
@@ -40,7 +40,7 @@ function HistoryList({
           {history.map((item, index) => (
             <article
               key={item.id || index}
-              className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900"
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-2">

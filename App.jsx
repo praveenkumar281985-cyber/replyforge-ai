@@ -15,7 +15,6 @@ import AuthPage from "./components/AuthPage";
 
 import { generateReply, streamReply } from "./services/aiService";
 import { buildSmartReplyPrompt } from "./services/promptBuilder";
-import { detectMessageIntent } from "./services/intentDetector";
 import supabase from "./lib/supabase";
 
 import {
@@ -75,8 +74,6 @@ const [replyScore, setReplyScore] = useState(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState("history");
   const [toolLoading, setToolLoading] = useState("");
-  const [intentLoading, setIntentLoading] = useState(false);
-  const [intentResult, setIntentResult] = useState(null);
 
   const [history, setHistory] = useState([]);
 
@@ -329,70 +326,6 @@ const [replyScore, setReplyScore] = useState(null);
     } finally {
       streamControllerRef.current = null;
       setLoading(false);
-    }
-  }
-
-  async function analyzeMessageIntent() {
-    const cleanMessage = message.trim();
-
-    if (!cleanMessage) {
-      setError("Please enter or upload a message first.");
-      return;
-    }
-
-    try {
-      setIntentLoading(true);
-      setError("");
-
-      const result = await detectMessageIntent(cleanMessage);
-
-      const toneMap = {
-        Professional: "Professional",
-        Friendly: "Friendly",
-        Funny: "Funny",
-        Casual: "Casual",
-        Formal: "Formal",
-        Polite: "Professional",
-        Confident: "Professional",
-        Empathetic: "Friendly",
-        Direct: "Professional",
-      };
-
-      const personaMap = {
-        Professional: "Professional",
-        Manager: "HR Manager",
-        "Customer Support": "Customer Support",
-        Friend: "Friendly",
-        Colleague: "Professional",
-        "Business Owner": "CEO",
-        "Job Applicant": "Professional",
-        "Team Member": "Professional",
-      };
-
-      const languageMap = {
-        English: "English",
-        Hindi: "Hindi",
-        Spanish: "Spanish",
-        French: "French",
-        German: "German",
-      };
-
-      setIntentResult(result);
-      setTone(toneMap[result.suggestedTone] || "Professional");
-      setPersona(
-        personaMap[result.suggestedPersona] || "Professional"
-      );
-
-      if (languageMap[result.detectedLanguage]) {
-        setLanguage(languageMap[result.detectedLanguage]);
-      }
-    } catch (err) {
-      console.error("Intent detection error:", err);
-      setError(
-        err?.message || "Unable to analyze this message."
-      );
-    } finally {
-      setIntentLoading(false);
     }
   }
 
@@ -768,7 +701,6 @@ async function runAiTool(tool) {
     setReply("");
     setConversation([]);
     setReplyScore(null);
-    setIntentResult(null);
     setError("");
   }
 
@@ -932,95 +864,6 @@ async function runAiTool(tool) {
                   persona={persona}
                   setPersona={setPersona}
                 />
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    marginTop: "10px",
-                    border: "1px solid var(--rf-v4-border)",
-                    borderRadius: "12px",
-                    background: "var(--rf-v4-surface)",
-                    padding: "10px 12px",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      minWidth: 0,
-                      flex: "1 1 420px",
-                      flexDirection: "column",
-                      gap: "5px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        alignItems: "center",
-                        gap: "6px",
-                      }}
-                    >
-                      <strong
-                        style={{
-                          color: "var(--rf-v4-text)",
-                          fontSize: "9px",
-                        }}
-                      >
-                        AI message detection
-                      </strong>
-
-                      {intentResult && (
-                        <>
-                          <span className="rf-v4-private-badge">
-                            {intentResult.intent}
-                          </span>
-
-                          <span className="rf-v4-private-badge">
-                            {intentResult.messageType}
-                          </span>
-
-                          <span
-                            style={{
-                              color: "var(--rf-v4-purple)",
-                              fontSize: "8px",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {intentResult.confidence}% confidence
-                          </span>
-                        </>
-                      )}
-                    </div>
-
-                    <span
-                      style={{
-                        color: "var(--rf-v4-faint)",
-                        fontSize: "8px",
-                        lineHeight: 1.45,
-                      }}
-                    >
-                      {intentResult?.summary ||
-                        "Detect the intent and message type, then apply suitable tone and persona settings."}
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={analyzeMessageIntent}
-                    disabled={intentLoading || loading || !message.trim()}
-                    className="rf-v4-analyze-button"
-                  >
-                    {intentLoading
-                      ? "Detecting…"
-                      : intentResult
-                        ? "Detect again"
-                        : "Detect message"}
-                  </button>
-                </div>
 
                 <ButtonGroup
                   createReply={createReply}

@@ -1,78 +1,304 @@
+function clampScore(value) {
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.min(Math.round(number), 100));
+}
+
+function Metric({ label, value = 0, risk = false }) {
+  const score = clampScore(value);
+  const displayScore = risk ? 100 - score : score;
+
+  return (
+    <div className="rf-v4-metric">
+      <div>
+        <span>{label}</span>
+        <strong>{score}</strong>
+      </div>
+
+      <div className="rf-v4-metric-track">
+        <span
+          style={{
+            width: `${risk ? score : displayScore}%`,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function RiskBadge({ label, value = 0 }) {
+  const score = clampScore(value);
+
+  const level =
+    score >= 70
+      ? "High risk"
+      : score >= 35
+        ? "Medium risk"
+        : "Low risk";
+
+  const symbol = score >= 70 ? "!" : score >= 35 ? "△" : "✓";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "8px",
+        border: "1px solid var(--rf-v4-border)",
+        borderRadius: "10px",
+        background: "var(--rf-v4-surface-soft)",
+        padding: "8px 9px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "7px",
+          minWidth: 0,
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            display: "grid",
+            width: "21px",
+            height: "21px",
+            placeItems: "center",
+            borderRadius: "7px",
+            background:
+              score >= 70
+                ? "rgba(216, 74, 74, 0.1)"
+                : score >= 35
+                  ? "rgba(245, 158, 11, 0.11)"
+                  : "rgba(39, 166, 107, 0.1)",
+            color:
+              score >= 70
+                ? "var(--rf-v4-danger)"
+                : score >= 35
+                  ? "#b77900"
+                  : "var(--rf-v4-green)",
+            fontSize: "9px",
+            fontWeight: 800,
+          }}
+        >
+          {symbol}
+        </span>
+
+        <div
+          style={{
+            display: "flex",
+            minWidth: 0,
+            flexDirection: "column",
+            gap: "1px",
+          }}
+        >
+          <strong
+            style={{
+              fontSize: "8px",
+              fontWeight: 700,
+            }}
+          >
+            {label}
+          </strong>
+
+          <span
+            style={{
+              color: "var(--rf-v4-faint)",
+              fontSize: "7px",
+            }}
+          >
+            {level}
+          </span>
+        </div>
+      </div>
+
+      <strong
+        style={{
+          fontSize: "9px",
+          color:
+            score >= 70
+              ? "var(--rf-v4-danger)"
+              : score >= 35
+                ? "#b77900"
+                : "var(--rf-v4-green)",
+        }}
+      >
+        {score}
+      </strong>
+    </div>
+  );
+}
+
 function ReplyScore({
   replyScore,
   scoreLoading,
   analyzeReply,
 }) {
-  return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-            AI Review
-          </p>
+  const overall = clampScore(replyScore?.overall);
+  const circumference = 201.06;
+  const dashOffset =
+    circumference - (overall / 100) * circumference;
 
-          <h3 className="mt-1 text-lg font-bold text-slate-900 dark:text-white">
-            Reply Score
-          </h3>
+  const verdict =
+    replyScore?.verdict?.trim() ||
+    (overall >= 85
+      ? "This reply is clear, confident, and ready to send."
+      : overall >= 70
+        ? "This is a strong reply with a few possible improvements."
+        : replyScore
+          ? "This reply would benefit from refinement before sending."
+          : "Generate a reply, then run a detailed communication check.");
+
+  return (
+    <section className="rf-v4-insight-card">
+      <div className="rf-v4-insight-header">
+        <div>
+          <span className="rf-v4-eyebrow">
+            AI Reply Coach
+          </span>
+
+          <h2>Communication check</h2>
         </div>
 
         <button
           type="button"
           onClick={analyzeReply}
           disabled={scoreLoading}
-          className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white hover:bg-indigo-700 disabled:opacity-50"
+          className="rf-v4-analyze-button"
         >
-          {scoreLoading ? "Analyzing..." : "Analyze Reply"}
+          {scoreLoading ? "Coaching…" : "Analyze"}
         </button>
       </div>
 
-      {!replyScore ? (
-        <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
-          Click <strong>Analyze Reply</strong> to get AI feedback.
-        </p>
-      ) : (
-        <div className="mt-5 space-y-3">
-          <div className="flex justify-between">
-            <span>Overall</span>
-            <strong>{replyScore.overall}/100</strong>
+      <div className="rf-v4-score-summary">
+        <div className="rf-v4-score-ring">
+          <svg
+            viewBox="0 0 72 72"
+            aria-hidden="true"
+          >
+            <circle
+              className="rf-v4-score-track"
+              cx="36"
+              cy="36"
+              r="32"
+            />
+
+            <circle
+              className="rf-v4-score-progress"
+              cx="36"
+              cy="36"
+              r="32"
+              strokeDasharray={circumference}
+              strokeDashoffset={dashOffset}
+            />
+          </svg>
+
+          <div>
+            <strong>{overall}</strong>
+            <span>/100</span>
+          </div>
+        </div>
+
+        <div>
+          <strong>
+            {!replyScore
+              ? "Ready to coach"
+              : overall >= 85
+                ? "Excellent response"
+                : overall >= 70
+                  ? "Strong response"
+                  : "Needs refinement"}
+          </strong>
+
+          <p>{verdict}</p>
+        </div>
+      </div>
+
+      <div className="rf-v4-metrics">
+        <Metric
+          label="Grammar"
+          value={replyScore?.grammar}
+        />
+
+        <Metric
+          label="Clarity"
+          value={replyScore?.clarity}
+        />
+
+        <Metric
+          label="Professionalism"
+          value={replyScore?.professionalism}
+        />
+
+        <Metric
+          label="Politeness"
+          value={replyScore?.politeness}
+        />
+
+        <Metric
+          label="Confidence"
+          value={replyScore?.confidence}
+        />
+
+        <Metric
+          label="Empathy"
+          value={replyScore?.empathy}
+        />
+
+        <Metric
+          label="Readability"
+          value={replyScore?.readability}
+        />
+
+        <Metric
+          label="Call to action"
+          value={replyScore?.callToAction}
+        />
+      </div>
+
+      {replyScore && (
+        <div
+          style={{
+            display: "grid",
+            gap: "6px",
+            marginTop: "13px",
+          }}
+        >
+          <RiskBadge
+            label="Aggressive tone"
+            value={replyScore?.aggressiveRisk}
+          />
+
+          <RiskBadge
+            label="Misunderstanding"
+            value={replyScore?.misunderstandingRisk}
+          />
+        </div>
+      )}
+
+      {replyScore?.suggestions?.length > 0 && (
+        <div className="rf-v4-suggestions">
+          <div>
+            <span>✦</span>
+            Coach suggestions
           </div>
 
-          <div className="flex justify-between">
-            <span>Grammar</span>
-            <strong>{replyScore.grammar}/100</strong>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Clarity</span>
-            <strong>{replyScore.clarity}/100</strong>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Professionalism</span>
-            <strong>{replyScore.professionalism}/100</strong>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Politeness</span>
-            <strong>{replyScore.politeness}/100</strong>
-          </div>
-
-          <div className="flex justify-between">
-            <span>Confidence</span>
-            <strong>{replyScore.confidence}/100</strong>
-          </div>
-
-          <div className="mt-5">
-            <h4 className="font-bold text-slate-900 dark:text-white">
-              Suggestions
-            </h4>
-
-            <ul className="mt-2 list-disc space-y-2 pl-5 text-sm">
-              {replyScore.suggestions?.map((item, index) => (
-                <li key={index}>{item}</li>
+          <ul>
+            {replyScore.suggestions
+              .filter(Boolean)
+              .slice(0, 5)
+              .map((suggestion, index) => (
+                <li key={`${suggestion}-${index}`}>
+                  {suggestion}
+                </li>
               ))}
-            </ul>
-          </div>
+          </ul>
         </div>
       )}
     </section>

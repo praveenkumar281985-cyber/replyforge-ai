@@ -1,0 +1,161 @@
+.rf-heading-actions,
+.rf-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rf-analyze {
+  border: 1px solid #ddd6fe;
+  border-radius: 8px;
+  background: #f5f3ff;
+  padding: 6px 10px;
+  color: #6d28d9;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.rf-analyze:hover:not(:disabled) {
+  border-color: #8b5cf6;
+  background: #ede9fe;
+}
+
+.rf-coach-panel {
+  margin-top: 10px;
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    #faf8ff,
+    #ffffff
+  );
+  padding: 11px;
+}
+
+.rf-coach-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ede9fe;
+}
+
+.rf-coach-score {
+  display: flex;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 auto;
+  align-items: baseline;
+  justify-content: center;
+  border: 5px solid #7c3aed;
+  border-radius: 50%;
+  padding-top: 12px;
+}
+
+.rf-coach-score strong {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.rf-coach-score span {
+  color: #9ca3af;
+  font-size: 7px;
+}
+
+.rf-coach-title {
+  color: #5b21b6;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.rf-coach-top p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.rf-coach-metrics {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rf-coach-metric-heading {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  color: #6b7280;
+  font-size: 8px;
+}
+
+.rf-coach-metric-heading strong {
+  color: #374151;
+}
+
+.rf-coach-track {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.rf-coach-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    #6d4aff,
+    #a855f7
+  );
+}
+
+.rf-risk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 11px;
+}
+
+.rf-risk-item {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 9px;
+  padding: 7px 8px;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rf-risk-item.low {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.rf-risk-item.medium {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.rf-risk-item.high {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.rf-coach-suggestions {
+  margin-top: 10px;
+  border-top: 1px solid #ede9fe;
+  padding-top: 9px;
+}
+
+.rf-coach-suggestions > strong {
+  color: #4c1d95;
+  font-size: 9px;
+}
+
+.rf-coach-suggestions ul {
+  margin: 6px 0 0;
+  padding-left: 15px;
+  color: #6b7280;
+  font-size: 8px;
+  line-height: 1.55;
+}

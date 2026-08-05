@@ -1,0 +1,43 @@
+:root {
+  font-family: Inter, Arial, sans-serif;
+  color: #1f2937;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 30px; background: #f5f7fb; }
+.settings-shell { max-width: 700px; margin: auto; }
+.settings-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+.settings-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.brand-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: linear-gradient(135deg,#6d4aff,#9333ea);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 22px; font-weight: bold;
+}
+.settings-header h1 { margin: 0; }
+.settings-header p { margin: 4px 0 0; color: #6b7280; }
+.notice {
+  padding: 12px; border-radius: 10px; background: #eef2ff;
+  color: #4338ca; margin-bottom: 20px;
+}
+.field { display: block; margin-bottom: 18px; }
+.field span { display: block; margin-bottom: 8px; font-weight: bold; }
+.field input {
+  width: 100%; padding: 12px; border: 1px solid #d1d5db;
+  border-radius: 10px; outline: none;
+}
+.field input:focus { border-color: #6d4aff; }
+.field small { display: block; margin-top: 5px; color: #6b7280; }
+.button-row { display: flex; gap: 12px; }
+.primary-button, .secondary-button {
+  padding: 12px 18px; border-radius: 10px; cursor: pointer;
+}
+.primary-button { background: #6d4aff; color: white; border: none; }
+.secondary-button { background: white; border: 1px solid #d1d5db; }
+.status-message { margin-top: 20px; padding: 12px; border-radius: 10px; display: none; }
+.status-message.success { display: block; background: #dcfce7; color: #166534; }
+.status-message.error { display: block; background: #fee2e2; color: #991b1b; }

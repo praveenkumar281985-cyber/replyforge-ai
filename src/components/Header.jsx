@@ -1,18 +1,23 @@
 function Header() {
   return (
-    <header className="mb-8 text-center">
-      <div className="mb-4 inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950 dark:text-indigo-300">
-        ✨ AI Communication Assistant
+    <header className="rf-v4-section-heading">
+      <div>
+        <div className="rf-v4-eyebrow">
+          <span className="rf-v4-live-dot" />
+          AI Composer
+        </div>
+
+        <h1>Turn any message into the right reply.</h1>
+
+        <p>
+          Add context, choose the voice, and let ReplyForge shape the response.
+        </p>
       </div>
 
-      <h1 className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl">
-        ReplyForge AI
-      </h1>
-
-      <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600 dark:text-slate-300">
-        Generate smart, natural and professional replies for chats, emails and
-        social media in seconds.
-      </p>
+      <div className="rf-v4-command-hint">
+        <span>⌘</span>
+        <span>Enter</span>
+      </div>
     </header>
   );
 }

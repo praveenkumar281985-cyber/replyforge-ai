@@ -1,0 +1,692 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #182033;
+  background: #f6f7fb;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 390px;
+  min-height: 520px;
+  margin: 0;
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.12), transparent 34%),
+    #f6f7fb;
+}
+
+button, select, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.55; }
+
+.popup-shell { padding: 16px; }
+
+.popup-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+.brand-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6d4aff, #9333ea);
+  color: white;
+  font-size: 17px;
+  font-weight: 900;
+  box-shadow: 0 8px 20px rgba(109, 74, 255, 0.25);
+}
+
+.brand h1 { margin: 0; font-size: 15px; line-height: 1.2; }
+.brand p { margin: 3px 0 0; color: #6b7280; font-size: 10px; line-height: 1.4; }
+
+.status-badge {
+  flex: 0 0 auto;
+  border: 1px solid rgba(34, 197, 94, 0.24);
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.09);
+  padding: 5px 8px;
+  color: #15803d;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.field-group, .settings-grid, .reply-section { margin-bottom: 13px; }
+
+.field-group > label,
+.settings-grid label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: #374151;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+textarea, select {
+  width: 100%;
+  border: 1px solid #d9deea;
+  border-radius: 11px;
+  background: white;
+  color: #182033;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+textarea:focus, select:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+#message {
+  min-height: 125px;
+  resize: vertical;
+  padding: 11px 12px;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+#singleReply {
+  min-height: 115px;
+  resize: vertical;
+  padding: 11px 12px;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.field-footer, .reply-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 7px;
+}
+
+#characterCount { color: #9ca3af; font-size: 9px; }
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+select { height: 38px; padding: 0 10px; font-size: 10px; }
+
+.primary-button, .secondary-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 0 13px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.primary-button {
+  width: 100%;
+  border: 0;
+  background: linear-gradient(135deg, #6d4aff, #8b5cf6);
+  color: white;
+  box-shadow: 0 8px 18px rgba(109, 74, 255, 0.22);
+}
+
+.secondary-button {
+  border: 1px solid #d9deea;
+  background: white;
+  color: #4b5563;
+}
+
+.full-width { width: 100%; margin-top: 8px; }
+
+.reply-section,
+.multiple-replies-section {
+  margin-top: 14px;
+  border: 1px solid #e1e5ef;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 11px;
+}
+
+.reply-heading { margin: 0 0 8px; }
+.reply-heading span { font-size: 10px; font-weight: 800; }
+.reply-heading button { border: 0; background: transparent; color: #6d28d9; font-size: 9px; font-weight: 800; }
+
+.error-box {
+  margin-top: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 10px;
+  background: rgba(239, 68, 68, 0.07);
+  padding: 9px 10px;
+  color: #b91c1c;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.multiple-replies-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.multiple-replies-header > div { display: flex; flex-direction: column; gap: 2px; }
+.multiple-replies-header span { font-size: 10px; font-weight: 800; }
+.multiple-replies-header small { color: #9ca3af; font-size: 8px; }
+
+#replyCountBadge {
+  border-radius: 999px;
+  background: #ede9fe;
+  padding: 5px 8px;
+  color: #6d28d9;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.rf-card {
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 12px;
+  background: white;
+}
+
+.rf-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.rf-title { font-weight: 800; font-size: 11px; }
+.rf-card-subtitle { margin-top: 2px; color: #9ca3af; font-size: 8px; }
+
+.rf-copy {
+  background: #6d4aff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.rf-reply {
+  width: 100%;
+  height: 120px;
+  padding: 9px 10px;
+  font-size: 10px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.rf-rewrite-toolbar {
+  margin-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+}
+
+.rf-rewrite-label {
+  display: block;
+  margin-bottom: 7px;
+  color: #6b7280;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rf-rewrite-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rf-rewrite-button {
+  border: 1px solid #ddd6fe;
+  border-radius: 999px;
+  background: #f5f3ff;
+  padding: 6px 9px;
+  color: #6d28d9;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.rf-rewrite-button:hover:not(:disabled) {
+  border-color: #8b5cf6;
+  background: #ede9fe;
+}
+
+.rf-rewrite-button:disabled { cursor: wait; opacity: 0.55; }
+
+.popup-footer {
+  margin-top: 14px;
+  color: #9ca3af;
+  text-align: center;
+  font-size: 8px;
+}
+
+
+/* v2.5.1 Premium compatibility patch */
+body {
+  width: 420px;
+  min-height: 590px;
+  background:
+    radial-gradient(circle at 92% 2%, rgba(124,58,237,.16), transparent 30%),
+    linear-gradient(180deg, #fafaff, #f5f6fb);
+}
+
+.popup-shell { padding: 16px; }
+
+.popup-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  margin: -16px -16px 16px;
+  padding: 15px 16px 14px;
+  background: rgba(250,250,255,.92);
+  border-bottom: 1px solid #e8e2fb;
+  backdrop-filter: blur(16px);
+}
+
+.field-group,
+.rf-template-section,
+.settings-grid,
+.reply-section,
+.multiple-replies-section {
+  border: 1px solid #e2e5ef;
+  border-radius: 16px;
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 10px 26px rgba(31,41,55,.06);
+}
+
+.field-group,
+.rf-template-section,
+.settings-grid {
+  padding: 13px;
+  margin-bottom: 12px;
+}
+
+.rf-template-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rf-template-heading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rf-template-heading span {
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.rf-template-heading small {
+  color: #8b92a3;
+  font-size: 8px;
+}
+
+.rf-template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 7px;
+}
+
+.rf-template-button {
+  min-height: 34px;
+  border: 1px solid #e2ddfb;
+  border-radius: 10px;
+  background: linear-gradient(180deg,#fff,#faf9ff);
+  color: #5f36b4;
+  font-size: 8px;
+  font-weight: 850;
+}
+
+.rf-template-button.active {
+  border-color: transparent;
+  background: linear-gradient(135deg,#6d4aff,#8b5cf6,#a855f7);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(109,74,255,.24);
+}
+
+.rf-template-clear {
+  border: 0;
+  border-radius: 999px;
+  background: #f5f3ff;
+  color: #6d28d9;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 5px 8px;
+}
+
+.rf-template-status {
+  margin-top: 9px;
+  border-radius: 9px;
+  background: #f7f2ff;
+  color: #6d28d9;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 7px 9px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.primary-button {
+  min-height: 46px;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#6d4aff,#7c3aed,#9333ea);
+  box-shadow: 0 12px 24px rgba(109,74,255,.25);
+}
+
+.rf-heading-actions,
+.rf-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.popup-footer {
+  margin-top: 14px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 8px;
+}
+
+
+/* =========================================================
+   ReplyForge Premium UI v2.5.2 — Interaction Polish
+   CSS-only update: existing JavaScript logic stays untouched.
+   ========================================================= */
+
+@keyframes rfFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rfSoftPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 12px 24px rgba(109, 74, 255, 0.24),
+      0 0 0 0 rgba(124, 58, 237, 0);
+  }
+
+  50% {
+    box-shadow:
+      0 14px 28px rgba(109, 74, 255, 0.3),
+      0 0 0 5px rgba(124, 58, 237, 0.08);
+  }
+}
+
+@keyframes rfShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes rfSelectedPop {
+  0% {
+    transform: scale(0.96);
+  }
+
+  55% {
+    transform: scale(1.025);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rfSuccessPop {
+  0% {
+    transform: scale(0.96);
+  }
+
+  60% {
+    transform: scale(1.035);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Smooth page entrance */
+.popup-shell {
+  animation: rfFadeUp 0.28s ease-out both;
+}
+
+/* Smooth section entrance */
+.field-group,
+.rf-template-section,
+.settings-grid,
+.reply-section,
+.multiple-replies-section {
+  animation: rfFadeUp 0.32s ease-out both;
+}
+
+.rf-template-section {
+  animation-delay: 0.035s;
+}
+
+.settings-grid {
+  animation-delay: 0.07s;
+}
+
+/* Template interactions */
+.rf-template-button {
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.rf-template-button::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.48) 48%,
+    transparent 72%
+  );
+  content: "";
+  opacity: 0;
+  transform: translateX(-120%);
+  transition:
+    transform 0.42s ease,
+    opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.rf-template-button:hover:not(:disabled)::after {
+  opacity: 1;
+  transform: translateX(120%);
+}
+
+.rf-template-button.active {
+  animation: rfSelectedPop 0.28s ease-out;
+}
+
+/* Premium button feedback */
+.primary-button,
+.secondary-button,
+.rf-analyze,
+.rf-copy,
+.rf-rewrite-button,
+.rf-template-button,
+.rf-template-clear {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.primary-button:active:not(:disabled),
+.secondary-button:active:not(:disabled),
+.rf-analyze:active:not(:disabled),
+.rf-copy:active:not(:disabled),
+.rf-rewrite-button:active:not(:disabled),
+.rf-template-button:active:not(:disabled) {
+  transform: scale(0.975);
+}
+
+/* Existing JS already disables the main button during generation.
+   This gives it a visible thinking state without touching popup.js. */
+#generateButton:disabled {
+  position: relative;
+  overflow: hidden;
+  animation: rfSoftPulse 1.35s ease-in-out infinite;
+  background:
+    linear-gradient(
+      110deg,
+      #6d4aff 0%,
+      #8b5cf6 35%,
+      #a855f7 50%,
+      #8b5cf6 65%,
+      #6d4aff 100%
+    );
+  background-size: 220% 100%;
+  animation-name: rfSoftPulse, rfShimmer;
+  animation-duration: 1.35s, 1.65s;
+  animation-timing-function: ease-in-out, linear;
+  animation-iteration-count: infinite;
+  opacity: 0.9;
+}
+
+/* Reply result animation */
+.reply-section:not([hidden]),
+.multiple-replies-section:not([hidden]) {
+  animation: rfFadeUp 0.32s ease-out both;
+}
+
+.rf-card {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+  animation: rfFadeUp 0.3s ease-out both;
+}
+
+.rf-card:nth-child(2) {
+  animation-delay: 0.035s;
+}
+
+.rf-card:nth-child(3) {
+  animation-delay: 0.07s;
+}
+
+.rf-card:nth-child(4) {
+  animation-delay: 0.105s;
+}
+
+.rf-card:hover {
+  transform: translateY(-2px);
+  border-color: #d7ccfa;
+  box-shadow:
+    0 13px 28px rgba(31, 41, 55, 0.08),
+    0 4px 14px rgba(109, 74, 255, 0.06);
+}
+
+/* Analyze / Copy / Rewrite / Improve loading feedback */
+.rf-analyze:disabled,
+.rf-copy:disabled,
+.rf-rewrite-button:disabled,
+.rf-improve-button:disabled {
+  background-image:
+    linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0.12) 20%,
+      rgba(255, 255, 255, 0.48) 48%,
+      rgba(255, 255, 255, 0.12) 76%
+    );
+  background-size: 220% 100%;
+  animation: rfShimmer 1.4s linear infinite;
+}
+
+/* Coach panel reveal */
+.rf-coach-panel:not([hidden]) {
+  transform-origin: top center;
+  animation: rfFadeUp 0.28s ease-out both;
+}
+
+.rf-coach-fill {
+  transform-origin: left center;
+  animation: rfSuccessPop 0.4s ease-out both;
+}
+
+/* Success-like feedback from existing JS text changes */
+button {
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    opacity 0.16s ease;
+}
+
+/* Text area focus polish */
+#message,
+#singleReply,
+.rf-reply {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+#message:hover,
+#singleReply:hover,
+.rf-reply:hover {
+  border-color: #d5ceef;
+}
+
+/* Selected template status entrance */
+.rf-template-status:not([hidden]) {
+  animation: rfFadeUp 0.22s ease-out both;
+}
+
+/* Error appearance */
+.error-box:not([hidden]) {
+  animation: rfFadeUp 0.22s ease-out both;
+}
+
+/* Respect reduced-motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
