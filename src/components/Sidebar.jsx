@@ -5,6 +5,7 @@ function Sidebar({
   search,
   setSearch,
   history = [],
+  usageStats,
   onOpenHistory,
   onOpenFavorites,
   onOpenTemplates,
@@ -81,18 +82,22 @@ function Sidebar({
 
       <div className="rf-v4-sidebar-spacer" />
 
-      <section className="rf-v4-usage">
+      <section className="rf-v4-usage rf-v4-usage-analytics">
         <div>
-          <span>Monthly usage</span>
-          <strong>{Math.min(history.length, 1000)} / 1,000</strong>
+          <span>AI activity today</span>
+          <strong>{usageStats?.total || 0} actions</strong>
         </div>
 
-        <div className="rf-v4-usage-track">
-          <span
-            style={{
-              width: `${Math.min((history.length / 1000) * 100, 100)}%`,
-            }}
-          />
+        <div className="rf-v4-usage-mini-grid">
+          <div><strong>{usageStats?.counts?.generate || 0}</strong><span>Replies</span></div>
+          <div><strong>{usageStats?.counts?.coach || 0}</strong><span>Coach</span></div>
+          <div><strong>{usageStats?.counts?.rewrite || 0}</strong><span>Rewrite</span></div>
+          <div><strong>{usageStats?.counts?.translate || 0}</strong><span>Translate</span></div>
+        </div>
+
+        <div className="rf-v4-usage-secondary">
+          <span>Cloud history</span>
+          <strong>{history.length} saved</strong>
         </div>
 
         <button type="button">Upgrade workspace</button>

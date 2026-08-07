@@ -139,6 +139,9 @@ function ReplyScore({
   replyScore,
   scoreLoading,
   analyzeReply,
+  applyCoachFixes,
+  coachFixLoading,
+  coachFixError,
 }) {
   const overall = clampScore(replyScore?.overall);
   const circumference = 201.06;
@@ -299,6 +302,30 @@ function ReplyScore({
                 </li>
               ))}
           </ul>
+
+          <button
+            type="button"
+            onClick={applyCoachFixes}
+            disabled={coachFixLoading}
+            className="rf-v4-analyze-button"
+            style={{ marginTop: "9px", width: "100%" }}
+          >
+            {coachFixLoading ? "Improving…" : "Apply coach fixes"}
+          </button>
+
+          {coachFixError && (
+            <p
+              role="alert"
+              style={{
+                margin: "7px 0 0",
+                color: "var(--rf-v4-danger)",
+                fontSize: "8px",
+                lineHeight: 1.45,
+              }}
+            >
+              {coachFixError}
+            </p>
+          )}
         </div>
       )}
     </section>

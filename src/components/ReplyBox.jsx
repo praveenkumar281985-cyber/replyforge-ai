@@ -7,6 +7,12 @@ const quickTools = [
   ["expand", "+", "Expand"],
   ["followup", "→", "Follow-up"],
   ["email", "✉", "Email"],
+  ["approve", "✓", "Approve"],
+  ["reject", "×", "Reject"],
+  ["escalate", "!", "Escalate"],
+  ["reminder", "◷", "Reminder"],
+  ["delay", "…", "Delay"],
+  ["apology", "♡", "Apology"],
 ];
 
 function ReplyBox({

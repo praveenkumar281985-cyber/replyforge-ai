@@ -12,18 +12,54 @@ import HistoryList from "./components/HistoryList";
 import FavoriteButton from "./components/FavoriteButton";
 import AITools from "./components/AITools";
 import AuthPage from "./components/AuthPage";
+import AIProviderButton from "./components/AIProviderButton";
+import AIProviderModal from "./components/AIProviderModal";
 
-import { generateReply, streamReply } from "./services/aiService";
-import { buildSmartReplyPrompt } from "./services/promptBuilder";
-import { detectMessageIntent } from "./services/intentDetector";
+import {
+  generateReply,
+  getAiProviderStatus,
+} from "./services/aiService";
+import { runReplyGeneration } from "./services/replyEngine";
+import {
+  rewriteReply,
+  translateReply,
+  runReplyTool,
+} from "./services/aiToolsEngine";
+import {
+  addConversationTurn as addConversationTurnToState,
+  updateConversationTurn as updateConversationTurnInState,
+  deleteConversationTurn as deleteConversationTurnFromState,
+  appendGeneratedConversationReply,
+  getConversationModeState,
+  clearConversationWorkspace,
+} from "./services/conversationEngine";
+import {
+  analyzeReplyWithCoach,
+} from "./services/aiCoachEngine";
+import { analyzeIntent } from "./services/intentEngine";
 import supabase from "./lib/supabase";
 
 import {
-  getCloudHistory,
-  saveReplyToCloud,
-  updateCloudFavorite,
-  deleteCloudHistory,
-} from "./services/history";
+  convertCloudItem,
+  loadHistoryBundle,
+  toggleHistoryFavorite,
+  removeHistoryItem,
+  filterHistoryItems,
+} from "./services/historyManager";
+import {
+  getProviderPreference,
+  saveProviderPreference,
+} from "./services/providerManager";
+import {
+  createWorkspaceSnapshot,
+  saveWorkspace,
+  loadWorkspace,
+  clearSavedWorkspace,
+} from "./services/workspaceManager";
+import {
+  getTodayUsage,
+  recordUsage,
+} from "./services/usageManager";
 
 function getSavedData(key, fallback) {
   try {
@@ -34,24 +70,22 @@ function getSavedData(key, fallback) {
   }
 }
 
-function convertCloudItem(item) {
-  return {
-    id: item.id,
-    message: item.original_message,
-    reply: item.generated_reply,
-    tone: item.tone || "Professional",
-    length: "Medium",
-    language: "English",
-    isFavorite: Boolean(item.is_favorite),
-    createdAt: item.created_at,
-    cloudSaved: true,
-  };
-}
-
 function App() {
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [providerStatus, setProviderStatus] = useState(() =>
+    getAiProviderStatus()
+  );
+
+  const [providerModalOpen, setProviderModalOpen] = useState(false);
+  const [providerPreference, setProviderPreference] = useState(() =>
+    getProviderPreference()
+  );
+
+  const [usageStats, setUsageStats] = useState(() =>
+    getTodayUsage()
+  );
 
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState("");
@@ -66,9 +100,13 @@ function App() {
   const [loading, setLoading] = useState(false);
   const streamControllerRef = useRef(null);
   const replySectionRef = useRef(null);
+  const workspaceHydratedRef = useRef(false);
+  const workspaceSaveTimerRef = useRef(null);
   const [rewriteLoading, setRewriteLoading] = useState(false);
   const [translateLoading, setTranslateLoading] = useState(false);
   const [scoreLoading, setScoreLoading] = useState(false);
+  const [coachFixLoading, setCoachFixLoading] = useState(false);
+  const [coachFixError, setCoachFixError] = useState("");
 const [replyScore, setReplyScore] = useState(null);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -79,6 +117,9 @@ const [replyScore, setReplyScore] = useState(null);
   const [intentResult, setIntentResult] = useState(null);
 
   const [history, setHistory] = useState([]);
+  const [customTemplates, setCustomTemplates] = useState(() =>
+    getSavedData("replyforge-custom-templates", [])
+  );
 
   const [favorites, setFavorites] = useState(() =>
     getSavedData("replyforge-favorites", [])
@@ -87,6 +128,92 @@ const [replyScore, setReplyScore] = useState(null);
   const [darkMode, setDarkMode] = useState(() =>
     getSavedData("replyforge-dark-mode", true)
   );
+
+  useEffect(() => {
+    const workspace =
+      loadWorkspace();
+
+    setMessage(
+      workspace.message
+    );
+    setReply(
+      workspace.reply
+    );
+    setConversationMode(
+      workspace.conversationMode
+    );
+    setConversation(
+      workspace.conversation
+    );
+    setTone(
+      workspace.tone
+    );
+    setLength(
+      workspace.length
+    );
+    setLanguage(
+      workspace.language
+    );
+    setPersona(
+      workspace.persona
+    );
+    setIntentResult(
+      workspace.intentResult
+    );
+    setReplyScore(
+      workspace.replyScore
+    );
+
+    workspaceHydratedRef.current =
+      true;
+  }, []);
+
+  useEffect(() => {
+    if (
+      !workspaceHydratedRef.current
+    ) {
+      return;
+    }
+
+    window.clearTimeout(
+      workspaceSaveTimerRef.current
+    );
+
+    workspaceSaveTimerRef.current =
+      window.setTimeout(() => {
+        saveWorkspace(
+          createWorkspaceSnapshot({
+            message,
+            reply,
+            conversationMode,
+            conversation,
+            tone,
+            length,
+            language,
+            persona,
+            intentResult,
+            replyScore,
+          })
+        );
+      }, 250);
+
+    return () => {
+      window.clearTimeout(
+        workspaceSaveTimerRef.current
+      );
+    };
+  }, [
+    message,
+    reply,
+    conversationMode,
+    conversation,
+    tone,
+    length,
+    language,
+    persona,
+    intentResult,
+    replyScore,
+  ]);
 
   useEffect(() => {
     async function loadSession() {
@@ -135,19 +262,23 @@ const [replyScore, setReplyScore] = useState(null);
         setHistoryLoading(true);
         setError("");
 
-        const cloudHistory = await getCloudHistory();
-        const formattedHistory = cloudHistory.map(convertCloudItem);
+        const result =
+          await loadHistoryBundle();
 
-        setHistory(formattedHistory);
+        setHistory(
+          result.history
+        );
 
-        const cloudFavorites = formattedHistory
-          .filter((item) => item.isFavorite)
-          .map((item) => item.reply);
-
-        setFavorites(cloudFavorites);
+        setFavorites(
+          result.favorites
+        );
       } catch (err) {
         console.error(err);
-        setError(err.message || "Cloud history could not be loaded.");
+
+        setError(
+          err?.message ||
+            "Cloud history could not be loaded."
+        );
       } finally {
         setHistoryLoading(false);
       }
@@ -172,224 +303,199 @@ const [replyScore, setReplyScore] = useState(null);
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
 
+
+  useEffect(() => {
+    if (
+      loading ||
+      rewriteLoading ||
+      translateLoading ||
+      scoreLoading ||
+      intentLoading ||
+      toolLoading
+    ) {
+      return;
+    }
+
+    setProviderStatus(
+      getAiProviderStatus()
+    );
+  }, [
+    loading,
+    rewriteLoading,
+    translateLoading,
+    scoreLoading,
+    intentLoading,
+    toolLoading,
+  ]);
+
+  function trackUsage(action) {
+    const provider = getAiProviderStatus();
+    const next = recordUsage(
+      action,
+      provider?.online ? provider.id : ""
+    );
+    setUsageStats(next);
+  }
+
   async function createReply(action) {
-    const isRegenerate = action === "regenerate";
-    const cleanMessage = message.trim();
-    const hasConversation = conversationMode && conversation.length > 0;
-
-    if (!cleanMessage && !hasConversation) {
-      setError(
-        conversationMode
-          ? "Add at least one conversation message before generating a reply."
-          : "Please enter a message before generating a reply."
-      );
-      return;
-    }
-
-    if (!session?.user?.id) {
-      setError("Please login again.");
-      return;
-    }
-
-    const conversationWithDraft = conversationMode
-      ? [
-          ...conversation,
-          ...(cleanMessage
-            ? [{ id: `draft-${Date.now()}`, role: "customer", text: cleanMessage }]
-            : []),
-        ]
-      : [];
-
-    const latestIncomingMessage = conversationMode
-      ? [...conversationWithDraft]
-          .reverse()
-          .find((turn) => turn.role === "customer")?.text || cleanMessage
-      : cleanMessage;
-
-    const promptMessage = buildSmartReplyPrompt({
-      message: cleanMessage,
-      conversation: conversationWithDraft,
-      conversationMode,
-      tone,
-      length,
-      language,
-      persona,
-      isRegenerate,
-    });
-
     try {
       setLoading(true);
       setError("");
 
       streamControllerRef.current?.abort();
-      const controller = new AbortController();
-      streamControllerRef.current = controller;
 
-      let streamedReply = "";
+      const controller =
+        new AbortController();
+
+      streamControllerRef.current =
+        controller;
+
       setReply("");
 
-      const generatedReply = await streamReply(
-        promptMessage,
-        tone,
-        length,
-        language,
-        persona,
-        {
-          signal: controller.signal,
+      const result =
+        await runReplyGeneration({
+          action,
+          session,
+          message,
+          conversationMode,
+          conversation,
+          tone,
+          length,
+          language,
+          persona,
+          signal:
+            controller.signal,
           onText: (fullText) => {
-            streamedReply = fullText;
             setReply(fullText);
 
-            requestAnimationFrame(() => {
-              replySectionRef.current?.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
-            });
+            requestAnimationFrame(
+              () => {
+                replySectionRef
+                  .current
+                  ?.scrollIntoView({
+                    behavior:
+                      "smooth",
+                    block: "start",
+                  });
+              }
+            );
           },
-        }
-      );
+        });
 
-      if (!generatedReply?.trim()) {
-        throw new Error("No reply was generated.");
-      }
-
-      const cleanReply = generatedReply.trim();
-      setReply(cleanReply);
+      setReply(result.cleanReply);
       setReplyScore(null);
 
       if (conversationMode) {
-        setConversation((current) => {
-          const withoutLastAssistant = isRegenerate && current.at(-1)?.role === "assistant"
-            ? current.slice(0, -1)
-            : current;
+        setConversation(
+          (current) =>
+            appendGeneratedConversationReply({
+              conversation: current,
+              cleanMessage:
+                result.cleanMessage,
+              cleanReply:
+                result.cleanReply,
+              isRegenerate:
+                result.isRegenerate,
+            })
+        );
 
-          const next = [...withoutLastAssistant];
-
-          if (cleanMessage && !isRegenerate) {
-            next.push({
-              id: `customer-${Date.now()}`,
-              role: "customer",
-              text: cleanMessage,
-            });
-          }
-
-          next.push({
-            id: `assistant-${Date.now() + 1}`,
-            role: "assistant",
-            text: cleanReply,
-          });
-
-          return next;
-        });
-
-        if (!isRegenerate) setMessage("");
+        if (!result.isRegenerate) {
+          setMessage("");
+        }
       }
 
-      const historyMessage = conversationMode
-        ? conversationWithDraft
-            .map((turn) => `${turn.role === "customer" ? "Customer" : "You"}: ${turn.text}`)
-            .join("\n\n")
-        : cleanMessage;
-
-      const savedItem = await saveReplyToCloud({
-        userId: session.user.id,
-        originalMessage: historyMessage || latestIncomingMessage,
-        generatedReply: cleanReply,
-        tone,
-      });
-
       const formattedItem = {
-        ...convertCloudItem(savedItem),
+        ...convertCloudItem(
+          result.savedItem
+        ),
         length,
         language,
       };
 
-      setHistory((current) => [formattedItem, ...current]);
+      setHistory(
+        (current) => [
+          formattedItem,
+          ...current,
+        ]
+      );
+      trackUsage("generate");
     } catch (err) {
-      if (err?.name === "AbortError") {
+      if (
+        err?.name ===
+        "AbortError"
+      ) {
         setError("");
         return;
       }
 
       console.error(err);
 
-      const message = err?.message || "";
+      const errorMessage =
+        err?.message || "";
 
       if (
-        message.includes("rate limit") ||
-        message.includes("429")
+        errorMessage.includes(
+          "rate limit"
+        ) ||
+        errorMessage.includes(
+          "429"
+        )
       ) {
         setError(
           "The free AI service is temporarily rate-limited. Please wait a moment and try again."
         );
       } else {
-        setError(message || "Unable to generate reply.");
+        setError(
+          errorMessage ||
+            "Unable to generate reply."
+        );
       }
     } finally {
-      streamControllerRef.current = null;
+      streamControllerRef.current =
+        null;
       setLoading(false);
     }
   }
 
   async function analyzeMessageIntent() {
-    const cleanMessage = message.trim();
-
-    if (!cleanMessage) {
-      setError("Please enter or upload a message first.");
-      return;
-    }
-
     try {
       setIntentLoading(true);
       setError("");
 
-      const result = await detectMessageIntent(cleanMessage);
+      const analysis =
+        await analyzeIntent({
+          message,
+        });
 
-      const toneMap = {
-        Professional: "Professional",
-        Friendly: "Friendly",
-        Funny: "Funny",
-        Casual: "Casual",
-        Formal: "Formal",
-        Polite: "Professional",
-        Confident: "Professional",
-        Empathetic: "Friendly",
-        Direct: "Professional",
-      };
+      setIntentResult(
+        analysis.result
+      );
+      trackUsage("intent");
 
-      const personaMap = {
-        Professional: "Professional",
-        Manager: "HR Manager",
-        "Customer Support": "Customer Support",
-        Friend: "Friendly",
-        Colleague: "Professional",
-        "Business Owner": "CEO",
-        "Job Applicant": "Professional",
-        "Team Member": "Professional",
-      };
-
-      const languageMap = {
-        English: "English",
-        Hindi: "Hindi",
-        Spanish: "Spanish",
-        French: "French",
-        German: "German",
-      };
-
-      setIntentResult(result);
-      setTone(toneMap[result.suggestedTone] || "Professional");
-      setPersona(
-        personaMap[result.suggestedPersona] || "Professional"
+      setTone(
+        analysis.mappedTone
       );
 
-      if (languageMap[result.detectedLanguage]) {
-        setLanguage(languageMap[result.detectedLanguage]);
+      setPersona(
+        analysis.mappedPersona
+      );
+
+      if (
+        analysis.mappedLanguage
+      ) {
+        setLanguage(
+          analysis.mappedLanguage
+        );
       }
     } catch (err) {
-      console.error("Intent detection error:", err);
+      console.error(
+        "Intent detection error:",
+        err
+      );
+
       setError(
-        err?.message || "Unable to analyze this message."
+        err?.message ||
+          "Unable to analyze this message."
       );
     } finally {
       setIntentLoading(false);
@@ -401,78 +507,45 @@ const [replyScore, setReplyScore] = useState(null);
   }
 
   async function rewriteCurrentReply(mode) {
-  const currentReply = reply.trim();
-
-  if (!currentReply) {
-    setError("Please generate a reply before using rewrite mode.");
-    return;
-  }
-
-  if (!session?.user?.id) {
-    setError("Please login again.");
-    return;
-  }
-
-  try {
-    setRewriteLoading(true);
-    setError("");
-
-    const rewriteInstructions = {
-      Professional:
-        "Rewrite this reply in a polished and professional tone.",
-      Friendly:
-        "Rewrite this reply in a warm, natural and friendly tone.",
-      Funny:
-        "Rewrite this reply in a light and funny tone without being offensive.",
-      Shorter:
-        "Make this reply shorter and more concise while preserving its meaning.",
-      Longer:
-        "Make this reply longer with useful details while keeping it clear.",
-      "More Polite":
-        "Rewrite this reply to sound more polite, respectful and considerate.",
-      Business:
-        "Rewrite this reply in a formal business communication style.",
-      Stronger:
-        "Rewrite this reply to sound confident, firm and persuasive without being rude.",
-    };
-
-    const instruction =
-      rewriteInstructions[mode] ||
-      "Rewrite this reply in a clearer and better way.";
-
-    const rewritePrompt = `${instruction}
-
-Return only the rewritten reply.
-Do not include headings, explanations, notes or quotation marks.
-
-Reply to rewrite:
-${currentReply}`;
-
-    const rewrittenReply = await generateReply(
-      rewritePrompt,
-      "Professional",
-      length,
-      language
-    );
-
-    if (!rewrittenReply?.trim()) {
-      throw new Error("No rewritten reply was generated.");
+    if (!session?.user?.id) {
+      setError("Please login again.");
+      return;
     }
 
-    setReply(rewrittenReply.trim());
-  } catch (err) {
-    console.error("Rewrite error:", err);
-    setError(err.message || "Reply could not be rewritten.");
-  } finally {
-    setRewriteLoading(false);
-  }
-}
-async function translateCurrentReply(targetLanguage) {
-  if (!reply?.trim()) {
-    setError("Please generate a reply first.");
-    return;
+    try {
+      setRewriteLoading(true);
+      setError("");
+
+      const rewrittenReply =
+        await rewriteReply({
+          reply,
+          mode,
+          length,
+          language,
+          persona,
+        });
+
+      setReply(rewrittenReply);
+      setReplyScore(null);
+      trackUsage("rewrite");
+    } catch (err) {
+      console.error(
+        "Rewrite error:",
+        err
+      );
+
+      setError(
+        err?.message ||
+          "Reply could not be rewritten."
+      );
+    } finally {
+      setRewriteLoading(false);
+    }
   }
 
+async function translateCurrentReply(
+  targetLanguage
+) {
   if (!session?.user?.id) {
     setError("Please login again.");
     return;
@@ -482,44 +555,33 @@ async function translateCurrentReply(targetLanguage) {
     setTranslateLoading(true);
     setError("");
 
-    const translatePrompt = `Translate the following reply into ${targetLanguage}.
+    const translatedReply =
+      await translateReply({
+        reply,
+        targetLanguage,
+        length,
+        persona,
+      });
 
-Preserve the original meaning, tone and formatting.
-Return only the translated reply.
-Do not include headings, explanations, notes or quotation marks.
-
-Reply to translate:
-${reply}`;
-
-    const translatedReply = await generateReply(
-      translatePrompt,
-      "Professional",
-      length,
-      targetLanguage
+    setReply(translatedReply);
+    setReplyScore(null);
+    trackUsage("translate");
+  } catch (err) {
+    console.error(
+      "Translation error:",
+      err
     );
 
-    if (!translatedReply?.trim()) {
-      throw new Error("No translated reply was generated.");
-    }
-
-    setReply(translatedReply.trim());
-    setReplyScore(null);
-  } catch (err) {
-    console.error("Translation error:", err);
-    setError(err.message || "Reply could not be translated.");
+    setError(
+      err?.message ||
+        "Reply could not be translated."
+    );
   } finally {
     setTranslateLoading(false);
   }
 }
 
 async function analyzeReply() {
-  const currentReply = reply.trim();
-
-  if (!currentReply) {
-    setError("Please generate a reply first.");
-    return;
-  }
-
   if (!session?.user?.id) {
     setError("Please login again.");
     return;
@@ -530,104 +592,136 @@ async function analyzeReply() {
     setError("");
     setReplyScore(null);
 
-    const prompt = `You are ReplyForge AI Coach.
-
-Analyze the reply below and return ONLY valid JSON.
-Do not use markdown code blocks.
-Do not add explanations before or after the JSON.
-
-Use exactly this structure:
-
-{
-  "overall": 0,
-  "grammar": 0,
-  "clarity": 0,
-  "professionalism": 0,
-  "politeness": 0,
-  "confidence": 0,
-  "empathy": 0,
-  "readability": 0,
-  "aggressiveRisk": 0,
-  "misunderstandingRisk": 0,
-  "callToAction": 0,
-  "verdict": "",
-  "suggestions": [
-    "Suggestion 1",
-    "Suggestion 2",
-    "Suggestion 3"
-  ]
-}
-
-Scoring rules:
-- Every score must be a whole number from 0 to 100.
-- aggressiveRisk: 0 means completely safe and calm; 100 means highly aggressive or offensive.
-- misunderstandingRisk: 0 means extremely clear; 100 means highly confusing or easy to misinterpret.
-- callToAction: score how clear and useful the next step is. If no call to action is needed, score based on whether the reply ends appropriately.
-- verdict must be one short sentence.
-- suggestions must be specific, practical, and non-repetitive.
-
-Reply to analyze:
-${currentReply}`;
-
-    const result = await generateReply(
-      prompt,
-      "Professional",
-      "Medium",
-      "English"
-    );
-
-    if (!result?.trim()) {
-      throw new Error("No analysis was generated.");
-    }
-
-    const cleanResult = result
-      .replace(/```json/gi, "")
-      .replace(/```/g, "")
-      .trim();
-
-    const score = JSON.parse(cleanResult);
+    const score =
+      await analyzeReplyWithCoach({
+        reply,
+      });
 
     setReplyScore(score);
+    trackUsage("coach");
   } catch (err) {
-    console.error("Reply score error:", err);
-    setError(err.message || "Unable to analyze the reply.");
+    console.error(
+      "Reply score error:",
+      err
+    );
+
+    setError(
+      err?.message ||
+        "Unable to analyze the reply."
+    );
   } finally {
     setScoreLoading(false);
   }
 }
 
-async function runAiTool(tool) {
-  const currentReply = reply.trim();
-  if (!currentReply) {
-    setError("Please generate a reply first.");
-    return;
-  }
-
-  const instructions = {
-    grammar: "Fix all grammar, spelling and punctuation errors. Preserve the original meaning and tone.",
-    humanize: "Rewrite this so it sounds natural, warm and genuinely human. Avoid robotic or overly formal wording.",
-    shorten: "Make this reply shorter and more concise while keeping every important point.",
-    expand: "Expand this reply with useful detail while keeping it clear and professional.",
-    followup: "Create a natural follow-up reply based on this message.",
-    email: "Format this reply as a polished email with an appropriate greeting, body and sign-off.",
-  };
+async function applyCoachFixes() {
+  if (!replyScore?.suggestions?.length || coachFixLoading) return;
 
   try {
-    setToolLoading(tool);
+    setCoachFixLoading(true);
     setError("");
-    const result = await generateReply(
-      `${instructions[tool]}\n\nReturn only the improved reply. Do not add explanations or quotation marks.\n\nReply:\n${currentReply}`,
+    setCoachFixError("");
+
+    const feedback = replyScore.suggestions
+      .filter(Boolean)
+      .slice(0, 5)
+      .map((suggestion) => `- ${suggestion}`)
+      .join("\n");
+
+    // Use the same rewrite pipeline as the working reply toolbar actions.
+    const improvedReply = await runReplyTool({
+      tool: "coachFix",
+      reply,
       tone,
       length,
       language,
-      persona
-    );
-    if (!result?.trim()) throw new Error("No improved reply was generated.");
-    setReply(result.trim());
+      persona,
+      customInstruction: `Improve this reply using the AI Coach feedback below. Keep every essential fact accurate. Return only the improved reply, without headings, notes or quotation marks.\n\nAI Coach feedback:\n${feedback}`,
+    });
+
+    setReply(improvedReply);
     setReplyScore(null);
+    trackUsage("coachFix");
+
+    requestAnimationFrame(() => {
+      replySectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
   } catch (err) {
-    console.error(err);
-    setError(err.message || "AI tool could not complete the request.");
+    const message = err?.message || "Coach fixes could not be applied.";
+    setCoachFixError(message);
+    setError(message);
+  } finally {
+    setCoachFixLoading(false);
+  }
+}
+
+function saveCurrentAsTemplate() {
+  const text = String(message || reply || "").trim();
+
+  if (!text) {
+    setError("Write a message or generate a reply before saving a template.");
+    return;
+  }
+
+  const title = window.prompt("Template name", "My template");
+  if (!title?.trim()) return;
+
+  setCustomTemplates((current) => {
+    const next = [
+      {
+        id: `${Date.now()}-${Math.random()}`,
+        title: title.trim(),
+        description: "Your saved custom template.",
+        tone,
+        text,
+        custom: true,
+      },
+      ...current,
+    ];
+    localStorage.setItem("replyforge-custom-templates", JSON.stringify(next));
+    return next;
+  });
+}
+
+function deleteCustomTemplate(id) {
+  setCustomTemplates((current) => {
+    const next = current.filter((template) => template.id !== id);
+    localStorage.setItem("replyforge-custom-templates", JSON.stringify(next));
+    return next;
+  });
+}
+
+async function runAiTool(tool) {
+  try {
+    setToolLoading(tool);
+    setError("");
+
+    const improvedReply =
+      await runReplyTool({
+        tool,
+        reply,
+        tone,
+        length,
+        language,
+        persona,
+      });
+
+    setReply(improvedReply);
+    setReplyScore(null);
+    trackUsage(tool);
+  } catch (err) {
+    console.error(
+      "AI tool error:",
+      err
+    );
+
+    setError(
+      err?.message ||
+        "AI tool could not complete the request."
+    );
   } finally {
     setToolLoading("");
   }
@@ -637,43 +731,30 @@ async function runAiTool(tool) {
     try {
       setError("");
 
-      const selectedItem = history.find((item) => item.id === id);
+      const result =
+        await toggleHistoryFavorite({
+          history,
+          id,
+        });
 
-      if (!selectedItem) {
+      if (!result) {
         return;
       }
 
-      const newFavoriteStatus = !selectedItem.isFavorite;
-
-      await updateCloudFavorite(id, newFavoriteStatus);
-
-      setHistory((current) =>
-        current.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                isFavorite: newFavoriteStatus,
-              }
-            : item
-        )
+      setHistory(
+        result.history
       );
 
-      setFavorites((current) => {
-        if (newFavoriteStatus) {
-          if (current.includes(selectedItem.reply)) {
-            return current;
-          }
-
-          return [selectedItem.reply, ...current];
-        }
-
-        return current.filter(
-          (favoriteReply) => favoriteReply !== selectedItem.reply
-        );
-      });
+      setFavorites(
+        result.favorites
+      );
     } catch (err) {
       console.error(err);
-      setError(err.message || "Favorite could not be updated.");
+
+      setError(
+        err?.message ||
+          "Favorite could not be updated."
+      );
     }
   }
 
@@ -681,32 +762,37 @@ async function runAiTool(tool) {
     try {
       setError("");
 
-      const selectedItem = history.find((item) => item.id === id);
+      const result =
+        await removeHistoryItem({
+          history,
+          id,
+          currentReply: reply,
+        });
 
-      if (!selectedItem) {
+      if (!result) {
         return;
       }
 
-      await deleteCloudHistory(id);
-
-      setHistory((current) =>
-        current.filter((item) => item.id !== id)
+      setHistory(
+        result.history
       );
 
-      if (selectedItem.isFavorite) {
-        setFavorites((current) =>
-          current.filter(
-            (favoriteReply) => favoriteReply !== selectedItem.reply
-          )
-        );
-      }
+      setFavorites(
+        result.favorites
+      );
 
-      if (reply === selectedItem.reply) {
+      if (
+        result.shouldClearReply
+      ) {
         setReply("");
       }
     } catch (err) {
       console.error(err);
-      setError(err.message || "History item could not be deleted.");
+
+      setError(
+        err?.message ||
+          "History item could not be deleted."
+      );
     }
   }
 
@@ -733,58 +819,99 @@ async function runAiTool(tool) {
     }
   }
 
-  function addConversationTurn(role, text = message) {
-    const cleanText = text.trim();
-    if (!cleanText) return;
+  function addConversationTurn(
+    role,
+    text = message
+  ) {
+    const cleanText =
+      text.trim();
 
-    setConversation((current) => [
-      ...current,
-      { id: `${role}-${Date.now()}`, role, text: cleanText },
-    ]);
+    if (!cleanText) {
+      return;
+    }
+
+    setConversation(
+      (current) =>
+        addConversationTurnToState(
+          current,
+          role,
+          cleanText
+        )
+    );
+
     setMessage("");
     setError("");
   }
 
-  function updateConversationTurn(id, text) {
-    setConversation((current) =>
-      current.map((turn) => (turn.id === id ? { ...turn, text } : turn))
+  function updateConversationTurn(
+    id,
+    text
+  ) {
+    setConversation(
+      (current) =>
+        updateConversationTurnInState(
+          current,
+          id,
+          text
+        )
     );
   }
 
-  function deleteConversationTurn(id) {
-    setConversation((current) => current.filter((turn) => turn.id !== id));
+  function deleteConversationTurn(
+    id
+  ) {
+    setConversation(
+      (current) =>
+        deleteConversationTurnFromState(
+          current,
+          id
+        )
+    );
   }
 
-  function switchWorkspaceMode(nextMode) {
-    const useConversation = nextMode === "conversation";
-    setConversationMode(useConversation);
-    setError("");
-    setReply("");
-    setReplyScore(null);
+  function switchWorkspaceMode(
+    nextMode
+  ) {
+    const state =
+      getConversationModeState(
+        nextMode
+      );
+
+    setConversationMode(
+      state.conversationMode
+    );
+    setError(state.error);
+    setReply(state.reply);
+    setReplyScore(
+      state.replyScore
+    );
   }
 
   function clearAll() {
-    setMessage("");
-    setReply("");
-    setConversation([]);
-    setReplyScore(null);
-    setIntentResult(null);
-    setError("");
+    const state =
+      clearConversationWorkspace();
+
+    clearSavedWorkspace();
+
+    setMessage(state.message);
+    setReply(state.reply);
+    setConversation(
+      state.conversation
+    );
+    setReplyScore(
+      state.replyScore
+    );
+    setIntentResult(
+      state.intentResult
+    );
+    setError(state.error);
   }
 
-  const filteredHistory = history.filter((item) => {
-    const searchText = search.trim().toLowerCase();
-
-    if (!searchText) {
-      return true;
-    }
-
-    return (
-      item.message?.toLowerCase().includes(searchText) ||
-      item.reply?.toLowerCase().includes(searchText) ||
-      item.tone?.toLowerCase().includes(searchText)
-    );
-  });
+  const filteredHistory =
+    filterHistoryItems({
+      history,
+      search,
+    });
 
   if (authLoading) {
     return (
@@ -820,6 +947,7 @@ async function runAiTool(tool) {
           search={search}
           setSearch={setSearch}
           history={history}
+          usageStats={usageStats}
           setMessage={setMessage}
           setTone={setTone}
           onOpenHistory={() => {
@@ -856,10 +984,11 @@ async function runAiTool(tool) {
             </div>
 
             <div className="rf-v4-topbar-actions">
-              <span className="rf-v4-online">
-                <i />
-                AI online
-              </span>
+              <AIProviderButton
+                provider={providerStatus}
+                preference={providerPreference}
+                onClick={() => setProviderModalOpen(true)}
+              />
 
               <button type="button" className="rf-v4-upgrade-button">
                 Upgrade
@@ -1059,6 +1188,9 @@ async function runAiTool(tool) {
                 replyScore={replyScore}
                 scoreLoading={scoreLoading}
                 analyzeReply={analyzeReply}
+                applyCoachFixes={applyCoachFixes}
+                coachFixLoading={coachFixLoading}
+                coachFixError={coachFixError}
               />
 
               <section className="rf-v4-side-card">
@@ -1108,15 +1240,33 @@ async function runAiTool(tool) {
           </main>
         </div>
       </div>
-      {historyOpen && (
-        <div
-          className="fixed inset-0 z-50 flex justify-end bg-slate-950/45 backdrop-blur-sm"
-          onClick={() => setHistoryOpen(false)}
-        >
-          <div
-            className="h-full w-full max-w-2xl overflow-y-auto bg-[#f8f9fd] p-5 shadow-2xl dark:bg-[#080d18]"
-            onClick={(event) => event.stopPropagation()}
-          >
+      <AIProviderModal
+        open={providerModalOpen}
+        providerStatus={providerStatus}
+        preference={providerPreference}
+        onPreferenceChange={(nextPreference) => {
+          const saved = saveProviderPreference(nextPreference);
+          setProviderPreference(saved);
+          setProviderStatus(getAiProviderStatus());
+        }}
+        onClose={() => setProviderModalOpen(false)}
+      />
+
+{historyOpen && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/30 p-4 backdrop-blur-[2px]"
+    onClick={() => setHistoryOpen(false)}
+  >
+    <div
+      className="w-full overflow-y-auto rounded-2xl bg-[#f8f9fd] p-4 shadow-2xl dark:bg-[#080d18]"
+      style={{
+        width: "min(420px, calc(100vw - 32px))",
+        maxWidth: "420px",
+        maxHeight: "78vh",
+      }}
+      onClick={(event) => event.stopPropagation()}
+    >
+      
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-black">
@@ -1144,7 +1294,18 @@ async function runAiTool(tool) {
             </div>
 
             {drawerMode === "templates" ? (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <span className="text-xs text-slate-500">Use a ready template or save your own.</span>
+                  <button
+                    type="button"
+                    onClick={saveCurrentAsTemplate}
+                    className="rf-v4-analyze-button"
+                  >
+                    + Save current
+                  </button>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
                 {[
                   {
                     title: "Professional reply",
@@ -1182,6 +1343,7 @@ async function runAiTool(tool) {
                     tone: "Friendly",
                     text: "I’m sorry you experienced this issue. I’m looking into it now and will help you reach the best possible resolution.",
                   },
+                  ...customTemplates,
                 ].map((template) => (
                   <button
                     key={template.title}
@@ -1195,7 +1357,28 @@ async function runAiTool(tool) {
                   >
                     <div className="flex items-center justify-between gap-3">
                       <h3 className="text-sm font-black">{template.title}</h3>
-                      <span className="text-violet-600">→</span>
+                      {template.custom ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            deleteCustomTemplate(template.id);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              deleteCustomTemplate(template.id);
+                            }
+                          }}
+                          className="text-xs text-rose-500"
+                        >
+                          Delete
+                        </span>
+                      ) : (
+                        <span className="text-violet-600">→</span>
+                      )}
                     </div>
                     <p className="mt-1 text-xs text-slate-500">
                       {template.description}
@@ -1205,6 +1388,7 @@ async function runAiTool(tool) {
                     </p>
                   </button>
                 ))}
+                </div>
               </div>
             ) : historyLoading ? (
               <p>Loading cloud history...</p>
