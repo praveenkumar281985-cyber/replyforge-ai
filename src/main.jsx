@@ -14,14 +14,6 @@ if (sentryDsn) {
     environment: import.meta.env.MODE,
     sendDefaultPii: false,
   })
-
-  if (
-    new URLSearchParams(window.location.search).get('sentry-test') === '1'
-  ) {
-    Sentry.captureException(
-      new Error('ReplyForge Sentry production test'),
-    )
-  }
 }
 
 createRoot(document.getElementById('root')).render(
@@ -31,6 +23,7 @@ createRoot(document.getElementById('root')).render(
         <main style={{ padding: '32px', fontFamily: 'sans-serif' }}>
           <h1>Something went wrong</h1>
           <p>Please refresh the page and try again.</p>
+
           <button type="button" onClick={() => window.location.reload()}>
             Refresh page
           </button>
