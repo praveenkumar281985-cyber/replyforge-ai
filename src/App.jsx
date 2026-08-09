@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 import HistoryList from "./components/HistoryList";
 import AuthPage from "./components/AuthPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
+import LegalPage from "./components/LegalPage";
 import AIProviderButton from "./components/AIProviderButton";
 import AIProviderModal from "./components/AIProviderModal";
 
@@ -864,6 +865,18 @@ async function runAiTool(tool) {
     );
     setSession(null);
     setPasswordRecovery(false);
+  }
+
+  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const legalPageType =
+    currentPath === "/privacy"
+      ? "privacy"
+      : currentPath === "/terms"
+        ? "terms"
+        : "";
+
+  if (legalPageType) {
+    return <LegalPage type={legalPageType} />;
   }
 
   if (authLoading) {

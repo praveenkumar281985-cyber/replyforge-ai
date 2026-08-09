@@ -347,6 +347,18 @@ function AuthPage() {
             {mode === "login" ? "Sign up" : "Login"}
           </button>
         </p>
+
+        <p className="mt-4 text-center text-[11px] leading-5 text-slate-400">
+          By continuing, you agree to our{" "}
+          <a href="/terms" className="font-bold text-slate-600 hover:text-indigo-700">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="/privacy" className="font-bold text-slate-600 hover:text-indigo-700">
+            Privacy Policy
+          </a>
+          .
+        </p>
       </div>
 
       {showExistingEmailModal && (
