@@ -14,6 +14,14 @@ if (sentryDsn) {
     environment: import.meta.env.MODE,
     sendDefaultPii: false,
   })
+
+  if (
+    new URLSearchParams(window.location.search).get('sentry-test') === '1'
+  ) {
+    Sentry.captureException(
+      new Error('ReplyForge Sentry production test'),
+    )
+  }
 }
 
 createRoot(document.getElementById('root')).render(
