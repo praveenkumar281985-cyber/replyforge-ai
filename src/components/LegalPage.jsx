@@ -146,7 +146,7 @@ function LegalPage({ type }) {
   }, [title]);
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#eef2ff_0,_#f8fafc_34%,_#f8fafc_100%)] text-slate-900">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#eef2ff_0,_#f8fafc_34%,_#f8fafc_100%)] text-slate-900 lg:h-screen lg:overflow-hidden">
       <header className="sticky top-0 z-10 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <a href="/" className="flex items-center gap-3" aria-label="ReplyForge home">
@@ -168,9 +168,9 @@ function LegalPage({ type }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
-        <div className="grid items-start gap-5 lg:grid-cols-[230px_minmax(0,1fr)]">
-          <aside className="rounded-2xl border border-white/80 bg-white/80 p-4 shadow-lg shadow-slate-200/50 backdrop-blur lg:sticky lg:top-20">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:h-[calc(100vh-61px)] lg:overflow-hidden lg:py-5">
+        <div className="grid items-start gap-5 lg:h-full lg:min-h-0 lg:grid-cols-[230px_minmax(0,1fr)] lg:items-stretch">
+          <aside className="rounded-2xl border border-white/80 bg-white/80 p-4 shadow-lg shadow-slate-200/50 backdrop-blur lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain">
             <span className="inline-flex rounded-full bg-indigo-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-indigo-700">
               ReplyForge legal
             </span>
@@ -208,7 +208,7 @@ function LegalPage({ type }) {
             </div>
           </aside>
 
-          <article className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xl shadow-slate-200/50">
+          <article className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xl shadow-slate-200/50 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain">
             <div className="border-b border-slate-200 bg-gradient-to-r from-white via-white to-indigo-50/60 px-5 py-5 sm:px-7">
               <p className="max-w-3xl text-sm leading-6 text-slate-600">
                 {isPrivacy
@@ -258,14 +258,14 @@ function LegalPage({ type }) {
                 .
               </p>
             </section>
+
+            <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs font-bold text-slate-500">
+              <a href="/privacy" className="hover:text-indigo-700">Privacy Policy</a>
+              <a href="/terms" className="hover:text-indigo-700">Terms of Service</a>
+              <a href="/" className="hover:text-indigo-700">ReplyForge AI</a>
+            </nav>
           </article>
         </div>
-
-        <nav className="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-bold text-slate-500">
-          <a href="/privacy" className="hover:text-indigo-700">Privacy Policy</a>
-          <a href="/terms" className="hover:text-indigo-700">Terms of Service</a>
-          <a href="/" className="hover:text-indigo-700">ReplyForge AI</a>
-        </nav>
       </main>
     </div>
   );
