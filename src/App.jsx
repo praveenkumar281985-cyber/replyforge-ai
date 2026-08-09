@@ -10,6 +10,7 @@ import ReplyScore from "./components/ReplyScore";
 import Sidebar from "./components/Sidebar";
 import HistoryList from "./components/HistoryList";
 import AuthPage from "./components/AuthPage";
+import ResetPasswordPage from "./components/ResetPasswordPage";
 import AIProviderButton from "./components/AIProviderButton";
 import AIProviderModal from "./components/AIProviderModal";
 
@@ -68,6 +69,9 @@ function getSavedData(key, fallback) {
 function App() {
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [passwordRecovery, setPasswordRecovery] = useState(() =>
+    new URLSearchParams(window.location.search).has("reset-password")
+  );
   const [historyLoading, setHistoryLoading] = useState(false);
   const [providerStatus, setProviderStatus] = useState(() =>
     getAiProviderStatus()
@@ -198,7 +202,11 @@ function App() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setPasswordRecovery(true);
+      }
+
       setSession(newSession);
       setAuthLoading(false);
     });
@@ -848,6 +856,16 @@ async function runAiTool(tool) {
       search,
     });
 
+  function finishPasswordRecovery() {
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
+    setSession(null);
+    setPasswordRecovery(false);
+  }
+
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-950">
@@ -860,6 +878,10 @@ async function runAiTool(tool) {
         </div>
       </div>
     );
+  }
+
+  if (passwordRecovery) {
+    return <ResetPasswordPage onComplete={finishPasswordRecovery} />;
   }
 
   if (!session) {
