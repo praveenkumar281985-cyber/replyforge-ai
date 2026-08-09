@@ -95,46 +95,57 @@ function ReplyBox({
 
   useEffect(() => {
     const cleanReply = reply?.trim();
+    let cancelled = false;
 
-    if (!cleanReply) {
-      setVersions([]);
-      setCurrentVersion(-1);
-      pendingVersionLabel.current = "Original";
-      selectingOldVersion.current = false;
-      return;
-    }
+    function syncReplyVersion() {
+      if (cancelled) return;
 
-    if (selectingOldVersion.current) {
-      selectingOldVersion.current = false;
-      return;
-    }
-
-    setVersions((current) => {
-      const existingIndex = current.findIndex(
-        (version) => version.text === cleanReply
-      );
-
-      if (existingIndex !== -1) {
-        setCurrentVersion(existingIndex);
-        return current;
+      if (!cleanReply) {
+        setVersions([]);
+        setCurrentVersion(-1);
+        pendingVersionLabel.current = "Original";
+        selectingOldVersion.current = false;
+        return;
       }
 
-      const next = [
-        ...current,
-        {
-          id: `${Date.now()}-${Math.random()}`,
-          text: cleanReply,
-          label:
-            current.length === 0
-              ? "Original"
-              : pendingVersionLabel.current || "Improved",
-        },
-      ];
+      if (selectingOldVersion.current) {
+        selectingOldVersion.current = false;
+        return;
+      }
 
-      setCurrentVersion(next.length - 1);
-      pendingVersionLabel.current = "Improved";
-      return next;
-    });
+      setVersions((current) => {
+        const existingIndex = current.findIndex(
+          (version) => version.text === cleanReply
+        );
+
+        if (existingIndex !== -1) {
+          setCurrentVersion(existingIndex);
+          return current;
+        }
+
+        const next = [
+          ...current,
+          {
+            id: `${Date.now()}-${Math.random()}`,
+            text: cleanReply,
+            label:
+              current.length === 0
+                ? "Original"
+                : pendingVersionLabel.current || "Improved",
+          },
+        ];
+
+        setCurrentVersion(next.length - 1);
+        pendingVersionLabel.current = "Improved";
+        return next;
+      });
+    }
+
+    queueMicrotask(syncReplyVersion);
+
+    return () => {
+      cancelled = true;
+    };
   }, [reply]);
 
   async function handleRewrite(mode) {

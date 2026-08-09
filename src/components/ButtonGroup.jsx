@@ -3,14 +3,16 @@ function ButtonGroup({
   stopGeneration,
   loading,
   clearAll,
+  providerName,
 }) {
   return (
     <div className="rf-v4-generate-row">
       <div className="rf-v4-generation-note">
         <span className="rf-v4-spark">✦</span>
+
         {loading
           ? "Reply is appearing live. You can stop generation at any time."
-          : "Gemini creates one polished reply using your selected context."}
+          : `${providerName || "AI"} creates one polished reply using your selected context.`}
       </div>
 
       <div className="rf-v4-generate-actions">

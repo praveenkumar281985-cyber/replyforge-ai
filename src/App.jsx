@@ -9,16 +9,11 @@ import ReplyBox from "./components/ReplyBox";
 import ReplyScore from "./components/ReplyScore";
 import Sidebar from "./components/Sidebar";
 import HistoryList from "./components/HistoryList";
-import FavoriteButton from "./components/FavoriteButton";
-import AITools from "./components/AITools";
 import AuthPage from "./components/AuthPage";
 import AIProviderButton from "./components/AIProviderButton";
 import AIProviderModal from "./components/AIProviderModal";
 
-import {
-  generateReply,
-  getAiProviderStatus,
-} from "./services/aiService";
+import { getAiProviderStatus } from "./services/aiService";
 import { runReplyGeneration } from "./services/replyEngine";
 import {
   rewriteReply,
@@ -87,34 +82,42 @@ function App() {
     getTodayUsage()
   );
 
-  const [message, setMessage] = useState("");
-  const [reply, setReply] = useState("");
-  const [conversationMode, setConversationMode] = useState(false);
-  const [conversation, setConversation] = useState([]);
+  const [initialWorkspace] = useState(loadWorkspace);
+  const [message, setMessage] = useState(initialWorkspace.message);
+  const [reply, setReply] = useState(initialWorkspace.reply);
+  const [conversationMode, setConversationMode] = useState(
+    initialWorkspace.conversationMode
+  );
+  const [conversation, setConversation] = useState(
+    initialWorkspace.conversation
+  );
 
-  const [tone, setTone] = useState("Professional");
-  const [length, setLength] = useState("Medium");
-  const [language, setLanguage] = useState("English");
-  const [persona, setPersona] = useState("Professional");
+  const [tone, setTone] = useState(initialWorkspace.tone);
+  const [length, setLength] = useState(initialWorkspace.length);
+  const [language, setLanguage] = useState(initialWorkspace.language);
+  const [persona, setPersona] = useState(initialWorkspace.persona);
 
   const [loading, setLoading] = useState(false);
   const streamControllerRef = useRef(null);
   const replySectionRef = useRef(null);
-  const workspaceHydratedRef = useRef(false);
   const workspaceSaveTimerRef = useRef(null);
   const [rewriteLoading, setRewriteLoading] = useState(false);
   const [translateLoading, setTranslateLoading] = useState(false);
   const [scoreLoading, setScoreLoading] = useState(false);
   const [coachFixLoading, setCoachFixLoading] = useState(false);
   const [coachFixError, setCoachFixError] = useState("");
-const [replyScore, setReplyScore] = useState(null);
+  const [replyScore, setReplyScore] = useState(
+    initialWorkspace.replyScore
+  );
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [drawerMode, setDrawerMode] = useState("history");
   const [toolLoading, setToolLoading] = useState("");
   const [intentLoading, setIntentLoading] = useState(false);
-  const [intentResult, setIntentResult] = useState(null);
+  const [intentResult, setIntentResult] = useState(
+    initialWorkspace.intentResult
+  );
 
   const [history, setHistory] = useState([]);
   const [customTemplates, setCustomTemplates] = useState(() =>
@@ -130,51 +133,6 @@ const [replyScore, setReplyScore] = useState(null);
   );
 
   useEffect(() => {
-    const workspace =
-      loadWorkspace();
-
-    setMessage(
-      workspace.message
-    );
-    setReply(
-      workspace.reply
-    );
-    setConversationMode(
-      workspace.conversationMode
-    );
-    setConversation(
-      workspace.conversation
-    );
-    setTone(
-      workspace.tone
-    );
-    setLength(
-      workspace.length
-    );
-    setLanguage(
-      workspace.language
-    );
-    setPersona(
-      workspace.persona
-    );
-    setIntentResult(
-      workspace.intentResult
-    );
-    setReplyScore(
-      workspace.replyScore
-    );
-
-    workspaceHydratedRef.current =
-      true;
-  }, []);
-
-  useEffect(() => {
-    if (
-      !workspaceHydratedRef.current
-    ) {
-      return;
-    }
-
     window.clearTimeout(
       workspaceSaveTimerRef.current
     );
@@ -304,32 +262,9 @@ const [replyScore, setReplyScore] = useState(null);
   }, [darkMode]);
 
 
-  useEffect(() => {
-    if (
-      loading ||
-      rewriteLoading ||
-      translateLoading ||
-      scoreLoading ||
-      intentLoading ||
-      toolLoading
-    ) {
-      return;
-    }
-
-    setProviderStatus(
-      getAiProviderStatus()
-    );
-  }, [
-    loading,
-    rewriteLoading,
-    translateLoading,
-    scoreLoading,
-    intentLoading,
-    toolLoading,
-  ]);
-
   function trackUsage(action) {
     const provider = getAiProviderStatus();
+    setProviderStatus(provider);
     const next = recordUsage(
       action,
       provider?.online ? provider.id : ""
@@ -1152,12 +1087,12 @@ async function runAiTool(tool) {
                 </div>
 
                 <ButtonGroup
-                  createReply={createReply}
-                  stopGeneration={stopGeneration}
-                  loading={loading}
-                  clearAll={clearAll}
-                />
-
+  createReply={createReply}
+  stopGeneration={stopGeneration}
+  loading={loading}
+  clearAll={clearAll}
+  providerName={providerStatus?.label || "AI"}
+/>
                 {error && (
                   <div className="rf-v4-error" role="alert">
                     <span>!</span>

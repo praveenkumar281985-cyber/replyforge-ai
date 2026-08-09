@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 px-6 text-center text-white">
@@ -9,12 +7,12 @@ function NotFound() {
         Page not found.
       </p>
 
-      <Link
-        to="/"
+      <a
+        href="/"
         className="mt-6 rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white"
       >
         Go to Dashboard
-      </Link>
+      </a>
     </div>
   );
 }

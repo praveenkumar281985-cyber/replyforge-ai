@@ -186,7 +186,8 @@ export async function analyzeReplyWithCoach({
       error instanceof SyntaxError
     ) {
       throw new Error(
-        "AI Coach returned invalid JSON. Please try again."
+        "AI Coach returned invalid JSON. Please try again.",
+        { cause: error }
       );
     }
 

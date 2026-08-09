@@ -47,11 +47,7 @@ function extractText(payload) {
 }
 
 export async function generateReply(
-  prompt,
-  _tone,
-  _length,
-  _language,
-  _persona
+  prompt
 ) {
   const apiKey = getApiKey();
   const url =

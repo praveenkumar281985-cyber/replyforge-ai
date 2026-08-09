@@ -448,7 +448,8 @@ async function generateMultipleReplies(request) {
     );
 
     throw new Error(
-      "The AI could not create valid reply suggestions. Please try again."
+      "The AI could not create valid reply suggestions. Please try again.",
+      { cause: error }
     );
   }
 }

@@ -32,6 +32,9 @@ import {
     "options.js",
     "content.js",
     "content.css",
+    "sidepanel.html",
+    "sidepanel.css",
+    "sidepanel.js",
   ];
   
   async function verifyRequiredFiles() {
@@ -101,12 +104,17 @@ import {
       );
     }
   
-    if (
-      manifest.action?.default_popup !==
-      "popup.html"
-    ) {
+    const hasPopup =
+      manifest.action?.default_popup ===
+      "popup.html";
+
+    const hasSidePanel =
+      manifest.side_panel?.default_path ===
+      "sidepanel.html";
+
+    if (!hasPopup && !hasSidePanel) {
       throw new Error(
-        "manifest.json default popup must be popup.html."
+        "manifest.json must configure popup.html or sidepanel.html as its UI entry point."
       );
     }
   }

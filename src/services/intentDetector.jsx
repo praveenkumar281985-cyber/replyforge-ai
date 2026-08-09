@@ -215,7 +215,8 @@ ${cleanMessage}`;
     );
 
     throw new Error(
-      "The AI returned an invalid intent detection result."
+      "The AI returned an invalid intent detection result.",
+      { cause: error }
     );
   }
 }

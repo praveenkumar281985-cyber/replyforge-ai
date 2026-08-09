@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import supabase from "../lib/supabase";
+
+const DAILY_AI_LIMIT = 30;
+
 function Sidebar({
   darkMode,
   setDarkMode,
@@ -13,6 +18,47 @@ function Sidebar({
   onNewReply,
   userName,
 }) {
+  const [serverUsage, setServerUsage] = useState({
+    used: 0,
+    remaining: DAILY_AI_LIMIT,
+    limit: DAILY_AI_LIMIT,
+  });
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadServerUsage() {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const { data, error } = await supabase
+        .from("ai_usage_daily")
+        .select("request_count")
+        .eq("usage_date", today)
+        .maybeSingle();
+
+      if (!active) return;
+
+      if (error) {
+        console.warn("Unable to load server AI usage:", error);
+        return;
+      }
+
+      const used = Number(data?.request_count) || 0;
+
+      setServerUsage({
+        used,
+        remaining: Math.max(DAILY_AI_LIMIT - used, 0),
+        limit: DAILY_AI_LIMIT,
+      });
+    }
+
+    loadServerUsage();
+
+    return () => {
+      active = false;
+    };
+  }, [usageStats?.total]);
+
   const favoriteCount =
     history.filter((item) => item.isFavorite).length || favorites.length;
 
@@ -84,8 +130,10 @@ function Sidebar({
 
       <section className="rf-v4-usage rf-v4-usage-analytics">
         <div>
-          <span>AI activity today</span>
-          <strong>{usageStats?.total || 0} actions</strong>
+          <span>AI usage today</span>
+          <strong>
+            {serverUsage.used} / {serverUsage.limit} requests
+          </strong>
         </div>
 
         <div className="rf-v4-usage-mini-grid">
@@ -93,6 +141,11 @@ function Sidebar({
           <div><strong>{usageStats?.counts?.coach || 0}</strong><span>Coach</span></div>
           <div><strong>{usageStats?.counts?.rewrite || 0}</strong><span>Rewrite</span></div>
           <div><strong>{usageStats?.counts?.translate || 0}</strong><span>Translate</span></div>
+        </div>
+
+        <div className="rf-v4-usage-secondary">
+          <span>Daily allowance</span>
+          <strong>{serverUsage.remaining} remaining</strong>
         </div>
 
         <div className="rf-v4-usage-secondary">

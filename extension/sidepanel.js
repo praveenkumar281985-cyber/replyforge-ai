@@ -1115,22 +1115,6 @@ function applyWorkspaceState(state) {
   }
 }
 
-async function readWorkspaceState(
-  storageKey
-) {
-  if (!storageKey) {
-    return null;
-  }
-
-  const stored =
-    await chrome.storage.local.get(
-      storageKey
-    );
-
-  return stored?.[storageKey] ||
-    null;
-}
-
 async function migrateLegacyWorkspace(
   storageKey
 ) {
@@ -1444,7 +1428,7 @@ async function previewConversationContext() {
 }
 
 function detectPlatformFromUrl(url) {
-  let hostname = "";
+  let hostname;
 
   try {
     hostname = new URL(url || "").hostname;

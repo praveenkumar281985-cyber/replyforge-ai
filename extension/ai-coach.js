@@ -125,7 +125,9 @@ ${cleanReply}`;
       return normalizeAnalysis(JSON.parse(cleanResponse));
     } catch (error) {
       console.error("ReplyForge AI Coach JSON error:", error, response);
-      throw new Error("AI Coach returned an invalid analysis result.");
+      throw new Error("AI Coach returned an invalid analysis result.", {
+        cause: error,
+      });
     }
   }
 
