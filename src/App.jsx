@@ -12,6 +12,7 @@ import HistoryList from "./components/HistoryList";
 import AuthPage from "./components/AuthPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import LegalPage from "./components/LegalPage";
+import PublicHomePage from "./components/PublicHomePage";
 import AIProviderButton from "./components/AIProviderButton";
 import AIProviderModal from "./components/AIProviderModal";
 
@@ -874,6 +875,10 @@ async function runAiTool(tool) {
       : currentPath === "/terms"
         ? "terms"
         : "";
+
+  if (currentPath === "/about") {
+    return <PublicHomePage />;
+  }
 
   if (legalPageType) {
     return <LegalPage type={legalPageType} />;
