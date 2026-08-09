@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sentry/react": "^10.69.0",
     "@supabase/supabase-js": "^2.110.8",
     "@tailwindcss/vite": "^4.3.3",
     "@vercel/analytics": "^2.0.1",
