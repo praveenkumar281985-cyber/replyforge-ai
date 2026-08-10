@@ -54,6 +54,12 @@ function PublicHomePage() {
 
           <nav className="flex items-center gap-2 sm:gap-3" aria-label="Main navigation">
             <a
+              href="/?view=extension"
+              className="hidden rounded-xl border border-indigo-300/25 bg-indigo-400/10 px-3 py-2 text-xs font-black text-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-400/20 sm:block"
+            >
+              Chrome Extension
+            </a>
+            <a
               href="/privacy"
               className="hidden px-3 py-2 text-xs font-bold text-slate-300 transition hover:text-white sm:block"
             >
@@ -100,6 +106,12 @@ function PublicHomePage() {
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-sm font-black shadow-xl shadow-indigo-950/70 transition hover:-translate-y-0.5"
               >
                 <SparkIcon /> Start writing
+              </a>
+              <a
+                href="/?view=extension"
+                className="inline-flex items-center gap-2 rounded-xl border border-indigo-300/25 bg-indigo-400/10 px-5 py-3 text-sm font-black text-indigo-100 transition hover:-translate-y-0.5 hover:bg-indigo-400/20"
+              >
+                ◉ Get Chrome Extension
               </a>
               <a
                 href="/privacy"

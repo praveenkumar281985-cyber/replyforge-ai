@@ -3344,3 +3344,76 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
   opacity: 0.58 !important;
   box-shadow: none !important;
 }
+
+/* ===== CHROME EXTENSION DISCOVERY ===== */
+.rf-extension-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 16% 8%, rgba(99, 102, 241, .3), transparent 30%),
+    radial-gradient(circle at 84% 16%, rgba(139, 92, 246, .22), transparent 28%), #070b1e;
+  color: #f8fafc;
+}
+
+.rf-extension-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 24px;
+}
+
+.rf-extension-brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; }
+.rf-extension-brand span,
+.rf-extension-logo { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 11px; background: linear-gradient(135deg,#6366f1,#9333ea); color:#fff; font-weight:900; box-shadow:0 10px 24px rgba(79,70,229,.34); }
+.rf-extension-open-app,.rf-extension-secondary { border:1px solid rgba(255,255,255,.16); border-radius:12px; padding:10px 16px; color:#e2e8f0; font-weight:800; text-decoration:none; background:rgba(255,255,255,.06); }
+
+.rf-extension-hero { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr); align-items:center; gap:64px; max-width:1120px; margin:0 auto; padding:72px 24px 64px; }
+.rf-extension-eyebrow { display:inline-flex; border:1px solid rgba(165,180,252,.28); border-radius:999px; padding:7px 11px; background:rgba(99,102,241,.13); color:#c7d2fe; font-size:11px; font-weight:900; letter-spacing:.13em; text-transform:uppercase; }
+.rf-extension-copy h1 { max-width:680px; margin:18px 0 0; font-size:clamp(42px,5vw,68px); line-height:1.02; letter-spacing:-.055em; }
+.rf-extension-copy > p { max-width:620px; margin:20px 0 0; color:#b8c3d6; font-size:17px; line-height:1.7; }
+.rf-extension-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:28px; }
+.rf-extension-install { display:inline-flex; align-items:center; gap:10px; border:0; border-radius:14px; padding:14px 20px; background:linear-gradient(135deg,#5b35f5,#8b20f5); color:#fff; font-weight:900; text-decoration:none; box-shadow:0 14px 32px rgba(109,40,217,.34); transition:transform .18s ease,box-shadow .18s ease; }
+.rf-extension-install:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 18px 38px rgba(109,40,217,.44); }
+.rf-extension-install:disabled { cursor:not-allowed; opacity:.72; }
+.rf-extension-chrome-icon { display:grid; width:22px; height:22px; place-items:center; border-radius:50%; background:conic-gradient(#4285f4 0 33%,#34a853 0 66%,#fbbc05 0 84%,#ea4335 0); color:#fff; }
+.rf-extension-copy small { display:block; max-width:600px; margin-top:14px; color:#7f8ca3; line-height:1.55; }
+
+.rf-extension-preview { border:1px solid rgba(255,255,255,.15); border-radius:24px; padding:20px; background:rgba(255,255,255,.08); box-shadow:0 28px 80px rgba(0,0,0,.36); backdrop-filter:blur(20px); }
+.rf-extension-preview-head { display:flex; align-items:center; gap:11px; }
+.rf-extension-preview-head strong { flex:1; }
+.rf-extension-preview-head em { border-radius:999px; padding:5px 8px; background:rgba(34,197,94,.14); color:#86efac; font-size:10px; font-style:normal; font-weight:900; }
+.rf-extension-usage,.rf-extension-preview-message { margin-top:15px; border:1px solid rgba(255,255,255,.1); border-radius:14px; padding:14px; background:rgba(8,15,38,.5); }
+.rf-extension-usage span,.rf-extension-preview-message span { display:block; color:#8fa0bb; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
+.rf-extension-usage strong { display:block; margin-top:4px; font-size:14px; }
+.rf-extension-usage i { display:block; height:6px; margin-top:10px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.1); }
+.rf-extension-usage b { display:block; width:24%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6366f1,#a855f7); }
+.rf-extension-preview-message p { margin:7px 0 0; color:#e2e8f0; font-size:13px; line-height:1.5; }
+.rf-extension-preview-controls { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+.rf-extension-preview-controls span { border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:9px; background:rgba(255,255,255,.05); color:#cbd5e1; font-size:11px; }
+.rf-extension-generate { margin-top:12px; border-radius:12px; padding:13px; background:linear-gradient(135deg,#5b35f5,#8b20f5); text-align:center; font-weight:900; }
+
+.rf-extension-benefits { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; max-width:1120px; margin:0 auto; padding:0 24px 72px; }
+.rf-extension-benefits article { border:1px solid rgba(255,255,255,.1); border-radius:18px; padding:20px; background:rgba(255,255,255,.045); }
+.rf-extension-benefits article > span { color:#86efac; font-weight:900; }
+.rf-extension-benefits h2 { margin:12px 0 0; font-size:15px; }
+.rf-extension-benefits p { margin:8px 0 0; color:#94a3b8; font-size:12px; line-height:1.6; }
+.rf-extension-footer { border-top:1px solid rgba(255,255,255,.08); padding:24px; color:#718096; text-align:center; font-size:12px; }
+
+.rf-extension-dashboard-banner { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; border:1px solid rgba(109,74,255,.2); border-radius:16px; padding:13px 15px; background:linear-gradient(105deg,rgba(109,74,255,.1),rgba(139,92,246,.05)); }
+.rf-extension-dashboard-banner div > span { display:inline-flex; margin-right:8px; border-radius:999px; padding:3px 6px; background:var(--rf-v4-purple); color:#fff; font-size:7px; font-weight:900; }
+.rf-extension-dashboard-banner strong { color:var(--rf-v4-text); font-size:10px; }
+.rf-extension-dashboard-banner p { margin:4px 0 0; color:var(--rf-v4-muted); font-size:8px; }
+.rf-extension-dashboard-banner a { flex:0 0 auto; border-radius:10px; padding:9px 12px; background:var(--rf-v4-purple); color:#fff; font-size:8px; font-weight:900; text-decoration:none; box-shadow:0 8px 18px rgba(109,74,255,.22); }
+
+@media (max-width:900px) {
+  .rf-extension-hero { grid-template-columns:1fr; gap:36px; padding-top:44px; }
+  .rf-extension-benefits { grid-template-columns:1fr 1fr; }
+}
+
+@media (max-width:560px) {
+  .rf-extension-nav { padding:14px 16px; }
+  .rf-extension-hero { padding:38px 16px 44px; }
+  .rf-extension-copy h1 { font-size:40px; }
+  .rf-extension-benefits { grid-template-columns:1fr; padding:0 16px 48px; }
+  .rf-extension-dashboard-banner { align-items:flex-start; flex-direction:column; }
+}

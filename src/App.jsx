@@ -13,6 +13,7 @@ import AuthPage from "./components/AuthPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
 import LegalPage from "./components/LegalPage";
 import PublicHomePage from "./components/PublicHomePage";
+import ExtensionPage from "./components/ExtensionPage";
 import AIProviderButton from "./components/AIProviderButton";
 import AIProviderModal from "./components/AIProviderModal";
 
@@ -869,6 +870,7 @@ async function runAiTool(tool) {
   }
 
   const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const extensionView = new URLSearchParams(window.location.search).get("view") === "extension";
   const legalPageType =
     currentPath === "/privacy"
       ? "privacy"
@@ -878,6 +880,10 @@ async function runAiTool(tool) {
 
   if (currentPath === "/about") {
     return <PublicHomePage />;
+  }
+
+  if (currentPath === "/extension" || extensionView) {
+    return <ExtensionPage />;
   }
 
   if (legalPageType) {
@@ -981,6 +987,10 @@ async function runAiTool(tool) {
           </header>
 
           <main className="rf-v4-workspace">
+            <section className="rf-extension-dashboard-banner">
+              <div><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
+              <a href="/?view=extension">Get the extension <b>→</b></a>
+            </section>
             <div className="rf-v4-workspace-primary">
               <section className="rf-v4-compose-panel">
                 <Header />
