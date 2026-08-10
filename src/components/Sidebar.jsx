@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import supabase from "../lib/supabase";
+import AIProviderButton from "./AIProviderButton";
 
 const DAILY_AI_LIMIT = 30;
 
@@ -19,6 +20,9 @@ function Sidebar({
   userName,
   userEmail,
   onLogout,
+  providerStatus,
+  providerPreference,
+  onOpenProvider,
 }) {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [serverUsage, setServerUsage] = useState({
@@ -144,6 +148,15 @@ function Sidebar({
           <div><strong>{usageStats?.counts?.coach || 0}</strong><span>Coach</span></div>
           <div><strong>{usageStats?.counts?.rewrite || 0}</strong><span>Rewrite</span></div>
           <div><strong>{usageStats?.counts?.translate || 0}</strong><span>Translate</span></div>
+        </div>
+
+        <div className="rf-v4-sidebar-provider">
+          <span>AI engine</span>
+          <AIProviderButton
+            provider={providerStatus}
+            preference={providerPreference}
+            onClick={onOpenProvider}
+          />
         </div>
 
         <div className="rf-v4-usage-secondary">

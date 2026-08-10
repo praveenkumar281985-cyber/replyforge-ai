@@ -14,7 +14,6 @@ import ResetPasswordPage from "./components/ResetPasswordPage";
 import LegalPage from "./components/LegalPage";
 import PublicHomePage from "./components/PublicHomePage";
 import ExtensionPage from "./components/ExtensionPage";
-import AIProviderButton from "./components/AIProviderButton";
 import AIProviderModal from "./components/AIProviderModal";
 
 import { getAiProviderStatus } from "./services/aiService";
@@ -952,6 +951,9 @@ async function runAiTool(tool) {
           userName={userName}
           userEmail={session.user.email}
           onLogout={handleLogout}
+          providerStatus={providerStatus}
+          providerPreference={providerPreference}
+          onOpenProvider={() => setProviderModalOpen(true)}
         />
 
         <div className="rf-v4-main-column">
@@ -967,14 +969,6 @@ async function runAiTool(tool) {
               <section className="rf-extension-dashboard-banner">
                 <div className="rf-extension-dashboard-copy"><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
                 <div className="rf-extension-dashboard-actions">
-                  <AIProviderButton
-                    provider={providerStatus}
-                    preference={providerPreference}
-                    onClick={() => setProviderModalOpen(true)}
-                  />
-                  <button type="button" className="rf-v4-upgrade-button">
-                    Upgrade
-                  </button>
                   <a href="/?view=extension">Get the extension <b>→</b></a>
                 </div>
               </section>

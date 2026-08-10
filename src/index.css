@@ -2570,6 +2570,49 @@ select:focus-visible,
   white-space: nowrap;
 }
 
+.rf-v4-sidebar-provider {
+  display: grid;
+  gap: 5px;
+  margin-top: 7px;
+  border-top: 1px solid var(--rf-v4-border);
+  padding-top: 7px;
+}
+
+.rf-v4-sidebar-provider > span {
+  color: var(--rf-v4-faint);
+  font-size: 7px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rf-v4-usage-analytics .rf-v4-sidebar-provider .rf-provider-button {
+  display: flex;
+  width: 100%;
+  min-height: 34px;
+  margin: 0;
+  border: 1px solid var(--rf-v4-border);
+  border-radius: 9px;
+  background: var(--rf-v4-surface);
+  padding: 5px 8px;
+  color: var(--rf-v4-text);
+  text-align: left;
+}
+
+.rf-v4-sidebar-provider .rf-provider-button-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.rf-v4-sidebar-provider .rf-provider-button-text strong {
+  max-width: 112px;
+  font-size: 9px;
+}
+
+.rf-v4-sidebar-provider .rf-provider-button-text small {
+  font-size: 7px;
+}
+
 .rf-v4-usage-secondary {
   display: flex;
   align-items: center;
