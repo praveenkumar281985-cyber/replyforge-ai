@@ -3286,6 +3286,61 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
 }
 
 .rf-auth-card .rf-auth-mode-tab-active {
-  background: #ffffff !important;
-  color: #4338ca !important;
+  background: linear-gradient(135deg, #5b35f5, #7c2cff) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(91, 53, 245, 0.24) !important;
+}
+
+/* Premium auth interactions */
+.rf-auth-card .rf-auth-mode-tab,
+.rf-auth-card > button,
+.rf-auth-card form button[type="submit"] {
+  transform: translateY(0);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease,
+    background-color 180ms ease, opacity 180ms ease !important;
+}
+
+.rf-auth-card .rf-auth-mode-tab:hover:not(.rf-auth-mode-tab-active) {
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: #4f46e5 !important;
+}
+
+.rf-auth-card > button {
+  border-color: rgba(99, 102, 241, 0.22) !important;
+  background: linear-gradient(180deg, #ffffff, #fbfaff) !important;
+  box-shadow: 0 8px 22px rgba(30, 41, 59, 0.08), inset 0 1px 0 #ffffff !important;
+}
+
+.rf-auth-card > button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.48) !important;
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.15), inset 0 1px 0 #ffffff !important;
+}
+
+.rf-auth-card form button[type="submit"] {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #5335f6 0%, #6d28d9 48%, #8b20f5 100%) !important;
+  box-shadow: 0 12px 26px rgba(109, 40, 217, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+.rf-auth-card form button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 16px 32px rgba(109, 40, 217, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+.rf-auth-card .rf-auth-mode-tab:active,
+.rf-auth-card > button:active:not(:disabled),
+.rf-auth-card form button[type="submit"]:active:not(:disabled) {
+  transform: translateY(0) scale(0.985);
+}
+
+.rf-auth-card button:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.25) !important;
+  outline-offset: 3px !important;
+}
+
+.rf-auth-card button:disabled {
+  opacity: 0.58 !important;
+  box-shadow: none !important;
 }
