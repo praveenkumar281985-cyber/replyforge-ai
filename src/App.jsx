@@ -105,7 +105,9 @@ function App() {
 
   const [loading, setLoading] = useState(false);
   const streamControllerRef = useRef(null);
+  const workspacePrimaryRef = useRef(null);
   const replySectionRef = useRef(null);
+  const replyAutoScrollDoneRef = useRef(false);
   const workspaceSaveTimerRef = useRef(null);
   const [rewriteLoading, setRewriteLoading] = useState(false);
   const [translateLoading, setTranslateLoading] = useState(false);
@@ -115,6 +117,39 @@ function App() {
   const [replyScore, setReplyScore] = useState(
     initialWorkspace.replyScore
   );
+
+  function scrollWorkspaceTo(target, behavior = "smooth") {
+    if (!target) return;
+
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      const targetTop =
+        window.scrollY +
+        target.getBoundingClientRect().top -
+        10;
+
+      window.scrollTo({
+        top: Math.max(0, targetTop),
+        behavior,
+      });
+      return;
+    }
+
+    const container = workspacePrimaryRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const nextTop =
+      container.scrollTop +
+      targetRect.top -
+      containerRect.top -
+      10;
+
+    container.scrollTo({
+      top: Math.max(0, nextTop),
+      behavior,
+    });
+  }
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -286,6 +321,7 @@ function App() {
     try {
       setLoading(true);
       setError("");
+      replyAutoScrollDoneRef.current = false;
 
       streamControllerRef.current?.abort();
 
@@ -313,17 +349,12 @@ function App() {
           onText: (fullText) => {
             setReply(fullText);
 
-            requestAnimationFrame(
-              () => {
-                replySectionRef
-                  .current
-                  ?.scrollIntoView({
-                    behavior:
-                      "smooth",
-                    block: "start",
-                  });
-              }
-            );
+            if (!replyAutoScrollDoneRef.current) {
+              replyAutoScrollDoneRef.current = true;
+              requestAnimationFrame(() => {
+                scrollWorkspaceTo(replySectionRef.current);
+              });
+            }
           },
         });
 
@@ -589,10 +620,7 @@ async function applyCoachFixes() {
     trackUsage("coachFix");
 
     requestAnimationFrame(() => {
-      replySectionRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      scrollWorkspaceTo(replySectionRef.current);
     });
   } catch (err) {
     const message = err?.message || "Coach fixes could not be applied.";
@@ -943,9 +971,9 @@ async function runAiTool(tool) {
             setHistoryOpen(true);
           }}
           onOpenTools={() => {
-            document
-              .getElementById("reply-actions")
-              ?.scrollIntoView({ behavior: "smooth", block: "center" });
+            scrollWorkspaceTo(
+              document.getElementById("reply-actions")
+            );
           }}
           onNewReply={clearAll}
           userName={userName}
@@ -965,7 +993,7 @@ async function runAiTool(tool) {
           </header>
 
           <main className="rf-v4-workspace">
-            <div className="rf-v4-workspace-primary">
+            <div ref={workspacePrimaryRef} className="rf-v4-workspace-primary">
               <section className="rf-extension-dashboard-banner">
                 <div className="rf-extension-dashboard-copy"><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
                 <div className="rf-extension-dashboard-actions">
