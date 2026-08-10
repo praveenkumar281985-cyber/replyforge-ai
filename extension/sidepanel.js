@@ -4,6 +4,12 @@ const readSelectionButton = document.getElementById("readSelection");
 const generateButton = document.getElementById("generateButton");
 const lengthSelect = document.getElementById("length");
 const generationModeSelect = document.getElementById("generationMode");
+const toneSelect = document.getElementById("tone");
+const languageSelect = document.getElementById("language");
+const usageText = document.getElementById("usageText");
+const usageProgress = document.getElementById("usageProgress");
+const usageResetText = document.getElementById("usageResetText");
+const accountBadge = document.getElementById("accountBadge");
 const errorBox = document.getElementById("errorBox");
 const platformName = document.getElementById(
   "platformName"
@@ -118,6 +124,34 @@ const quickCommandHint =
 const templateButtons = document.getElementById("templateButtons");
 const clearTemplateButton = document.getElementById("clearTemplateButton");
 const selectedTemplateStatus = document.getElementById("selectedTemplateStatus");
+
+async function refreshUsage() {
+  try {
+    const status = await chrome.runtime.sendMessage({ type: "GET_USAGE" });
+    if (!status?.success || !status?.signedIn) {
+      usageText.textContent = "Sign in to view usage";
+      usageProgress.style.width = "0%";
+      usageResetText.textContent = "Open settings to sign in with Google";
+      accountBadge.textContent = "Signed out";
+      accountBadge.className = "rf-account-badge signed-out";
+      return;
+    }
+    const used = Math.max(0, Number(status.used) || 0);
+    const limit = Math.max(1, Number(status.limit) || 30);
+    const remaining = Math.max(0, limit - used);
+    usageText.textContent = `${remaining} of ${limit} replies remaining`;
+    usageProgress.style.width = `${Math.min(100, (used / limit) * 100)}%`;
+    usageProgress.classList.toggle("warning", remaining <= 5 && remaining > 0);
+    usageProgress.classList.toggle("exhausted", remaining === 0);
+    usageResetText.textContent = remaining === 0 ? "Daily limit reached — resets tomorrow" : `${used} used today · resets daily`;
+    accountBadge.textContent = "Connected";
+    accountBadge.className = "rf-account-badge connected";
+  } catch (error) {
+    usageText.textContent = "Usage unavailable";
+    usageResetText.textContent = "Generation still works; retry after reopening the panel";
+    accountBadge.textContent = "Connected";
+  }
+}
 
 const singleReplySection = document.getElementById("singleReplySection");
 const singleReplyInput = document.getElementById("singleReply");
@@ -886,6 +920,8 @@ function createCurrentWorkspaceState() {
     selectedTemplate,
     mode: generationModeSelect.value,
     length: lengthSelect.value,
+    tone: toneSelect.value,
+    language: languageSelect.value,
     singleReply: singleReplyInput.value,
     generatedReplies,
     singleCoachAnalysis,
@@ -999,6 +1035,13 @@ function applyWorkspaceState(state) {
     )
       ? state.length
       : "Medium";
+
+  toneSelect.value = ["Professional", "Friendly", "Assertive", "Empathetic"].includes(state?.tone)
+    ? state.tone
+    : "Professional";
+  languageSelect.value = ["Auto", "English", "Hindi", "Hinglish"].includes(state?.language)
+    ? state.language
+    : "Auto";
 
   generatedReplies =
     Array.isArray(
@@ -2303,6 +2346,9 @@ lengthSelect.addEventListener(
   schedulePopupStateSave
 );
 
+toneSelect.addEventListener("change", schedulePopupStateSave);
+languageSelect.addEventListener("change", schedulePopupStateSave);
+
 readSelectionButton.addEventListener("click", async () => {
   try {
     clearError();
@@ -2358,8 +2404,9 @@ generateButton.addEventListener("click", async () => {
         ? "GENERATE_MULTIPLE_REPLIES"
         : "GENERATE_REPLY",
       message,
-      tone: "Professional",
+      tone: toneSelect.value,
       length: lengthSelect.value,
+      language: languageSelect.value,
     });
 
     if (!response?.success) {
@@ -2398,6 +2445,7 @@ generateButton.addEventListener("click", async () => {
 
       showToast("Your reply is ready");
     }
+    await refreshUsage();
   } catch (error) {
     console.error(error);
     showError(error?.message || "Unable to generate a reply.");
@@ -2405,6 +2453,8 @@ generateButton.addEventListener("click", async () => {
     setLoading(false);
   }
 });
+
+refreshUsage();
 
 singleAnalyzeButton.addEventListener(
   "click",

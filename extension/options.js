@@ -1,60 +1,35 @@
-const settingsForm = document.getElementById("settingsForm");
-const openRouterInput = document.getElementById("openRouterApiKey");
-const groqInput = document.getElementById("groqApiKey");
-const clearButton = document.getElementById("clearButton");
+const signInButton = document.getElementById("signInButton");
+const signOutButton = document.getElementById("signOutButton");
 const statusMessage = document.getElementById("statusMessage");
 
-function showStatus(message, type) {
+function showStatus(message, type = "") {
   statusMessage.textContent = message;
   statusMessage.className = `status-message ${type}`;
   statusMessage.hidden = false;
 }
 
-async function loadSettings() {
-  const settings = await chrome.storage.local.get([
-    "openRouterApiKey",
-    "groqApiKey",
-  ]);
-
-  openRouterInput.value = settings.openRouterApiKey || "";
-  groqInput.value = settings.groqApiKey || "";
+async function updateStatus() {
+  const response = await chrome.runtime.sendMessage({ type: "AUTH_STATUS" });
+  const signedIn = Boolean(response?.signedIn);
+  signInButton.hidden = signedIn;
+  signOutButton.hidden = !signedIn;
+  showStatus(
+    signedIn ? "Signed in. Your web-app plan and 30/day limit are active." : "Sign in to generate replies.",
+    signedIn ? "success" : ""
+  );
 }
 
-settingsForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const openRouterApiKey = openRouterInput.value.trim();
-  const groqApiKey = groqInput.value.trim();
-
-  if (!openRouterApiKey && !groqApiKey) {
-    showStatus(
-      "Add at least one OpenRouter or Groq API key.",
-      "error"
-    );
-    return;
-  }
-
-  await chrome.storage.local.set({
-    openRouterApiKey,
-    groqApiKey,
-  });
-
-  showStatus("Settings saved successfully.", "success");
+signInButton.addEventListener("click", async () => {
+  signInButton.disabled = true;
+  const response = await chrome.runtime.sendMessage({ type: "AUTH_SIGN_IN" });
+  signInButton.disabled = false;
+  if (!response?.success) return showStatus(response?.error || "Google sign-in failed.", "error");
+  updateStatus();
 });
 
-clearButton.addEventListener("click", async () => {
-  await chrome.storage.local.remove([
-    "openRouterApiKey",
-    "groqApiKey",
-  ]);
-
-  openRouterInput.value = "";
-  groqInput.value = "";
-
-  showStatus("Saved API keys were removed.", "success");
+signOutButton.addEventListener("click", async () => {
+  await chrome.runtime.sendMessage({ type: "AUTH_SIGN_OUT" });
+  updateStatus();
 });
 
-loadSettings().catch((error) => {
-  console.error(error);
-  showStatus("Settings could not be loaded.", "error");
-});
+updateStatus().catch((error) => showStatus(error?.message || "Could not read sign-in status.", "error"));

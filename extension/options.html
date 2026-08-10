@@ -13,48 +13,26 @@
           <div class="brand-icon">R</div>
           <div>
             <h1>ReplyForge AI Settings</h1>
-            <p>Add your AI provider keys for the browser extension.</p>
+            <p>Use the same ReplyForge account as the web app.</p>
           </div>
         </div>
 
         <div class="notice">
-          Keys are stored in Chrome extension storage on this browser.
+          Provider API keys are never required or stored in the extension.
         </div>
 
-        <form id="settingsForm">
-          <label class="field">
-            <span>OpenRouter API Key</span>
-            <input
-              id="openRouterApiKey"
-              type="password"
-              placeholder="sk-or-v1-..."
-              autocomplete="off"
-            />
-            <small>Primary AI provider</small>
-          </label>
-
-          <label class="field">
-            <span>Groq API Key</span>
-            <input
-              id="groqApiKey"
-              type="password"
-              placeholder="gsk_..."
-              autocomplete="off"
-            />
-            <small>Automatic fallback provider</small>
-          </label>
-
+        <section>
           <div class="button-row">
-            <button id="saveButton" type="submit" class="primary-button">
-              Save Settings
+            <button id="signInButton" type="button" class="primary-button">
+              Sign in with Google
             </button>
-            <button id="clearButton" type="button" class="secondary-button">
-              Clear Keys
+            <button id="signOutButton" type="button" class="secondary-button">
+              Sign out
             </button>
           </div>
 
           <div id="statusMessage" class="status-message" hidden></div>
-        </form>
+        </section>
       </section>
     </main>
 

@@ -25,11 +25,9 @@ chrome.runtime.onInstalled.addListener(() => {
 importScripts("ai-coach.js");
 importScripts("improve.js");
 
-const OPENROUTER_URL =
-  "https://openrouter.ai/api/v1/chat/completions";
-
-const GROQ_URL =
-  "https://api.groq.com/openai/v1/chat/completions";
+const SUPABASE_URL = "https://dyunvmfsastrhyxzscmp.supabase.co";
+const SUPABASE_KEY = "sb_publishable__bK9-276AJnDSEIqb1gjQA_-78UQwnY";
+const SESSION_STORAGE_KEY = "replyForgeSupabaseSession";
 
 const REPLY_STYLES = [
   {
@@ -71,11 +69,63 @@ const REWRITE_INSTRUCTIONS = {
     "Rewrite this in careful, formal and neutral language. Avoid making unsupported legal claims.",
 };
 
-async function getSettings() {
-  return chrome.storage.local.get([
-    "openRouterApiKey",
-    "groqApiKey",
-  ]);
+async function getSession() {
+  const stored = await chrome.storage.local.get(SESSION_STORAGE_KEY);
+  return stored[SESSION_STORAGE_KEY] || null;
+}
+
+async function saveSession(session) {
+  await chrome.storage.local.set({ [SESSION_STORAGE_KEY]: session });
+  return session;
+}
+
+async function clearSession() {
+  await chrome.storage.local.remove(SESSION_STORAGE_KEY);
+}
+
+async function refreshSession(session) {
+  if (!session?.refresh_token) return null;
+  const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+    method: "POST",
+    headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ refresh_token: session.refresh_token }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || !data?.access_token) {
+    await clearSession();
+    return null;
+  }
+  return saveSession(data);
+}
+
+async function requireSession() {
+  let session = await getSession();
+  if (!session?.access_token) throw new Error("Please sign in with Google from ReplyForge settings first.");
+  if (Number(session.expires_at || 0) * 1000 <= Date.now() + 60000) session = await refreshSession(session);
+  if (!session?.access_token) throw new Error("Your session expired. Please sign in with Google again.");
+  return session;
+}
+
+async function signInWithGoogle() {
+  const redirectUrl = chrome.identity.getRedirectURL("supabase-auth");
+  const authUrl = new URL(`${SUPABASE_URL}/auth/v1/authorize`);
+  authUrl.searchParams.set("provider", "google");
+  authUrl.searchParams.set("redirect_to", redirectUrl);
+  authUrl.searchParams.set("scopes", "openid email profile");
+  const resultUrl = await chrome.identity.launchWebAuthFlow({ url: authUrl.toString(), interactive: true });
+  if (!resultUrl) throw new Error("Google sign-in was cancelled.");
+  const params = new URLSearchParams(new URL(resultUrl).hash.slice(1));
+  const error = params.get("error_description") || params.get("error");
+  if (error) throw new Error(error);
+  const accessToken = params.get("access_token");
+  const refreshToken = params.get("refresh_token");
+  if (!accessToken || !refreshToken) throw new Error("Google sign-in did not return a valid session.");
+  return saveSession({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+    expires_at: Math.floor(Date.now() / 1000) + Number(params.get("expires_in") || 3600),
+    token_type: params.get("token_type") || "bearer",
+  });
 }
 
 
@@ -149,7 +199,8 @@ function buildSingleReplyPrompt(
   message,
   tone,
   length,
-  conversationContext
+  conversationContext,
+  language
 ) {
   const conversationSection =
     buildConversationSection(
@@ -160,6 +211,7 @@ function buildSingleReplyPrompt(
 
 Tone: ${tone || "Professional"}
 Length: ${length || "Medium"}
+Language: ${language || "Auto-detect from the incoming message"}
 
 Rules:
 - Respond directly to the latest incoming message.
@@ -180,7 +232,8 @@ ${message}`;
 function buildMultipleRepliesPrompt(
   message,
   length,
-  conversationContext
+  conversationContext,
+  language
 ) {
   const conversationSection =
     buildConversationSection(
@@ -192,6 +245,7 @@ function buildMultipleRepliesPrompt(
 Create exactly four different ready-to-send replies to the latest incoming message.
 
 Length: ${length || "Medium"}
+Language: ${language || "Auto-detect from the incoming message"}
 
 Reply styles:
 1. Professional: polished, respectful and professional.
@@ -243,135 +297,62 @@ Original reply:
 ${reply}`;
 }
 
-async function callOpenRouter(apiKey, prompt) {
-  const response = await fetch(OPENROUTER_URL, {
+async function callReplyForgeBackend(prompt) {
+  const session = await requireSession();
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-reply`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": chrome.runtime.getURL("/"),
-      "X-Title": "ReplyForge AI Extension",
-    },
-    body: JSON.stringify({
-      model: "openrouter/free",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.72,
-      max_tokens: 1800,
-    }),
-  });
-
-  const data = await response.json().catch(() => null);
-
-  if (!response.ok) {
-    const error = new Error(
-      data?.error?.message ||
-        `OpenRouter failed (${response.status}).`
-    );
-
-    error.status = response.status;
-    throw error;
-  }
-
-  const reply =
-    data?.choices?.[0]?.message?.content?.trim();
-
-  if (!reply) {
-    throw new Error(
-      "OpenRouter returned an empty response."
-    );
-  }
-
-  return reply;
-}
-
-async function callGroq(apiKey, prompt) {
-  const response = await fetch(GROQ_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${session.access_token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "llama-3.1-8b-instant",
-      messages: [
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.72,
-      max_tokens: 1800,
+      prompt,
+      tone: "Professional",
+      length: "Medium",
+      language: "English",
+      persona: "Professional",
+      mode: "auto",
+      providerId: "",
     }),
   });
-
-  const data = await response.json().catch(() => null);
-
+  const data = await response.json().catch(() => ({}));
+  if (response.status === 401) {
+    const refreshed = await refreshSession(session);
+    if (!refreshed) throw new Error("Your session expired. Please sign in with Google again.");
+    return callReplyForgeBackend(prompt);
+  }
   if (!response.ok) {
-    const error = new Error(
-      data?.error?.message ||
-        `Groq failed (${response.status}).`
-    );
-
-    error.status = response.status;
-    throw error;
+    throw new Error(data?.error || data?.message || `ReplyForge request failed (${response.status}).`);
   }
-
-  const reply =
-    data?.choices?.[0]?.message?.content?.trim();
-
-  if (!reply) {
-    throw new Error("Groq returned an empty response.");
-  }
-
+  const reply = typeof data?.reply === "string" ? data.reply.trim() : "";
+  if (!reply) throw new Error("ReplyForge returned an empty response.");
   return reply;
 }
 
 async function callAvailableProvider(prompt) {
-  const settings = await getSettings();
-  const errors = [];
+  return callReplyForgeBackend(prompt);
+}
 
-  if (!settings.openRouterApiKey && !settings.groqApiKey) {
-    throw new Error(
-      "Add an OpenRouter or Groq API key in the extension settings."
-    );
-  }
-
-  if (settings.openRouterApiKey) {
-    try {
-      return await callOpenRouter(
-        settings.openRouterApiKey,
-        prompt
-      );
-    } catch (error) {
-      console.warn("OpenRouter failed. Trying Groq.", error);
-      errors.push(error);
-    }
-  }
-
-  if (settings.groqApiKey) {
-    try {
-      return await callGroq(
-        settings.groqApiKey,
-        prompt
-      );
-    } catch (error) {
-      console.warn("Groq failed.", error);
-      errors.push(error);
-    }
-  }
-
-  throw new Error(
-    errors
-      .map((error) => error?.message)
-      .filter(Boolean)
-      .join(" | ") ||
-      "All configured AI providers failed."
-  );
+async function getDailyUsage() {
+  const session = await requireSession();
+  const today = new Date().toISOString().slice(0, 10);
+  const query = new URLSearchParams({
+    select: "request_count",
+    usage_date: `eq.${today}`,
+    limit: "1",
+  });
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/ai_usage_daily?${query}`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${session.access_token}`,
+      Accept: "application/json",
+    },
+  });
+  const data = await response.json().catch(() => []);
+  if (!response.ok) throw new Error("Daily usage could not be loaded.");
+  const used = Number(Array.isArray(data) ? data[0]?.request_count : 0) || 0;
+  return { used, remaining: Math.max(0, 30 - used), limit: 30 };
 }
 
 function cleanJsonResponse(response) {
@@ -414,7 +395,8 @@ async function generateSingleReply(request) {
       message,
       request.tone,
       request.length,
-      request.conversationContext
+      request.conversationContext,
+      request.language
     )
   );
 }
@@ -430,7 +412,8 @@ async function generateMultipleReplies(request) {
     buildMultipleRepliesPrompt(
       message,
       request.length,
-      request.conversationContext
+      request.conversationContext,
+      request.language
     )
   );
 
@@ -546,6 +529,33 @@ async function improveReply(request) {
 
 chrome.runtime.onMessage.addListener(
   (request, _sender, sendResponse) => {
+    if (request?.type === "GET_USAGE") {
+      getDailyUsage()
+        .then((usage) => sendResponse({ success: true, signedIn: true, ...usage }))
+        .catch(async (error) => {
+          const session = await getSession();
+          sendResponse({ success: false, signedIn: Boolean(session?.access_token), error: error?.message });
+        });
+      return true;
+    }
+
+    if (request?.type === "AUTH_STATUS") {
+      getSession().then((session) => sendResponse({ success: true, signedIn: Boolean(session?.access_token) }));
+      return true;
+    }
+
+    if (request?.type === "AUTH_SIGN_IN") {
+      signInWithGoogle()
+        .then(() => sendResponse({ success: true, signedIn: true }))
+        .catch((error) => sendResponse({ success: false, error: error?.message || "Google sign-in failed." }));
+      return true;
+    }
+
+    if (request?.type === "AUTH_SIGN_OUT") {
+      clearSession().then(() => sendResponse({ success: true, signedIn: false }));
+      return true;
+    }
+
     if (request?.type === "GENERATE_REPLY") {
       generateSingleReply(request)
         .then((reply) => {

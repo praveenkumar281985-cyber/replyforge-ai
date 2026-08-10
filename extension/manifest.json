@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "ReplyForge AI",
-  "version": "2.9.3",
+  "version": "3.3.0",
   "description": "Generate, rewrite and insert AI replies directly inside Gmail, WhatsApp Web and LinkedIn.",
   "permissions": [
     "activeTab",
+    "identity",
     "storage",
     "scripting",
     "sidePanel",
@@ -14,8 +15,7 @@
     "https://mail.google.com/*",
     "https://web.whatsapp.com/*",
     "https://www.linkedin.com/*",
-    "https://openrouter.ai/*",
-    "https://api.groq.com/*"
+    "https://dyunvmfsastrhyxzscmp.supabase.co/*"
   ],
   "background": {
     "service_worker": "background.js"

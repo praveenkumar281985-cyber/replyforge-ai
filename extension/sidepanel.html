@@ -33,6 +33,20 @@
         </div>
       </header>
 
+      <section id="usageCard" class="rf-usage-card">
+        <div class="rf-usage-topline">
+          <div>
+            <span class="rf-usage-label">Daily AI usage</span>
+            <strong id="usageText">Checking account...</strong>
+          </div>
+          <span id="accountBadge" class="rf-account-badge">Checking</span>
+        </div>
+        <div class="rf-usage-track" aria-hidden="true">
+          <span id="usageProgress"></span>
+        </div>
+        <small id="usageResetText">30 replies available each day</small>
+      </section>
+
 
       <section class="rf-platform-strip">
         <div>
@@ -150,11 +164,31 @@
 
       <section class="settings-grid">
         <label>
+          <span>Tone</span>
+          <select id="tone">
+            <option selected>Professional</option>
+            <option>Friendly</option>
+            <option>Assertive</option>
+            <option>Empathetic</option>
+          </select>
+        </label>
+
+        <label>
           <span>Length</span>
           <select id="length">
             <option>Short</option>
             <option selected>Medium</option>
             <option>Long</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Language</span>
+          <select id="language">
+            <option value="Auto" selected>Auto-detect</option>
+            <option>English</option>
+            <option>Hindi</option>
+            <option>Hinglish</option>
           </select>
         </label>
 
@@ -247,7 +281,7 @@
           <div id="historyList" class="rf-history-list"></div>
         </div>
       </section>
-<footer class="popup-footer">ReplyForge AI Side Panel v3.2.1</footer>
+<footer class="popup-footer">ReplyForge AI Side Panel v3.3.0</footer>
     </main>
 
     <div id="settingsBackdrop" class="rf-settings-backdrop" hidden>
