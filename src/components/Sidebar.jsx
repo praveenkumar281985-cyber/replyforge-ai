@@ -17,7 +17,10 @@ function Sidebar({
   onOpenTools,
   onNewReply,
   userName,
+  userEmail,
+  onLogout,
 }) {
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [serverUsage, setServerUsage] = useState({
     used: 0,
     remaining: DAILY_AI_LIMIT,
@@ -163,10 +166,23 @@ function Sidebar({
 
         <div>
           <strong>{userName || "User"}</strong>
-          <span>Free plan</span>
+          <span title={userEmail}>{userEmail || "Free plan"}</span>
+          <small>Free plan</small>
         </div>
 
-        <button type="button" aria-label="Account menu">•••</button>
+        <button
+          type="button"
+          aria-label="Account menu"
+          aria-expanded={accountMenuOpen}
+          onClick={() => setAccountMenuOpen((open) => !open)}
+        >•••</button>
+
+        {accountMenuOpen && (
+          <div className="rf-v4-account-menu">
+            <div><strong>{userName || "User"}</strong><span>{userEmail}</span></div>
+            <button type="button" onClick={onLogout}>Sign out</button>
+          </div>
+        )}
       </div>
     </aside>
   );

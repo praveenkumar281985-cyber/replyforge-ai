@@ -3405,6 +3405,18 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
 .rf-extension-dashboard-banner p { margin:4px 0 0; color:var(--rf-v4-muted); font-size:8px; }
 .rf-extension-dashboard-banner a { flex:0 0 auto; border-radius:10px; padding:9px 12px; background:var(--rf-v4-purple); color:#fff; font-size:8px; font-weight:900; text-decoration:none; box-shadow:0 8px 18px rgba(109,74,255,.22); }
 
+.rf-v4-profile { position: relative; }
+.rf-v4-profile > div:nth-child(2) { min-width: 0; }
+.rf-v4-profile > div:nth-child(2) span { overflow:hidden; max-width:145px; text-overflow:ellipsis; white-space:nowrap; }
+.rf-v4-profile > div:nth-child(2) small { display:block; margin-top:2px; color:var(--rf-v4-muted); font-size:7px; }
+.rf-v4-account-menu { position:absolute; right:0; bottom:calc(100% + 8px); z-index:40; width:220px; overflow:hidden; border:1px solid var(--rf-v4-border); border-radius:13px; background:var(--rf-v4-surface); box-shadow:0 18px 44px rgba(15,23,42,.2); }
+.rf-v4-account-menu > div { padding:12px; border-bottom:1px solid var(--rf-v4-border); }
+.rf-v4-account-menu > div strong,.rf-v4-account-menu > div span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.rf-v4-account-menu > div strong { color:var(--rf-v4-text); font-size:9px; }
+.rf-v4-account-menu > div span { margin-top:3px; color:var(--rf-v4-muted); font-size:8px; }
+.rf-v4-account-menu > button { width:100%; padding:10px 12px; border:0; border-radius:0; background:transparent; color:#dc2626; text-align:left; font-size:8px; font-weight:900; }
+.rf-v4-account-menu > button:hover { background:rgba(220,38,38,.08); }
+
 @media (max-width:900px) {
   .rf-extension-hero { grid-template-columns:1fr; gap:36px; padding-top:44px; }
   .rf-extension-benefits { grid-template-columns:1fr 1fr; }

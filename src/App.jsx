@@ -950,6 +950,8 @@ async function runAiTool(tool) {
           }}
           onNewReply={clearAll}
           userName={userName}
+          userEmail={session.user.email}
+          onLogout={handleLogout}
         />
 
         <div className="rf-v4-main-column">
@@ -961,7 +963,6 @@ async function runAiTool(tool) {
 
             <div className="rf-v4-topbar-title">
               <strong>{conversationMode ? "Conversation workspace" : "Reply workspace"}</strong>
-              <span>{session.user.email}</span>
             </div>
 
             <div className="rf-v4-topbar-actions">
@@ -975,14 +976,6 @@ async function runAiTool(tool) {
                 Upgrade
               </button>
 
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="rf-v4-account-button"
-                title="Logout"
-              >
-                {userName.charAt(0).toUpperCase()}
-              </button>
             </div>
           </header>
 
