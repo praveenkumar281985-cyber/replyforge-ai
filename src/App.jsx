@@ -961,10 +961,6 @@ async function runAiTool(tool) {
               ReplyForge
             </div>
 
-            <div className="rf-v4-topbar-title">
-              <strong>{conversationMode ? "Conversation workspace" : "Reply workspace"}</strong>
-            </div>
-
             <div className="rf-v4-topbar-actions">
               <AIProviderButton
                 provider={providerStatus}

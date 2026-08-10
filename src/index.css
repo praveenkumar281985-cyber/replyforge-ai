@@ -104,12 +104,12 @@ select:focus-visible,
 
 .rf-v4-topbar {
   display: flex;
-  height: 52px;
+  height: 44px;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--rf-v4-border);
   background: color-mix(in srgb, var(--rf-v4-surface) 88%, transparent);
-  padding: 0 22px;
+  padding: 0 14px;
   backdrop-filter: blur(18px);
 }
 
@@ -137,6 +137,7 @@ select:focus-visible,
 
 .rf-v4-topbar-actions {
   display: flex;
+  margin-left: auto;
   align-items: center;
   gap: 8px;
 }
@@ -1542,6 +1543,11 @@ select:focus-visible,
   .rf-v4-main-column {
     height: auto;
     overflow: visible;
+  }
+
+  .rf-v4-topbar {
+    height: 52px;
+    padding: 0 14px;
   }
 
   .rf-v4-workspace {
