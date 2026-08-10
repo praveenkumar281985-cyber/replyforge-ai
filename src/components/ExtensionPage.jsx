@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const configuredExtensionUrl = import.meta.env.VITE_EXTENSION_URL?.trim() || "";
 const extensionUrl = configuredExtensionUrl || "/replyforge-extension-v3.3.2.zip";
@@ -16,9 +16,22 @@ function ChromeIcon() {
 }
 
 function ExtensionPage() {
+  const [activeInstallStep, setActiveInstallStep] = useState(1);
+  const [copiedChromeUrl, setCopiedChromeUrl] = useState(false);
+
   useEffect(() => {
     document.title = "ReplyForge Chrome Extension | ReplyForge AI";
   }, []);
+
+  async function copyChromeExtensionsUrl() {
+    try {
+      await navigator.clipboard.writeText("chrome://extensions");
+      setCopiedChromeUrl(true);
+      window.setTimeout(() => setCopiedChromeUrl(false), 2200);
+    } catch {
+      setCopiedChromeUrl(false);
+    }
+  }
 
   return (
     <div className="rf-extension-page">
@@ -48,7 +61,16 @@ function ExtensionPage() {
             {!isStoreInstall && (
               <div className="rf-extension-install-note" role="note">
                 <strong>Quick install</strong>
-                <span>Download ZIP</span><i>→</i><span>Extract folder</span><i>→</i><span>Load unpacked in Chrome</span>
+                <div className="rf-extension-install-steps" aria-label="Extension installation steps">
+                  <button type="button" className={activeInstallStep === 1 ? "active" : ""} onClick={() => setActiveInstallStep(1)}><b>1</b> Download</button>
+                  <button type="button" className={activeInstallStep === 2 ? "active" : ""} onClick={() => setActiveInstallStep(2)}><b>2</b> Extract</button>
+                  <button type="button" className={activeInstallStep === 3 ? "active" : ""} onClick={() => setActiveInstallStep(3)}><b>3</b> Add to Chrome</button>
+                </div>
+                <div className="rf-extension-step-detail" aria-live="polite">
+                  {activeInstallStep === 1 && <><span>Click “Download for Chrome” and save the ZIP file.</span><a href={extensionUrl} download="ReplyForge-Extension-v3.3.2.zip">Download again</a></>}
+                  {activeInstallStep === 2 && <span>Open Downloads, right-click the ZIP and choose <b>Extract all</b>. Keep the extracted folder.</span>}
+                  {activeInstallStep === 3 && <><span>Open <b>chrome://extensions</b>, enable Developer mode, choose <b>Load unpacked</b>, then select the extracted folder.</span><button type="button" onClick={copyChromeExtensionsUrl}>{copiedChromeUrl ? "Copied ✓" : "Copy Chrome URL"}</button></>}
+                </div>
               </div>
             )}
           </div>
@@ -58,7 +80,7 @@ function ExtensionPage() {
             <div className="rf-extension-usage"><span>Daily AI usage</span><strong>23 of 30 replies remaining</strong><i><b /></i></div>
             <div className="rf-extension-preview-message"><span>Incoming message</span><p>Can you confirm whether tomorrow's meeting is still scheduled?</p></div>
             <div className="rf-extension-preview-controls"><span>Professional</span><span>Short</span><span>English</span><span>Single reply</span></div>
-            <div className="rf-extension-generate">Generate Reply</div>
+            <div className="rf-extension-generate"><span>Generate Reply</span><small>Extension preview</small></div>
           </div>
         </section>
 
