@@ -165,6 +165,7 @@ function ReplyBox({
   async function handleQuickTool(tool) {
     if (!reply?.trim() || isBusy) return;
     pendingVersionLabel.current = tool;
+    setActiveMenu(null);
     await runAiTool(tool);
   }
 
@@ -340,18 +341,69 @@ function ReplyBox({
           )}
         </div>
 
-        {quickTools.map(([id, icon, label]) => (
+        {quickTools.map(([id, icon, label], index) => (
           <button
             key={id}
             type="button"
             onClick={() => handleQuickTool(id)}
             disabled={!reply || isBusy}
-            className={toolLoading === id ? "is-loading" : ""}
+            className={`${index === 0 ? "rf-v4-mobile-primary-tool" : "rf-v4-mobile-secondary-tool"} ${toolLoading === id ? "is-loading" : ""}`}
           >
             <span>{toolLoading === id ? "…" : icon}</span>
             {label}
           </button>
         ))}
+
+        <div className="rf-v4-popover-anchor rf-v4-mobile-more">
+          <button
+            type="button"
+            onClick={() =>
+              setActiveMenu((current) =>
+                current === "more" ? null : "more"
+              )
+            }
+            disabled={!reply || isBusy}
+            className={activeMenu === "more" ? "is-active" : ""}
+            aria-expanded={activeMenu === "more"}
+            aria-haspopup="menu"
+          >
+            ••• More actions <span>⌄</span>
+          </button>
+
+          {activeMenu === "more" && (
+            <div role="menu" className="rf-v4-popover rf-v4-mobile-more-popover">
+              <div className="rf-v4-popover-title">More actions</div>
+
+              <div className="rf-v4-popover-grid">
+                {quickTools.slice(1).map(([id, icon, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="menuitem"
+                    onClick={() => handleQuickTool(id)}
+                    disabled={!reply || isBusy}
+                  >
+                    <span>{toolLoading === id ? "…" : icon} {label}</span>
+                    <span>→</span>
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setActiveMenu(null);
+                    handleDownload();
+                  }}
+                  disabled={!reply || isBusy}
+                >
+                  <span>↓ Export</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="rf-v4-toolbar-spacer" />
 
@@ -359,6 +411,7 @@ function ReplyBox({
           type="button"
           onClick={handleDownload}
           disabled={!reply || isBusy}
+          className="rf-v4-mobile-secondary-tool"
         >
           ↓ Export
         </button>
