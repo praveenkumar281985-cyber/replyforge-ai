@@ -691,6 +691,118 @@ body {
 .rf-account-badge.connected { background: #dcfce7; color: #15803d; }
 .rf-account-badge.signed-out { background: #fee2e2; color: #b91c1c; }
 
+.rf-auth-card {
+  margin-bottom: var(--rf-compact-gap);
+  border: 1px solid rgba(109, 40, 217, 0.2);
+  border-radius: 13px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(59, 130, 246, 0.05));
+  padding: 11px 12px;
+}
+
+.rf-auth-card-copy {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.rf-auth-google-mark {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 9px;
+  background: #fff;
+  color: #4285f4;
+  font-size: 13px;
+  font-weight: 900;
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+}
+
+.rf-auth-card-copy strong,
+.rf-auth-card-copy small {
+  display: block;
+}
+
+.rf-auth-card-copy strong {
+  color: #1e293b;
+  font-size: 9px;
+}
+
+.rf-auth-card-copy small {
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 7px;
+}
+
+.rf-auth-primary {
+  width: 100%;
+  margin-top: 9px;
+}
+
+.rf-auth-status {
+  min-height: 0;
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+.rf-auth-status:empty {
+  display: none;
+}
+
+.rf-auth-status.error { color: #b91c1c; }
+.rf-auth-status.success { color: #15803d; }
+.rf-auth-status.loading { color: #6d28d9; }
+
+.rf-settings-account {
+  margin: 11px 0 0;
+  border: 1px solid rgba(109, 40, 217, 0.18);
+  border-radius: 12px;
+  background: rgba(124, 58, 237, 0.06);
+  padding: 10px;
+}
+
+.rf-settings-account > div:first-child strong,
+.rf-settings-account > div:first-child small {
+  display: block;
+}
+
+.rf-settings-account > div:first-child strong {
+  color: #303647;
+  font-size: 9px;
+}
+
+.rf-settings-account > div:first-child small {
+  margin-top: 3px;
+  color: #8b92a3;
+  font-size: 7px;
+  line-height: 1.4;
+}
+
+.rf-settings-account-actions {
+  display: flex;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.rf-settings-account-actions button {
+  min-height: 34px;
+  margin: 0;
+}
+
+html[data-rf-theme="dark"] .rf-auth-card-copy strong,
+html[data-rf-theme="dark"] .rf-settings-account > div:first-child strong {
+  color: #f8fafc;
+}
+
+html[data-rf-theme="dark"] .rf-auth-card,
+html[data-rf-theme="dark"] .rf-settings-account {
+  border-color: rgba(167, 139, 250, 0.25);
+  background: rgba(124, 58, 237, 0.12);
+}
+
 .rf-usage-track {
   height: 6px;
   margin: 9px 0 6px;

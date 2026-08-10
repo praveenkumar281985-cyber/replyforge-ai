@@ -47,6 +47,20 @@
         <small id="usageResetText">30 replies available each day</small>
       </section>
 
+      <section id="authCard" class="rf-auth-card" hidden>
+        <div class="rf-auth-card-copy">
+          <span class="rf-auth-google-mark">G</span>
+          <div>
+            <strong>Connect your ReplyForge account</strong>
+            <small>Use the same Google account as the web app.</small>
+          </div>
+        </div>
+        <button id="mainSignInButton" type="button" class="primary-button rf-auth-primary">
+          Continue with Google
+        </button>
+        <p id="mainAuthStatus" class="rf-auth-status" aria-live="polite"></p>
+      </section>
+
 
       <section class="rf-platform-strip">
         <div>
@@ -281,7 +295,7 @@
           <div id="historyList" class="rf-history-list"></div>
         </div>
       </section>
-<footer class="popup-footer">ReplyForge AI Side Panel v3.3.0</footer>
+<footer class="popup-footer">ReplyForge AI Side Panel v3.3.1</footer>
     </main>
 
     <div id="settingsBackdrop" class="rf-settings-backdrop" hidden>
@@ -308,6 +322,22 @@
           </div>
 
           <div class="rf-settings-body">
+            <section class="rf-settings-account">
+              <div>
+                <strong>ReplyForge account</strong>
+                <small id="settingsAccountStatus">Checking sign-in status…</small>
+              </div>
+              <div class="rf-settings-account-actions">
+                <button id="settingsSignInButton" type="button" class="primary-button">
+                  Sign in with Google
+                </button>
+                <button id="settingsSignOutButton" type="button" class="secondary-button" hidden>
+                  Sign out
+                </button>
+              </div>
+              <p id="settingsAuthMessage" class="rf-auth-status" aria-live="polite"></p>
+            </section>
+
             <label class="rf-setting-row">
               <span>
                 <strong>Theme</strong>

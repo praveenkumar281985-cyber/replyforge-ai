@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ReplyForge AI",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "description": "Generate, rewrite and insert AI replies directly inside Gmail, WhatsApp Web and LinkedIn.",
   "permissions": [
     "activeTab",

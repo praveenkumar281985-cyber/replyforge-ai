@@ -10,6 +10,13 @@ const usageText = document.getElementById("usageText");
 const usageProgress = document.getElementById("usageProgress");
 const usageResetText = document.getElementById("usageResetText");
 const accountBadge = document.getElementById("accountBadge");
+const authCard = document.getElementById("authCard");
+const mainSignInButton = document.getElementById("mainSignInButton");
+const mainAuthStatus = document.getElementById("mainAuthStatus");
+const settingsSignInButton = document.getElementById("settingsSignInButton");
+const settingsSignOutButton = document.getElementById("settingsSignOutButton");
+const settingsAccountStatus = document.getElementById("settingsAccountStatus");
+const settingsAuthMessage = document.getElementById("settingsAuthMessage");
 const errorBox = document.getElementById("errorBox");
 const platformName = document.getElementById(
   "platformName"
@@ -125,6 +132,67 @@ const templateButtons = document.getElementById("templateButtons");
 const clearTemplateButton = document.getElementById("clearTemplateButton");
 const selectedTemplateStatus = document.getElementById("selectedTemplateStatus");
 
+function renderAuthState(signedIn, message = "", type = "") {
+  authCard.hidden = signedIn;
+  settingsSignInButton.hidden = signedIn;
+  settingsSignOutButton.hidden = !signedIn;
+  settingsAccountStatus.textContent = signedIn
+    ? "Connected · Your web-app plan and daily allowance are active."
+    : "Signed out · Connect the same Google account as the web app.";
+
+  mainAuthStatus.textContent = message;
+  mainAuthStatus.className = `rf-auth-status ${type}`;
+  settingsAuthMessage.textContent = message;
+  settingsAuthMessage.className = `rf-auth-status ${type}`;
+}
+
+function setAuthButtonsDisabled(disabled) {
+  mainSignInButton.disabled = disabled;
+  settingsSignInButton.disabled = disabled;
+  settingsSignOutButton.disabled = disabled;
+}
+
+async function refreshAuthStatus() {
+  try {
+    const response = await chrome.runtime.sendMessage({ type: "AUTH_STATUS" });
+    renderAuthState(Boolean(response?.success && response?.signedIn));
+  } catch (error) {
+    renderAuthState(false, error?.message || "Could not read sign-in status.", "error");
+  }
+}
+
+async function signInFromPanel() {
+  try {
+    setAuthButtonsDisabled(true);
+    renderAuthState(false, "Opening secure Google sign-in…", "loading");
+    const response = await chrome.runtime.sendMessage({ type: "AUTH_SIGN_IN" });
+    if (!response?.success) {
+      throw new Error(response?.error || "Google sign-in failed.");
+    }
+
+    renderAuthState(true, "Signed in successfully.", "success");
+    await refreshUsage();
+  } catch (error) {
+    renderAuthState(false, error?.message || "Google sign-in failed.", "error");
+  } finally {
+    setAuthButtonsDisabled(false);
+  }
+}
+
+async function signOutFromPanel() {
+  try {
+    setAuthButtonsDisabled(true);
+    const response = await chrome.runtime.sendMessage({ type: "AUTH_SIGN_OUT" });
+    if (!response?.success) throw new Error(response?.error || "Sign out failed.");
+    renderAuthState(false, "Signed out.", "success");
+    await refreshUsage();
+  } catch (error) {
+    renderAuthState(true, error?.message || "Sign out failed.", "error");
+  } finally {
+    setAuthButtonsDisabled(false);
+  }
+}
+
 async function refreshUsage() {
   try {
     const status = await chrome.runtime.sendMessage({ type: "GET_USAGE" });
@@ -134,6 +202,7 @@ async function refreshUsage() {
       usageResetText.textContent = "Open settings to sign in with Google";
       accountBadge.textContent = "Signed out";
       accountBadge.className = "rf-account-badge signed-out";
+      renderAuthState(false);
       return;
     }
     const used = Math.max(0, Number(status.used) || 0);
@@ -146,6 +215,7 @@ async function refreshUsage() {
     usageResetText.textContent = remaining === 0 ? "Daily limit reached — resets tomorrow" : `${used} used today · resets daily`;
     accountBadge.textContent = "Connected";
     accountBadge.className = "rf-account-badge connected";
+    renderAuthState(true);
   } catch (error) {
     usageText.textContent = "Usage unavailable";
     usageResetText.textContent = "Generation still works; retry after reopening the panel";
@@ -396,6 +466,7 @@ function openSettingsDialog() {
   fillSettingsForm();
   settingsBackdrop.hidden = false;
   themeSetting.focus();
+  refreshAuthStatus();
 }
 
 function closeSettingsDialog() {
@@ -2134,6 +2205,10 @@ openSettingsButton.addEventListener(
   "click",
   openSettingsDialog
 );
+
+mainSignInButton.addEventListener("click", signInFromPanel);
+settingsSignInButton.addEventListener("click", signInFromPanel);
+settingsSignOutButton.addEventListener("click", signOutFromPanel);
 
 closeSettingsButton.addEventListener(
   "click",
