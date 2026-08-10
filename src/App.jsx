@@ -987,11 +987,11 @@ async function runAiTool(tool) {
           </header>
 
           <main className="rf-v4-workspace">
-            <section className="rf-extension-dashboard-banner">
-              <div><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
-              <a href="/?view=extension">Get the extension <b>→</b></a>
-            </section>
             <div className="rf-v4-workspace-primary">
+              <section className="rf-extension-dashboard-banner">
+                <div><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
+                <a href="/?view=extension">Get the extension <b>→</b></a>
+              </section>
               <section className="rf-v4-compose-panel">
                 <Header />
 
