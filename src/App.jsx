@@ -960,26 +960,23 @@ async function runAiTool(tool) {
               <span>R</span>
               ReplyForge
             </div>
-
-            <div className="rf-v4-topbar-actions">
-              <AIProviderButton
-                provider={providerStatus}
-                preference={providerPreference}
-                onClick={() => setProviderModalOpen(true)}
-              />
-
-              <button type="button" className="rf-v4-upgrade-button">
-                Upgrade
-              </button>
-
-            </div>
           </header>
 
           <main className="rf-v4-workspace">
             <div className="rf-v4-workspace-primary">
               <section className="rf-extension-dashboard-banner">
-                <div><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
-                <a href="/?view=extension">Get the extension <b>→</b></a>
+                <div className="rf-extension-dashboard-copy"><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
+                <div className="rf-extension-dashboard-actions">
+                  <AIProviderButton
+                    provider={providerStatus}
+                    preference={providerPreference}
+                    onClick={() => setProviderModalOpen(true)}
+                  />
+                  <button type="button" className="rf-v4-upgrade-button">
+                    Upgrade
+                  </button>
+                  <a href="/?view=extension">Get the extension <b>→</b></a>
+                </div>
               </section>
               <section className="rf-v4-compose-panel">
                 <Header />
