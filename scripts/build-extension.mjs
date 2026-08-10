@@ -32,6 +32,7 @@ import {
     "options.js",
     "content.js",
     "content.css",
+    "webapp-bridge.js",
     "sidepanel.html",
     "sidepanel.css",
     "sidepanel.js",

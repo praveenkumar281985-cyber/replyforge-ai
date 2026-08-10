@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ReplyForge AI",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "Generate, rewrite and insert AI replies directly inside Gmail, WhatsApp Web and LinkedIn.",
   "permissions": [
     "activeTab",
@@ -15,6 +15,7 @@
     "https://mail.google.com/*",
     "https://web.whatsapp.com/*",
     "https://www.linkedin.com/*",
+    "https://replyforge-ai-w1n6.vercel.app/*",
     "https://dyunvmfsastrhyxzscmp.supabase.co/*"
   ],
   "background": {
@@ -37,6 +38,15 @@
       ],
       "css": [
         "content.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://replyforge-ai-w1n6.vercel.app/*"
+      ],
+      "js": [
+        "webapp-bridge.js"
       ],
       "run_at": "document_idle"
     }

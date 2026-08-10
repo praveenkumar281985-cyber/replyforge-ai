@@ -70,6 +70,10 @@ function getSavedData(key, fallback) {
 
 function App() {
   const [session, setSession] = useState(null);
+  const [extensionStatus, setExtensionStatus] = useState({
+    installed: false,
+    version: "",
+  });
   const [authLoading, setAuthLoading] = useState(true);
   const [passwordRecovery, setPasswordRecovery] = useState(() =>
     new URLSearchParams(window.location.search).has("reset-password")
@@ -172,6 +176,40 @@ function App() {
   const [darkMode, setDarkMode] = useState(() =>
     getSavedData("replyforge-dark-mode", true)
   );
+
+  useEffect(() => {
+    function detectReplyForgeExtension() {
+      const version =
+        document.documentElement.getAttribute(
+          "data-replyforge-extension-version"
+        ) || "";
+
+      if (version) {
+        setExtensionStatus({ installed: true, version });
+      }
+    }
+
+    window.addEventListener(
+      "replyforge:extension-ready",
+      detectReplyForgeExtension
+    );
+
+    detectReplyForgeExtension();
+    window.dispatchEvent(new Event("replyforge:extension-ping"));
+
+    const retryTimer = window.setTimeout(() => {
+      window.dispatchEvent(new Event("replyforge:extension-ping"));
+      detectReplyForgeExtension();
+    }, 700);
+
+    return () => {
+      window.clearTimeout(retryTimer);
+      window.removeEventListener(
+        "replyforge:extension-ready",
+        detectReplyForgeExtension
+      );
+    };
+  }, []);
 
   useEffect(() => {
     window.clearTimeout(
@@ -994,10 +1032,14 @@ async function runAiTool(tool) {
 
           <main className="rf-v4-workspace">
             <div ref={workspacePrimaryRef} className="rf-v4-workspace-primary">
-              <section className="rf-extension-dashboard-banner">
-                <div className="rf-extension-dashboard-copy"><span>NEW</span><strong>Reply directly inside Gmail, WhatsApp and LinkedIn</strong><p>Use your same ReplyForge account and daily allowance in the Chrome extension.</p></div>
+              <section className={`rf-extension-dashboard-banner${extensionStatus.installed ? " is-installed" : ""}`}>
+                <div className="rf-extension-dashboard-copy"><span>{extensionStatus.installed ? "READY" : "NEW"}</span><strong>{extensionStatus.installed ? "ReplyForge extension is connected" : "Reply directly inside Gmail, WhatsApp and LinkedIn"}</strong><p>{extensionStatus.installed ? "Open Gmail, WhatsApp Web or LinkedIn and use ReplyForge from the Chrome side panel." : "Use your same ReplyForge account and daily allowance in the Chrome extension."}</p></div>
                 <div className="rf-extension-dashboard-actions">
-                  <a href="/?view=extension">Get the extension <b>→</b></a>
+                  {extensionStatus.installed ? (
+                    <span className="rf-extension-installed-badge">✓ Extension installed <small>v{extensionStatus.version}</small></span>
+                  ) : (
+                    <a href="/?view=extension">Get the extension <b>→</b></a>
+                  )}
                 </div>
               </section>
               <section className="rf-v4-compose-panel">
