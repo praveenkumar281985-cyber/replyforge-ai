@@ -16,10 +16,67 @@ function configureReplyForgeSidePanel() {
     });
 }
 
+const REPLYFORGE_SUPPORTED_HOSTS = new Set([
+  "mail.google.com",
+  "web.whatsapp.com",
+  "www.linkedin.com",
+]);
+
+function isReplyForgeSupportedUrl(url) {
+  try {
+    return REPLYFORGE_SUPPORTED_HOSTS.has(new URL(url).hostname);
+  } catch {
+    return false;
+  }
+}
+
+async function syncReplyForgeSidePanelForTab(tabId, url) {
+  if (!chrome.sidePanel?.setOptions || !Number.isInteger(tabId)) {
+    return;
+  }
+
+  try {
+    await chrome.sidePanel.setOptions({
+      tabId,
+      path: "sidepanel.html",
+      enabled: isReplyForgeSupportedUrl(url),
+    });
+  } catch (error) {
+    console.error("ReplyForge side panel tab sync failed:", error);
+  }
+}
+
+async function syncActiveReplyForgeSidePanel() {
+  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (activeTab?.id != null) {
+    await syncReplyForgeSidePanelForTab(activeTab.id, activeTab.url);
+  }
+}
+
 configureReplyForgeSidePanel();
 
 chrome.runtime.onInstalled.addListener(() => {
   configureReplyForgeSidePanel();
+  syncActiveReplyForgeSidePanel().catch(console.error);
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  syncActiveReplyForgeSidePanel().catch(console.error);
+});
+
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    await syncReplyForgeSidePanelForTab(tabId, tab.url);
+  } catch (error) {
+    console.error("ReplyForge active tab check failed:", error);
+  }
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url || changeInfo.status === "complete") {
+    syncReplyForgeSidePanelForTab(tabId, changeInfo.url || tab.url).catch(console.error);
+  }
 });
 
 importScripts("ai-coach.js");
