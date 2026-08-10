@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 
-const extensionUrl = import.meta.env.VITE_EXTENSION_URL?.trim() || "";
+const configuredExtensionUrl = import.meta.env.VITE_EXTENSION_URL?.trim() || "";
+const extensionUrl = configuredExtensionUrl || "/replyforge-extension-v3.3.2.zip";
+const isStoreInstall = Boolean(configuredExtensionUrl);
 
 const benefits = [
   ["Works where you reply", "Draft inside Gmail, WhatsApp Web and LinkedIn without switching tabs."],
@@ -32,18 +34,23 @@ function ExtensionPage() {
             <h1>Write better replies without leaving your inbox.</h1>
             <p>Bring ReplyForge directly into Gmail, WhatsApp Web and LinkedIn. Generate, rewrite, improve and insert replies from a focused side panel.</p>
             <div className="rf-extension-actions">
-              {extensionUrl ? (
-                <a href={extensionUrl} target="_blank" rel="noreferrer" className="rf-extension-install">
-                  <ChromeIcon /> Add to Chrome
-                </a>
-              ) : (
-                <button type="button" className="rf-extension-install" disabled>
-                  <ChromeIcon /> Chrome Web Store — coming soon
-                </button>
-              )}
+              <a
+                href={extensionUrl}
+                target={isStoreInstall ? "_blank" : undefined}
+                rel={isStoreInstall ? "noreferrer" : undefined}
+                download={isStoreInstall ? undefined : "ReplyForge-Extension-v3.3.2.zip"}
+                className="rf-extension-install"
+              >
+                <ChromeIcon /> {isStoreInstall ? "Add to Chrome" : "Download for Chrome"}
+              </a>
               <a href="/" className="rf-extension-secondary">Try the web app</a>
             </div>
-            {!extensionUrl && <small>Chrome Web Store publishing is in progress. The install button activates automatically when the store URL is configured.</small>}
+            {!isStoreInstall && (
+              <div className="rf-extension-install-note" role="note">
+                <strong>Quick install</strong>
+                <span>Download ZIP</span><i>→</i><span>Extract folder</span><i>→</i><span>Load unpacked in Chrome</span>
+              </div>
+            )}
           </div>
 
           <div className="rf-extension-preview" aria-label="ReplyForge extension preview">
