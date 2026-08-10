@@ -3280,6 +3280,12 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
   color: #334155 !important;
 }
 
-.rf-auth-card button[type="button"]:not(:first-child) {
-  color: inherit;
+.rf-auth-card .rf-auth-mode-tab {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.rf-auth-card .rf-auth-mode-tab-active {
+  background: #ffffff !important;
+  color: #4338ca !important;
 }

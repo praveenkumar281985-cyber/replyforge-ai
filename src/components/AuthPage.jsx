@@ -1,6 +1,16 @@
 import { useState } from "react";
 import supabase from "../lib/supabase";
 
+const configuredAppUrl = import.meta.env.VITE_APP_URL?.replace(/\/$/, "");
+
+function getAuthRedirectUrl() {
+  if (configuredAppUrl) return configuredAppUrl;
+  if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+    return window.location.origin;
+  }
+  return "https://replyforge-ai-w1n6.vercel.app";
+}
+
 function AuthPage() {
   const [mode, setMode] = useState("login");
   const [name, setName] = useState("");
@@ -81,7 +91,7 @@ function AuthPage() {
           password,
           options: {
             data: { full_name: cleanName },
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: getAuthRedirectUrl(),
           },
         });
 
@@ -128,10 +138,11 @@ function AuthPage() {
       setGoogleLoading(true);
       clearStatus();
 
-      const { error: googleError } = await supabase.auth.signInWithOAuth({
+      const { data, error: googleError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: getAuthRedirectUrl(),
+          skipBrowserRedirect: true,
           queryParams: {
             prompt: "select_account",
           },
@@ -139,6 +150,8 @@ function AuthPage() {
       });
 
       if (googleError) throw googleError;
+      if (!data?.url) throw new Error("Google sign-in could not be started.");
+      window.location.assign(data.url);
     } catch (err) {
       console.error("Google login error:", err);
       setError(err.message || "Google login failed. Please try again.");
@@ -170,7 +183,7 @@ function AuthPage() {
 
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
         cleanEmail,
-        { redirectTo: `${window.location.origin}?reset-password=true` }
+        { redirectTo: `${getAuthRedirectUrl()}?reset-password=true` }
       );
 
       if (resetError) throw resetError;
@@ -210,9 +223,10 @@ function AuthPage() {
           <button
             type="button"
             onClick={() => changeMode("login")}
-            className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+            aria-pressed={mode === "login"}
+            className={`rf-auth-mode-tab rounded-xl px-4 py-3 text-sm font-bold transition ${
               mode === "login"
-                ? "bg-white text-indigo-700 shadow-sm"
+                ? "rf-auth-mode-tab-active bg-white text-indigo-700 shadow-sm"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
@@ -222,9 +236,10 @@ function AuthPage() {
           <button
             type="button"
             onClick={() => changeMode("signup")}
-            className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+            aria-pressed={mode === "signup"}
+            className={`rf-auth-mode-tab rounded-xl px-4 py-3 text-sm font-bold transition ${
               mode === "signup"
-                ? "bg-white text-indigo-700 shadow-sm"
+                ? "rf-auth-mode-tab-active bg-white text-indigo-700 shadow-sm"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
