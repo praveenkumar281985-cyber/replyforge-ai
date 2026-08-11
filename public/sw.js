@@ -1,4 +1,4 @@
-const CACHE_NAME = "replyforge-shell-v1";
+const CACHE_NAME = "replyforge-shell-v2";
 const APP_SHELL = ["/", "/offline.html", "/manifest.webmanifest", "/favicon.svg", "/pwa/icon-192.png"];
 
 self.addEventListener("install", (event) => {
