@@ -391,10 +391,27 @@ select:focus-visible,
 }
 
 .rf-v4-brand {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 1px 3px 14px;
+}
+
+.rf-v4-brand-account-button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #7656ff, #5a39e9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .rf-v4-brand-mark {
@@ -3197,34 +3214,6 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
   }
 }
 
-/* Desktop account must remain visible even when the usage card grows. */
-@media (min-width: 1181px) {
-  .rf-v4-sidebar {
-    position: relative;
-    padding-bottom: 72px;
-  }
-
-  .rf-v4-profile {
-    position: absolute;
-    right: 11px;
-    bottom: 10px;
-    left: 11px;
-    z-index: 12;
-    margin: 0;
-    border: 1px solid var(--rf-v4-border);
-    border-radius: 12px;
-    background: color-mix(in srgb, var(--rf-v4-surface) 96%, transparent);
-    padding: 9px;
-    box-shadow: 0 12px 28px -24px rgba(20, 22, 30, 0.5);
-  }
-
-  .rf-v4-usage-analytics {
-    max-height: min(330px, calc(100vh - 455px));
-    overflow-y: auto;
-    scrollbar-width: thin;
-  }
-}
-
 /* ===== COMPACT MOBILE CONTROLS: 2 x 2 GRID ===== */
 @media (max-width: 620px) {
   .rf-v4-controls {
@@ -3705,8 +3694,12 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
 .rf-v4-account-menu > div strong,.rf-v4-account-menu > div span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .rf-v4-account-menu > div strong { color:var(--rf-v4-text); font-size:9px; }
 .rf-v4-account-menu > div span { margin-top:3px; color:var(--rf-v4-muted); font-size:8px; }
+.rf-v4-account-menu > div small { display:block; margin-top:4px; color:var(--rf-v4-faint); font-size:7px; }
 .rf-v4-account-menu > button { width:100%; padding:10px 12px; border:0; border-radius:0; background:transparent; color:#dc2626; text-align:left; font-size:8px; font-weight:900; }
 .rf-v4-account-menu > button:hover { background:rgba(220,38,38,.08); }
+.rf-v4-brand-account-menu { top:calc(100% + 7px); right:0; bottom:auto; }
+.rf-v4-account-menu > button.rf-v4-account-theme { border-bottom:1px solid var(--rf-v4-border); color:var(--rf-v4-muted); }
+.rf-v4-account-menu > button.rf-v4-account-theme:hover { background:var(--rf-v4-surface-soft); color:var(--rf-v4-text); }
 
 @media (max-width:900px) {
   .rf-extension-hero { grid-template-columns:1fr; gap:28px; padding-top:30px; }

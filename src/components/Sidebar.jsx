@@ -89,12 +89,23 @@ function Sidebar({
 
         <button
           type="button"
-          onClick={() => setDarkMode(!darkMode)}
-          className="rf-v4-theme-button"
-          aria-label="Toggle dark mode"
+          className="rf-v4-brand-account-button"
+          aria-label="Open account menu"
+          aria-expanded={accountMenuOpen}
+          onClick={() => setAccountMenuOpen((open) => !open)}
         >
-          {darkMode ? "☀" : "☾"}
+          {userName?.charAt(0)?.toUpperCase() || "U"}
         </button>
+
+        {accountMenuOpen && (
+          <div className="rf-v4-account-menu rf-v4-brand-account-menu">
+            <div><strong>{userName || "User"}</strong><span>{userEmail}</span><small>Free plan</small></div>
+            <button type="button" className="rf-v4-account-theme" onClick={() => setDarkMode(!darkMode)}>
+              {darkMode ? "☀ Light appearance" : "☾ Dark appearance"}
+            </button>
+            <button type="button" onClick={onLogout}>Sign out</button>
+          </div>
+        )}
       </div>
 
       <button type="button" onClick={onNewReply} className="rf-v4-new-reply">
@@ -172,31 +183,6 @@ function Sidebar({
         <button type="button">Upgrade workspace</button>
       </section>
 
-      <div className="rf-v4-profile">
-        <div className="rf-v4-avatar">
-          {userName?.charAt(0)?.toUpperCase() || "U"}
-        </div>
-
-        <div>
-          <strong>{userName || "User"}</strong>
-          <span title={userEmail}>{userEmail || "Free plan"}</span>
-          <small>Free plan</small>
-        </div>
-
-        <button
-          type="button"
-          aria-label="Account menu"
-          aria-expanded={accountMenuOpen}
-          onClick={() => setAccountMenuOpen((open) => !open)}
-        >•••</button>
-
-        {accountMenuOpen && (
-          <div className="rf-v4-account-menu">
-            <div><strong>{userName || "User"}</strong><span>{userEmail}</span></div>
-            <button type="button" onClick={onLogout}>Sign out</button>
-          </div>
-        )}
-      </div>
     </aside>
   );
 }
