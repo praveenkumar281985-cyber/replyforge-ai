@@ -17,6 +17,7 @@ import ExtensionPage from "./components/ExtensionPage";
 import AIProviderModal from "./components/AIProviderModal";
 import PWAInstallButton from "./components/PWAInstallButton";
 import ResponsiveAccountMenu from "./components/ResponsiveAccountMenu";
+import MobileCoachSheet from "./components/MobileCoachSheet";
 
 import { getAiProviderStatus } from "./services/aiService";
 import { runReplyGeneration } from "./services/replyEngine";
@@ -86,6 +87,7 @@ function App() {
   );
 
   const [providerModalOpen, setProviderModalOpen] = useState(false);
+  const [mobileCoachOpen, setMobileCoachOpen] = useState(false);
   const [providerPreference, setProviderPreference] = useState(() =>
     getProviderPreference()
   );
@@ -1015,6 +1017,7 @@ async function runAiTool(tool) {
               document.getElementById("reply-actions")
             );
           }}
+          onOpenCoach={() => setMobileCoachOpen(true)}
           onNewReply={clearAll}
           userName={userName}
           userEmail={session.user.email}
@@ -1286,6 +1289,16 @@ async function runAiTool(tool) {
           </main>
         </div>
       </div>
+      <MobileCoachSheet
+        open={mobileCoachOpen}
+        onClose={() => setMobileCoachOpen(false)}
+        replyScore={replyScore}
+        scoreLoading={scoreLoading}
+        analyzeReply={analyzeReply}
+        applyCoachFixes={applyCoachFixes}
+        coachFixLoading={coachFixLoading}
+        coachFixError={coachFixError}
+      />
       <AIProviderModal
         open={providerModalOpen}
         providerStatus={providerStatus}

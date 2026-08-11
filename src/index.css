@@ -593,6 +593,10 @@ select:focus-visible,
   font-size: 8px;
 }
 
+.rf-v4-nav-label-mobile {
+  display: none;
+}
+
 .rf-v4-sidebar-spacer {
   flex: 1;
 }
@@ -3115,11 +3119,7 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
 /* ===== MOBILE BOTTOM NAVIGATION ===== */
 @media (max-width: 1180px) {
   .rf-v4-insights-column {
-    display: block !important;
-    overflow: visible !important;
-    border-top: 1px solid var(--rf-v4-border) !important;
-    border-left: 0 !important;
-    padding: 14px 12px 92px !important;
+    display: none !important;
   }
 
   .rf-v4-sidebar {
@@ -3203,6 +3203,14 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
     font-size: 14px !important;
   }
 
+  .rf-v4-nav-label-desktop {
+    display: none !important;
+  }
+
+  .rf-v4-nav-label-mobile {
+    display: inline !important;
+  }
+
   .rf-v4-nav-count {
     position: absolute !important;
     top: 2px !important;
@@ -3218,7 +3226,142 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
   }
 
   .rf-v4-main-column {
-    padding-bottom: 82px !important;
+    padding-bottom: 96px !important;
+  }
+
+  .rf-v4-workspace-primary {
+    padding-bottom: 118px !important;
+  }
+}
+
+/* Mobile AI Coach: one-tap access without extending the compose page. */
+.rf-mobile-coach-backdrop {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .rf-mobile-coach-backdrop {
+    position: fixed;
+    z-index: 10020;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(10, 10, 18, 0.58);
+    padding: 12px 10px max(10px, env(safe-area-inset-bottom));
+    backdrop-filter: blur(5px);
+  }
+
+  .rf-mobile-coach-sheet {
+    width: min(560px, 100%);
+    max-height: min(86vh, 760px);
+    overflow: hidden;
+    border: 1px solid var(--rf-v4-border);
+    border-radius: 22px;
+    background: var(--rf-v4-surface-soft);
+    box-shadow: 0 30px 90px rgba(5, 5, 15, 0.38);
+    animation: rf-mobile-coach-in 180ms ease-out;
+  }
+
+  .rf-mobile-coach-handle {
+    width: 38px;
+    height: 4px;
+    margin: 8px auto 3px;
+    border-radius: 999px;
+    background: var(--rf-v4-border-strong);
+  }
+
+  .rf-mobile-coach-header {
+    display: flex;
+    min-height: 54px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--rf-v4-border);
+    padding: 8px 13px 10px;
+  }
+
+  .rf-mobile-coach-header > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rf-mobile-coach-header span {
+    color: var(--rf-v4-purple);
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .rf-mobile-coach-header strong {
+    margin-top: 2px;
+    color: var(--rf-v4-text);
+    font-size: 13px;
+  }
+
+  .rf-mobile-coach-header button {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid var(--rf-v4-border);
+    border-radius: 11px;
+    background: var(--rf-v4-surface);
+    color: var(--rf-v4-muted);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .rf-mobile-coach-content {
+    max-height: calc(min(86vh, 760px) - 69px);
+    overflow-y: auto;
+    padding: 10px;
+    overscroll-behavior: contain;
+  }
+
+  .rf-mobile-coach-content .rf-v4-insight-card {
+    box-shadow: none;
+  }
+}
+
+@keyframes rf-mobile-coach-in {
+  from { transform: translateY(22px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 620px) {
+  .rf-v4-generate-row {
+    position: sticky !important;
+    z-index: 30 !important;
+    bottom: 76px !important;
+    border: 1px solid var(--rf-v4-border) !important;
+    border-radius: 14px !important;
+    background: color-mix(in srgb, var(--rf-v4-surface-soft) 88%, transparent) !important;
+    padding: 7px !important;
+    box-shadow: 0 14px 36px rgba(20, 18, 38, 0.16) !important;
+    backdrop-filter: blur(16px);
+  }
+
+  .rf-extension-dashboard-banner {
+    gap: 7px;
+    padding: 8px !important;
+  }
+
+  .rf-extension-dashboard-banner p {
+    display: none;
+  }
+
+  .rf-extension-dashboard-actions,
+  .rf-extension-dashboard-banner a,
+  .rf-extension-installed-badge {
+    width: 100%;
+  }
+
+  .rf-extension-dashboard-banner a,
+  .rf-extension-installed-badge {
+    justify-content: center;
+    text-align: center;
   }
 }
 

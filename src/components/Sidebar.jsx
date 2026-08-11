@@ -16,6 +16,7 @@ function Sidebar({
   onOpenFavorites,
   onOpenTemplates,
   onOpenTools,
+  onOpenCoach,
   onNewReply,
   userName,
   userEmail,
@@ -108,7 +109,19 @@ function Sidebar({
     { label: "History", icon: "◷", action: onOpenHistory, count: history.length },
     { label: "Favorites", icon: "♡", action: onOpenFavorites, count: favoriteCount },
     { label: "Templates", icon: "▱", action: onOpenTemplates },
-    { label: "AI tools", icon: "⌘", action: onOpenTools },
+    {
+      label: "AI tools",
+      mobileLabel: "AI Coach",
+      icon: "⌘",
+      action: () => {
+        if (window.matchMedia("(max-width: 1180px)").matches) {
+          onOpenCoach?.();
+          return;
+        }
+
+        onOpenTools?.();
+      },
+    },
   ];
 
   return (
@@ -171,7 +184,10 @@ function Sidebar({
             }`}
           >
             <span className="rf-v4-nav-icon">{item.icon}</span>
-            <span>{item.label}</span>
+            <span className="rf-v4-nav-label-desktop">{item.label}</span>
+            <span className="rf-v4-nav-label-mobile">
+              {item.mobileLabel || item.label}
+            </span>
 
             {typeof item.count === "number" && (
               <span className="rf-v4-nav-count">{item.count}</span>
