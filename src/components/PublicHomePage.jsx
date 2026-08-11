@@ -40,6 +40,15 @@ function BrandMark() {
 function PublicHomePage() {
   useEffect(() => {
     document.title = "ReplyForge AI — The right reply, every time";
+
+    const sectionId = window.location.hash.slice(1);
+    if (!sectionId) return undefined;
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ block: "start" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, []);
 
   return (
