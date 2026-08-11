@@ -1314,3 +1314,137 @@ body:has(.rf-settings-backdrop:not([hidden])) {
     max-height: calc(100dvh - 16px);
   }
 }
+
+/* ReplyForge v3.3.6 — Compact compose flow and always-visible primary action */
+.popup-shell {
+  padding: 10px 12px 82px;
+}
+
+.popup-header {
+  margin: -10px -12px 7px;
+  padding: 9px 12px;
+}
+
+.rf-usage-card {
+  margin-bottom: 6px;
+  padding: 8px 9px;
+}
+
+.rf-usage-track {
+  height: 4px;
+  margin: 5px 0 3px;
+}
+
+.rf-provider-control {
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+.rf-provider-control select {
+  height: 28px;
+}
+
+.rf-platform-strip {
+  min-height: 36px;
+  margin-bottom: 6px;
+  padding: 5px 8px;
+}
+
+.rf-workspace-badge {
+  display: none;
+}
+
+.rf-context-debugger {
+  margin-bottom: 6px;
+  padding: 6px 8px;
+}
+
+.rf-context-button {
+  min-height: 25px;
+}
+
+.field-group,
+.rf-template-section,
+.settings-grid {
+  margin-bottom: 6px;
+  padding: 8px;
+}
+
+#message {
+  min-height: 82px;
+  max-height: 112px;
+  padding: 8px 9px;
+}
+
+.rf-quick-command-hint {
+  display: none;
+}
+
+.field-footer {
+  margin-top: 5px;
+}
+
+.rf-message-actions {
+  margin-top: 4px;
+}
+
+.rf-clear-message,
+.rf-clear-all {
+  min-height: 27px;
+}
+
+.rf-template-section {
+  overflow: hidden;
+}
+
+.rf-template-heading {
+  margin-bottom: 5px;
+}
+
+.rf-template-grid {
+  display: flex;
+  overflow-x: auto;
+  gap: 5px;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+}
+
+.rf-template-button {
+  min-width: 72px;
+  min-height: 27px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.settings-grid {
+  gap: 6px;
+}
+
+#generateButton {
+  position: fixed;
+  right: 12px;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  left: 12px;
+  z-index: 45;
+  width: auto;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 12px 30px rgba(109, 40, 217, 0.34);
+}
+
+@media (max-width: 360px) {
+  .popup-shell {
+    padding: 8px 9px 78px;
+  }
+
+  .popup-header {
+    margin: -8px -9px 6px;
+    padding: 8px 9px;
+  }
+
+  #generateButton {
+    right: 9px;
+    left: 9px;
+  }
+}
