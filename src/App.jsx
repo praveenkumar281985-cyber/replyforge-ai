@@ -16,6 +16,7 @@ import PublicHomePage from "./components/PublicHomePage";
 import ExtensionPage from "./components/ExtensionPage";
 import AIProviderModal from "./components/AIProviderModal";
 import PWAInstallButton from "./components/PWAInstallButton";
+import ResponsiveAccountMenu from "./components/ResponsiveAccountMenu";
 
 import { getAiProviderStatus } from "./services/aiService";
 import { runReplyGeneration } from "./services/replyEngine";
@@ -1029,7 +1030,15 @@ async function runAiTool(tool) {
               <span>R</span>
               ReplyForge
             </div>
-            <PWAInstallButton />
+            <div className="rf-v4-mobile-account-actions">
+              <PWAInstallButton />
+              <ResponsiveAccountMenu
+                userName={userName}
+                userEmail={session.user.email}
+                usageStats={usageStats}
+                onLogout={handleLogout}
+              />
+            </div>
           </header>
 
           <main className="rf-v4-workspace">
