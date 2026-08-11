@@ -1985,10 +1985,20 @@ select:focus-visible,
 .rf-home-hero h1 { margin-top:17px; font-size:clamp(48px,5.4vw,72px); }
 .rf-home-hero-copy > p { margin-top:18px; font-size:15px; }
 .rf-home-hero-actions { margin-top:23px; }
-.rf-home-product-preview { max-width:520px; justify-self:end; }
+.rf-home-product-preview { max-width:520px; justify-self:end; transform:none; }
 .rf-home-preview-body { padding:15px; }
-.rf-home-floating-score { right:-17px; bottom:34px; width:76px; height:76px; border-radius:21px; }
-.rf-home-floating-score strong { font-size:21px; }
+.rf-home-floating-score {
+  right:20px;
+  bottom:-15px;
+  width:112px;
+  height:42px;
+  flex-direction:row;
+  gap:8px;
+  border-radius:13px;
+  background:rgba(20,20,42,.98);
+}
+.rf-home-floating-score strong { font-size:17px; }
+.rf-home-floating-score span { max-width:45px; line-height:1.25; }
 
 .rf-home-products,.rf-home-features { padding-top:68px; padding-bottom:68px; }
 .rf-home-products,.rf-home-features { scroll-margin-top:70px; }
