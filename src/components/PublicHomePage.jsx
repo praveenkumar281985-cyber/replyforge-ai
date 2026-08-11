@@ -1,218 +1,170 @@
 import { useEffect } from "react";
+import PWAInstallButton from "./PWAInstallButton";
 
 const CONTACT_EMAIL = "praveen.kumar281985@gmail.com";
 
-const features = [
+const productCards = [
   {
-    title: "Generate polished replies",
+    eyebrow: "Web workspace",
+    title: "Create polished replies on any device",
     description:
-      "Paste an incoming message and create a clear, ready-to-review response in seconds.",
+      "Draft, rewrite, translate, organize history, and run a detailed communication check from the full ReplyForge workspace.",
+    action: "Open web app",
+    href: "/?view=app",
+    icon: "✦",
+    accent: "violet",
   },
   {
-    title: "Control tone and context",
+    eyebrow: "Chrome extension",
+    title: "Reply without leaving your inbox",
     description:
-      "Choose tone, reply length, language, and persona so the response fits the situation.",
-  },
-  {
-    title: "Review before sending",
-    description:
-      "Use communication scoring, rewriting, translation, and editing tools to refine every reply.",
+      "Use ReplyForge inside Gmail, WhatsApp Web, and LinkedIn with your same account and daily allowance.",
+    action: "Get extension",
+    href: "/?view=extension",
+    icon: "◉",
+    accent: "blue",
   },
 ];
 
-function SparkIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-      <path
-        d="M12 2.75c.68 4.55 3.19 7.06 7.75 7.75-4.56.68-7.07 3.19-7.75 7.75-.68-4.56-3.19-7.07-7.75-7.75C8.81 9.81 11.32 7.3 12 2.75Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
+const capabilities = [
+  ["01", "Context-aware writing", "Choose tone, length, language, and persona for every situation."],
+  ["02", "AI Reply Coach", "Review clarity, confidence, professionalism, empathy, and readability."],
+  ["03", "One connected account", "Keep daily usage and cloud history consistent across web and extension."],
+  ["04", "You stay in control", "Edit, copy, regenerate, or improve every reply before you send it."],
+];
+
+function BrandMark() {
+  return <span className="rf-home-brand-mark">R</span>;
 }
 
 function PublicHomePage() {
   useEffect(() => {
-    document.title = "ReplyForge AI | AI Reply Writing Workspace";
+    document.title = "ReplyForge AI — The right reply, every time";
   }, []);
 
   return (
-    <div className="min-h-screen overflow-hidden bg-slate-950 text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_18%_12%,_rgba(99,102,241,0.32),_transparent_32%),radial-gradient(circle_at_82%_22%,_rgba(139,92,246,0.2),_transparent_28%)]" />
+    <div className="rf-home">
+      <div className="rf-home-glow rf-home-glow-one" />
+      <div className="rf-home-glow rf-home-glow-two" />
 
-      <header className="relative z-10 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <a href="/about" className="flex items-center gap-3" aria-label="ReplyForge AI home">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-base font-black shadow-lg shadow-indigo-950">
-              R
-            </span>
-            <span>
-              <strong className="block text-sm font-black">ReplyForge AI</strong>
-              <span className="block text-[11px] text-slate-400">AI writing workspace</span>
-            </span>
-          </a>
+      <header className="rf-home-nav">
+        <a href="/" className="rf-home-brand" aria-label="ReplyForge home">
+          <BrandMark />
+          <span><strong>ReplyForge AI</strong><small>Intelligent reply workspace</small></span>
+        </a>
 
-          <nav className="flex items-center gap-2 sm:gap-3" aria-label="Main navigation">
-            <a
-              href="/?view=extension"
-              className="hidden rounded-xl border border-indigo-300/25 bg-indigo-400/10 px-3 py-2 text-xs font-black text-indigo-200 transition hover:-translate-y-0.5 hover:bg-indigo-400/20 sm:block"
-            >
-              Chrome Extension
-            </a>
-            <a
-              href="/privacy"
-              className="hidden px-3 py-2 text-xs font-bold text-slate-300 transition hover:text-white sm:block"
-            >
-              Privacy
-            </a>
-            <a
-              href="/terms"
-              className="hidden px-3 py-2 text-xs font-bold text-slate-300 transition hover:text-white sm:block"
-            >
-              Terms
-            </a>
-            <a
-              href="/"
-              className="rounded-xl bg-white px-4 py-2 text-xs font-black text-slate-950 shadow-lg transition hover:-translate-y-0.5 hover:bg-indigo-50"
-            >
-              Open ReplyForge
-            </a>
-          </nav>
-        </div>
+        <nav aria-label="Main navigation">
+          <a href="#products">Products</a>
+          <a href="#features">Features</a>
+          <a href="/?view=extension">Extension</a>
+          <a href="/?view=app" className="rf-home-nav-cta">Open web app <span>→</span></a>
+        </nav>
       </header>
 
-      <main className="relative z-[1]">
-        <section className="mx-auto grid max-w-6xl items-center gap-9 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.04fr_0.96fr] lg:gap-12 lg:py-14">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-indigo-400/25 bg-indigo-400/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.14em] text-indigo-200">
-              <SparkIcon /> AI-assisted communication
-            </span>
-
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[1.03] tracking-[-0.045em] sm:text-[44px] lg:text-[52px]">
-              Write the right reply,
-              <span className="block bg-gradient-to-r from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
-                with confidence.
-              </span>
-            </h1>
-
-            <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base sm:leading-7">
-              ReplyForge AI helps you draft, rewrite, translate, analyze, and
-              organize clear professional replies for everyday communication.
+      <main>
+        <section className="rf-home-hero">
+          <div className="rf-home-hero-copy">
+            <span className="rf-home-pill"><i /> Web, mobile, and Chrome—one connected workspace</span>
+            <h1>The right reply.<br /><em>Every time.</em></h1>
+            <p>
+              Turn any message into a clear, confident response. Write on the
+              web, install ReplyForge on your phone, or reply directly from
+              your browser.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <a
-                href="/"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 px-5 py-3 text-sm font-black shadow-xl shadow-indigo-950/70 transition hover:-translate-y-0.5"
-              >
-                <SparkIcon /> Start writing
-              </a>
-              <a
-                href="/?view=extension"
-                className="inline-flex items-center gap-2 rounded-xl border border-indigo-300/25 bg-indigo-400/10 px-5 py-3 text-sm font-black text-indigo-100 transition hover:-translate-y-0.5 hover:bg-indigo-400/20"
-              >
-                ◉ Get Chrome Extension
-              </a>
-              <a
-                href="/privacy"
-                className="rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-bold text-slate-200 transition hover:border-white/25 hover:bg-white/10"
-              >
-                How we protect data
-              </a>
+            <div className="rf-home-hero-actions">
+              <a href="/?view=app" className="rf-home-primary">Start writing free <span>→</span></a>
+              <a href="#products" className="rf-home-secondary">Explore all apps</a>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-bold text-slate-400">
-              <span className="flex items-center gap-1.5"><span className="text-emerald-400">✓</span> 30 replies daily</span>
-              <span className="flex items-center gap-1.5"><span className="text-emerald-400">✓</span> Multiple AI providers</span>
-              <span className="flex items-center gap-1.5"><span className="text-emerald-400">✓</span> You review before sending</span>
+            <div className="rf-home-trust">
+              <span>✓ 30 AI requests daily</span>
+              <span>✓ No provider key required</span>
+              <span>✓ Review before sending</span>
             </div>
           </div>
 
-          <div className="relative">
-            <div className="absolute -inset-8 rounded-full bg-indigo-500/20 blur-3xl" />
-            <div className="relative rounded-[26px] border border-white/15 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl sm:p-4">
-              <div className="rounded-2xl border border-white/10 bg-slate-900/90 p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-xs font-black uppercase tracking-[0.16em] text-indigo-300">
-                    AI Composer
-                  </span>
-                  <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300">
-                    Ready
-                  </span>
-                </div>
-
-                <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] p-3.5">
-                  <p className="text-[11px] font-bold text-slate-400">Incoming message</p>
-                  <p className="mt-2 text-sm leading-5 text-slate-200">
-                    Can you confirm whether tomorrow&apos;s meeting is still scheduled?
-                  </p>
-                </div>
-
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2.5">
-                    <p className="text-[9px] font-black uppercase tracking-wider text-slate-500">Tone</p>
-                    <p className="mt-1 text-xs font-bold text-slate-200">Professional</p>
-                  </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2.5">
-                    <p className="text-[9px] font-black uppercase tracking-wider text-slate-500">Length</p>
-                    <p className="mt-1 text-xs font-bold text-slate-200">Short</p>
-                  </div>
-                </div>
-
-                <div className="mt-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 p-3.5 shadow-lg shadow-indigo-950/60">
-                  <p className="text-[10px] font-black uppercase tracking-wider text-indigo-100">Generated reply</p>
-                  <p className="mt-2 text-sm leading-5 text-white">
-                    Yes, the meeting is confirmed for tomorrow. I look forward to speaking with you.
-                  </p>
-                </div>
+          <div className="rf-home-product-preview" aria-label="ReplyForge product preview">
+            <div className="rf-home-preview-bar">
+              <div><BrandMark /><strong>Reply workspace</strong></div>
+              <span>● Ready</span>
+            </div>
+            <div className="rf-home-preview-body">
+              <span className="rf-home-preview-label">Incoming message</span>
+              <p>Could we move tomorrow&apos;s meeting to the afternoon?</p>
+              <div className="rf-home-preview-options">
+                <span><small>Tone</small>Professional</span>
+                <span><small>Length</small>Short</span>
+                <span><small>Language</small>English</span>
+              </div>
+              <div className="rf-home-preview-reply">
+                <span>Generated response</span>
+                <p>Absolutely—tomorrow afternoon works for me. Please share the time that suits you best.</p>
+                <div><b>✓ Saved</b><button type="button">Copy reply</button></div>
               </div>
             </div>
+            <div className="rf-home-floating-score"><strong>92</strong><span>Reply score</span></div>
           </div>
         </section>
 
-        <section className="border-y border-white/10 bg-white/[0.035]">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
-            <div className="max-w-2xl">
-              <span className="text-[11px] font-black uppercase tracking-[0.16em] text-indigo-300">
-                What ReplyForge AI does
-              </span>
-              <h2 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">
-                From incoming message to send-ready response
-              </h2>
-            </div>
-
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {features.map((feature, index) => (
-                <article
-                  key={feature.title}
-                  className="rounded-2xl border border-white/10 bg-slate-900/65 p-5 shadow-xl"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-400/10 text-xs font-black text-indigo-300">
-                    0{index + 1}
-                  </span>
-                  <h3 className="mt-4 text-base font-black">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-400">
-                    {feature.description}
-                  </p>
-                </article>
-              ))}
-            </div>
+        <section id="products" className="rf-home-products">
+          <div className="rf-home-section-heading">
+            <span>Choose your workspace</span>
+            <h2>ReplyForge wherever you communicate.</h2>
+            <p>Start with any app. Your account, allowance, and reply history stay connected.</p>
           </div>
+
+          <div className="rf-home-product-grid">
+            {productCards.map((product) => (
+              <article key={product.title} className={`rf-home-product-card is-${product.accent}`}>
+                <div className="rf-home-product-icon">{product.icon}</div>
+                <span>{product.eyebrow}</span>
+                <h3>{product.title}</h3>
+                <p>{product.description}</p>
+                <a href={product.href}>{product.action} <b>→</b></a>
+              </article>
+            ))}
+
+            <article className="rf-home-product-card is-mobile">
+              <div className="rf-home-product-icon">▣</div>
+              <span>Mobile app</span>
+              <h3>Install ReplyForge on your home screen</h3>
+              <p>Get an app-like, full-screen experience with mobile navigation and one-tap access to AI Coach.</p>
+              <PWAInstallButton className="rf-home-install-button" label="Install mobile app" />
+            </article>
+          </div>
+        </section>
+
+        <section id="features" className="rf-home-features">
+          <div className="rf-home-section-heading is-centered">
+            <span>Built for real conversations</span>
+            <h2>More than a reply generator.</h2>
+          </div>
+          <div className="rf-home-feature-grid">
+            {capabilities.map(([number, title, description]) => (
+              <article key={number}>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="rf-home-final-cta">
+          <div>
+            <span>Ready when you are</span>
+            <h2>Write your next reply with confidence.</h2>
+            <p>Open the workspace in your browser—no provider API key required.</p>
+          </div>
+          <a href="/?view=app">Open ReplyForge <b>→</b></a>
         </section>
       </main>
 
-      <footer className="relative z-[1] border-t border-white/10 bg-slate-950">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-7 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div>
-            <strong className="text-slate-200">ReplyForge AI</strong>
-            <p className="mt-1">Clearer replies, reviewed by you.</p>
-          </div>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 font-bold">
-            <a href="/privacy" className="hover:text-white">Privacy Policy</a>
-            <a href="/terms" className="hover:text-white">Terms of Service</a>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-white">Contact</a>
-          </div>
-        </div>
+      <footer className="rf-home-footer">
+        <div className="rf-home-brand"><BrandMark /><span><strong>ReplyForge AI</strong><small>Clearer replies, reviewed by you.</small></span></div>
+        <div><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href={`mailto:${CONTACT_EMAIL}`}>Contact</a></div>
+        <small>© {new Date().getFullYear()} ReplyForge AI</small>
       </footer>
     </div>
   );

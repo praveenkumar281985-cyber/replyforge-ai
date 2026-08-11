@@ -5,7 +5,7 @@ function isStandalone() {
     window.navigator.standalone === true;
 }
 
-export default function PWAInstallButton() {
+export default function PWAInstallButton({ className = "", label = "Install app" }) {
   const [installPrompt, setInstallPrompt] = useState(null);
   const [installed, setInstalled] = useState(isStandalone);
   const [showHelp, setShowHelp] = useState(false);
@@ -47,9 +47,9 @@ export default function PWAInstallButton() {
 
   return (
     <>
-      <button type="button" className="rf-pwa-install" onClick={handleInstall}>
+      <button type="button" className={`rf-pwa-install ${className}`.trim()} onClick={handleInstall}>
         <span aria-hidden="true">↓</span>
-        Install app
+        {label}
       </button>
       {showHelp && (
         <div className="rf-pwa-install-note" role="status">

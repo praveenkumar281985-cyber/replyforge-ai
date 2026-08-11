@@ -939,7 +939,9 @@ async function runAiTool(tool) {
   }
 
   const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
-  const extensionView = new URLSearchParams(window.location.search).get("view") === "extension";
+  const requestedView = new URLSearchParams(window.location.search).get("view");
+  const extensionView = requestedView === "extension";
+  const appView = requestedView === "app";
   const legalPageType =
     currentPath === "/privacy"
       ? "privacy"
@@ -975,6 +977,10 @@ async function runAiTool(tool) {
 
   if (passwordRecovery) {
     return <ResetPasswordPage onComplete={finishPasswordRecovery} />;
+  }
+
+  if (!session && currentPath === "/" && !appView) {
+    return <PublicHomePage />;
   }
 
   if (!session) {
