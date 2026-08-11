@@ -1,4 +1,4 @@
-(function initializeReplyForgeAICoach() {
+(function initializeMessauraAICoach() {
   const METRIC_KEYS = [
     "overall",
     "grammar",
@@ -73,7 +73,7 @@
       throw new Error("A reply is required for AI Coach analysis.");
     }
 
-    return `You are ReplyForge AI Coach.
+    return `You are Messaura AI Coach.
 
 Analyze the reply below and return ONLY valid JSON.
 
@@ -124,14 +124,14 @@ ${cleanReply}`;
     try {
       return normalizeAnalysis(JSON.parse(cleanResponse));
     } catch (error) {
-      console.error("ReplyForge AI Coach JSON error:", error, response);
+      console.error("Messaura AI Coach JSON error:", error, response);
       throw new Error("AI Coach returned an invalid analysis result.", {
         cause: error,
       });
     }
   }
 
-  globalThis.ReplyForgeAICoach = {
+  globalThis.MessauraAICoach = {
     buildAnalysisPrompt,
     parseAnalysisResponse,
     normalizeAnalysis,

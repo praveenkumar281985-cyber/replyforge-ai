@@ -1,4 +1,4 @@
-# 🚀 ReplyForge AI
+# 🚀 Messaura AI
 
 ## Project Status
 
@@ -258,7 +258,7 @@ Outlook
 
 V3
 
-ReplyForge Cloud
+Messaura Cloud
 
 ---
 

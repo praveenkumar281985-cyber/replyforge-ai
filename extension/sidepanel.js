@@ -224,7 +224,7 @@ async function refreshUsage() {
     accountBadge.textContent = "Connected";
     accountBadge.className = "rf-account-badge connected";
     renderAuthState(true);
-  } catch (error) {
+  } catch {
     usageText.textContent = "Usage unavailable";
     usageResetText.textContent = "Generation still works; retry after reopening the panel";
     accountBadge.textContent = "Connected";
@@ -401,7 +401,7 @@ function resolveTheme(theme) {
     : "light";
 }
 
-function applyReplyForgeSettings() {
+function applyMessauraSettings() {
   document.documentElement.dataset.rfTheme =
     resolveTheme(
       replyForgeSettings.theme
@@ -448,7 +448,7 @@ function fillSettingsForm() {
     replyForgeSettings.motion;
 }
 
-async function loadReplyForgeSettings() {
+async function loadMessauraSettings() {
   const stored =
     await chrome.storage.local.get(
       RF_SETTINGS_KEY
@@ -462,11 +462,11 @@ async function loadReplyForgeSettings() {
     ),
   };
 
-  applyReplyForgeSettings();
+  applyMessauraSettings();
   fillSettingsForm();
 }
 
-async function persistReplyForgeSettings(
+async function persistMessauraSettings(
   nextSettings
 ) {
   replyForgeSettings = {
@@ -479,7 +479,7 @@ async function persistReplyForgeSettings(
       replyForgeSettings,
   });
 
-  applyReplyForgeSettings();
+  applyMessauraSettings();
   fillSettingsForm();
 }
 
@@ -1081,7 +1081,7 @@ function schedulePopupStateSave() {
         storageKey
       ).catch((error) => {
         console.error(
-          "ReplyForge workspace save error:",
+          "Messaura workspace save error:",
           error
         );
       });
@@ -1347,7 +1347,7 @@ async function switchWorkspaceToTab(
     }
   } catch (error) {
     console.error(
-      "ReplyForge workspace restore error:",
+      "Messaura workspace restore error:",
       error
     );
   } finally {
@@ -1477,8 +1477,8 @@ function setLoading(isLoading) {
 
   generateButton.textContent = isLoading
     ? generationModeSelect.value === "multiple"
-      ? "ReplyForge is creating 4 suggestions..."
-      : "ReplyForge is writing your reply..."
+      ? "Messaura is creating 4 suggestions..."
+      : "Messaura is writing your reply..."
     : generationModeSelect.value === "multiple"
       ? "Generate Suggestions"
       : "Generate Reply";
@@ -1649,7 +1649,7 @@ async function refreshPlatformDetection() {
     renderPlatform(platform);
   } catch (error) {
     console.error(
-      "ReplyForge platform detection failed:",
+      "Messaura platform detection failed:",
       error
     );
 
@@ -2232,7 +2232,7 @@ settingsSignInButton.addEventListener("click", signInFromPanel);
 settingsSignOutButton.addEventListener("click", signOutFromPanel);
 
 providerSelect.addEventListener("change", async () => {
-  await persistReplyForgeSettings({
+  await persistMessauraSettings({
     ...replyForgeSettings,
     providerId: providerSelect.value,
   });
@@ -2264,7 +2264,7 @@ settingsBackdrop.addEventListener(
 saveSettingsButton.addEventListener(
   "click",
   async () => {
-    await persistReplyForgeSettings(
+    await persistMessauraSettings(
       getSettingsFromForm()
     );
 
@@ -2276,7 +2276,7 @@ saveSettingsButton.addEventListener(
 resetSettingsButton.addEventListener(
   "click",
   async () => {
-    await persistReplyForgeSettings(
+    await persistMessauraSettings(
       DEFAULT_RF_SETTINGS
     );
 
@@ -2318,7 +2318,7 @@ clearHistoryButton.addEventListener(
   async () => {
     if (
       !window.confirm(
-        "Delete all saved ReplyForge history from this browser?"
+        "Delete all saved Messaura history from this browser?"
       )
     ) {
       return;
@@ -2778,12 +2778,12 @@ updateCharacterCount();
 updateGenerateButtonText();
 updateTemplateUI();
 
-loadReplyForgeSettings()
+loadMessauraSettings()
   .then(restorePopupState)
   .then(refreshPlatformDetection)
   .catch((error) => {
     console.error(
-      "ReplyForge startup error:",
+      "Messaura startup error:",
       error
     );
   });
@@ -2808,7 +2808,7 @@ chrome.tabs.onActivated.addListener(
       );
     } catch (error) {
       console.error(
-        "ReplyForge tab workspace switch failed:",
+        "Messaura tab workspace switch failed:",
         error
       );
     }
@@ -2874,7 +2874,7 @@ window
         replyForgeSettings.theme ===
         "system"
       ) {
-        applyReplyForgeSettings();
+        applyMessauraSettings();
       }
     }
   );

@@ -1,4 +1,4 @@
-(function initializeReplyForgeImprove() {
+(function initializeMessauraImprove() {
   function buildImprovePrompt(reply, analysis) {
     const cleanReply =
       typeof reply === "string"
@@ -29,7 +29,7 @@
             .join("\n")
         : "";
 
-    return `You are ReplyForge AI Reply Improver.
+    return `You are Messaura AI Reply Improver.
 
 Improve the reply below using the available AI Coach feedback.
 
@@ -69,7 +69,7 @@ ${cleanReply}`;
     return improvedReply;
   }
 
-  globalThis.ReplyForgeImprove = {
+  globalThis.MessauraImprove = {
     buildImprovePrompt,
     parseImproveResponse,
   };

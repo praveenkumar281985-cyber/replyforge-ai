@@ -1,4 +1,4 @@
-(function initializeReplyForgeConversation() {
+(function initializeMessauraConversation() {
   const MAX_MESSAGES = 20;
   const MAX_CONTEXT_LENGTH = 24000;
 
@@ -485,7 +485,7 @@
       );
     } catch (error) {
       console.warn(
-        "ReplyForge conversation extraction failed:",
+        "Messaura conversation extraction failed:",
         error
       );
 
@@ -496,7 +496,7 @@
     }
   }
 
-  globalThis.ReplyForgeConversation = {
+  globalThis.MessauraConversation = {
     getConversationContext,
   };
 })();

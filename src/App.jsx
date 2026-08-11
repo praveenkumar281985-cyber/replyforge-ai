@@ -182,7 +182,7 @@ function App() {
   );
 
   useEffect(() => {
-    function detectReplyForgeExtension() {
+    function detectMessauraExtension() {
       const version =
         document.documentElement.getAttribute(
           "data-replyforge-extension-version"
@@ -195,22 +195,22 @@ function App() {
 
     window.addEventListener(
       "replyforge:extension-ready",
-      detectReplyForgeExtension
+      detectMessauraExtension
     );
 
-    detectReplyForgeExtension();
+    detectMessauraExtension();
     window.dispatchEvent(new Event("replyforge:extension-ping"));
 
     const retryTimer = window.setTimeout(() => {
       window.dispatchEvent(new Event("replyforge:extension-ping"));
-      detectReplyForgeExtension();
+      detectMessauraExtension();
     }, 700);
 
     return () => {
       window.clearTimeout(retryTimer);
       window.removeEventListener(
         "replyforge:extension-ready",
-        detectReplyForgeExtension
+        detectMessauraExtension
       );
     };
   }, []);
@@ -968,7 +968,7 @@ async function runAiTool(tool) {
           <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-indigo-400 border-t-transparent" />
 
           <p className="mt-4 font-medium text-white">
-            Loading ReplyForge AI...
+            Loading Messaura AI...
           </p>
         </div>
       </div>
@@ -1036,8 +1036,8 @@ async function runAiTool(tool) {
         <div className="rf-v4-main-column">
           <header className="rf-v4-topbar">
             <div className="rf-v4-mobile-brand">
-              <span>R</span>
-              ReplyForge
+              <span>M</span>
+              Messaura
             </div>
             <div className="rf-v4-mobile-account-actions">
               <PWAInstallButton />
@@ -1053,7 +1053,7 @@ async function runAiTool(tool) {
           <main className="rf-v4-workspace">
             <div ref={workspacePrimaryRef} className="rf-v4-workspace-primary">
               <section className={`rf-extension-dashboard-banner${extensionStatus.installed ? " is-installed" : ""}`}>
-                <div className="rf-extension-dashboard-copy"><span>{extensionStatus.installed ? "READY" : "NEW"}</span><strong>{extensionStatus.installed ? "ReplyForge extension is connected" : "Reply directly inside Gmail, WhatsApp and LinkedIn"}</strong><p>{extensionStatus.installed ? "Open Gmail, WhatsApp Web or LinkedIn and use ReplyForge from the Chrome side panel." : "Use your same ReplyForge account and daily allowance in the Chrome extension."}</p></div>
+                <div className="rf-extension-dashboard-copy"><span>{extensionStatus.installed ? "READY" : "NEW"}</span><strong>{extensionStatus.installed ? "Messaura extension is connected" : "Reply directly inside Gmail, WhatsApp and LinkedIn"}</strong><p>{extensionStatus.installed ? "Open Gmail, WhatsApp Web or LinkedIn and use Messaura from the Chrome side panel." : "Use your same Messaura account and daily allowance in the Chrome extension."}</p></div>
                 <div className="rf-extension-dashboard-actions">
                   {extensionStatus.installed ? (
                     <span className="rf-extension-installed-badge">✓ Extension installed <small>v{extensionStatus.version}</small></span>
@@ -1288,7 +1288,7 @@ async function runAiTool(tool) {
                 <span>⌁</span>
                 <div>
                   <strong>Privacy-first workspace</strong>
-                  <p>Your drafts remain inside your ReplyForge account.</p>
+                  <p>Your drafts remain inside your Messaura account.</p>
                 </div>
               </section>
             </aside>

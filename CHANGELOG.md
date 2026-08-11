@@ -1,4 +1,4 @@
-# 🚀 ReplyForge AI - CHANGELOG
+# 🚀 Messaura AI - CHANGELOG
 
 ## V2.1 Stable (2026-08-02)
 

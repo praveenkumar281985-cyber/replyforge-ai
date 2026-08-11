@@ -1,5 +1,5 @@
 
-function configureReplyForgeSidePanel() {
+function configureMessauraSidePanel() {
   if (!chrome.sidePanel?.setPanelBehavior) {
     return;
   }
@@ -10,7 +10,7 @@ function configureReplyForgeSidePanel() {
     })
     .catch((error) => {
       console.error(
-        "ReplyForge side panel setup failed:",
+        "Messaura side panel setup failed:",
         error
       );
     });
@@ -22,7 +22,7 @@ const REPLYFORGE_SUPPORTED_HOSTS = new Set([
   "www.linkedin.com",
 ]);
 
-function isReplyForgeSupportedUrl(url) {
+function isMessauraSupportedUrl(url) {
   try {
     return REPLYFORGE_SUPPORTED_HOSTS.has(new URL(url).hostname);
   } catch {
@@ -30,7 +30,7 @@ function isReplyForgeSupportedUrl(url) {
   }
 }
 
-async function syncReplyForgeSidePanelForTab(tabId, url) {
+async function syncMessauraSidePanelForTab(tabId, url) {
   if (!chrome.sidePanel?.setOptions || !Number.isInteger(tabId)) {
     return;
   }
@@ -39,43 +39,43 @@ async function syncReplyForgeSidePanelForTab(tabId, url) {
     await chrome.sidePanel.setOptions({
       tabId,
       path: "sidepanel.html",
-      enabled: isReplyForgeSupportedUrl(url),
+      enabled: isMessauraSupportedUrl(url),
     });
   } catch (error) {
-    console.error("ReplyForge side panel tab sync failed:", error);
+    console.error("Messaura side panel tab sync failed:", error);
   }
 }
 
-async function syncActiveReplyForgeSidePanel() {
+async function syncActiveMessauraSidePanel() {
   const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (activeTab?.id != null) {
-    await syncReplyForgeSidePanelForTab(activeTab.id, activeTab.url);
+    await syncMessauraSidePanelForTab(activeTab.id, activeTab.url);
   }
 }
 
-configureReplyForgeSidePanel();
+configureMessauraSidePanel();
 
 chrome.runtime.onInstalled.addListener(() => {
-  configureReplyForgeSidePanel();
-  syncActiveReplyForgeSidePanel().catch(console.error);
+  configureMessauraSidePanel();
+  syncActiveMessauraSidePanel().catch(console.error);
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  syncActiveReplyForgeSidePanel().catch(console.error);
+  syncActiveMessauraSidePanel().catch(console.error);
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
     const tab = await chrome.tabs.get(tabId);
-    await syncReplyForgeSidePanelForTab(tabId, tab.url);
+    await syncMessauraSidePanelForTab(tabId, tab.url);
   } catch (error) {
-    console.error("ReplyForge active tab check failed:", error);
+    console.error("Messaura active tab check failed:", error);
   }
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.url || changeInfo.status === "complete") {
-    syncReplyForgeSidePanelForTab(tabId, changeInfo.url || tab.url).catch(console.error);
+    syncMessauraSidePanelForTab(tabId, changeInfo.url || tab.url).catch(console.error);
   }
 });
 
@@ -164,7 +164,7 @@ async function refreshSession(session) {
 
 async function requireSession() {
   let session = await getSession();
-  if (!session?.access_token) throw new Error("Please sign in with Google from ReplyForge settings first.");
+  if (!session?.access_token) throw new Error("Please sign in with Google from Messaura settings first.");
   if (Number(session.expires_at || 0) * 1000 <= Date.now() + 60000) session = await refreshSession(session);
   if (!session?.access_token) throw new Error("Your session expired. Please sign in with Google again.");
   return session;
@@ -304,7 +304,7 @@ function buildMultipleRepliesPrompt(
       conversationContext
     );
 
-  return `You are ReplyForge AI.
+  return `You are Messaura AI.
 
 Create exactly four different ready-to-send replies to the latest incoming message.
 
@@ -347,7 +347,7 @@ function buildRewritePrompt(reply, rewriteAction) {
     throw new Error("Unsupported rewrite option.");
   }
 
-  return `You are ReplyForge AI.
+  return `You are Messaura AI.
 
 ${instruction}
 
@@ -369,7 +369,7 @@ async function getProviderPreference() {
     : { mode: "auto", providerId: "" };
 }
 
-async function callReplyForgeBackend(prompt) {
+async function callMessauraBackend(prompt) {
   const session = await requireSession();
   const providerPreference = await getProviderPreference();
   const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-reply`, {
@@ -393,19 +393,19 @@ async function callReplyForgeBackend(prompt) {
   if (response.status === 401) {
     const refreshed = await refreshSession(session);
     if (!refreshed) throw new Error("Your session expired. Please sign in with Google again.");
-    return callReplyForgeBackend(prompt);
+    return callMessauraBackend(prompt);
   }
   if (!response.ok) {
-    throw new Error(data?.error || data?.message || `ReplyForge request failed (${response.status}).`);
+    throw new Error(data?.error || data?.message || `Messaura request failed (${response.status}).`);
   }
   const reply = typeof data?.reply === "string" ? data.reply.trim() : "";
-  if (!reply) throw new Error("ReplyForge returned an empty response.");
+  if (!reply) throw new Error("Messaura returned an empty response.");
   lastProviderId = typeof data?.provider === "string" ? data.provider.toLowerCase() : providerPreference.providerId;
   return reply;
 }
 
 async function callAvailableProvider(prompt) {
-  return callReplyForgeBackend(prompt);
+  return callMessauraBackend(prompt);
 }
 
 async function getDailyUsage() {
@@ -547,7 +547,7 @@ async function analyzeReply(request) {
     throw new Error("No reply was provided for analysis.");
   }
 
-  const coach = globalThis.ReplyForgeAICoach;
+  const coach = globalThis.MessauraAICoach;
 
   if (
     !coach ||
@@ -567,7 +567,7 @@ async function analyzeReply(request) {
 async function improveReply(request) {
   const reply = request.reply?.trim();
   const improveModule =
-    globalThis.ReplyForgeImprove;
+    globalThis.MessauraImprove;
 
   if (!reply) {
     throw new Error(
@@ -642,7 +642,7 @@ chrome.runtime.onMessage.addListener(
         })
         .catch((error) => {
           console.error(
-            "ReplyForge generation error:",
+            "Messaura generation error:",
             error
           );
 

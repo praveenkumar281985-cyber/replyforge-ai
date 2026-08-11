@@ -121,7 +121,7 @@ import {
   }
   
   async function buildExtension() {
-    console.log("Building ReplyForge extension...");
+    console.log("Building Messaura extension...");
   
     await verifyRequiredFiles();
     await validateManifest();

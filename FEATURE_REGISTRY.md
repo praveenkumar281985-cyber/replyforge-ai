@@ -1,7 +1,7 @@
-# 🚀 ReplyForge AI
+# 🚀 Messaura AI
 # Feature Registry
 
-> Master feature registry for the ReplyForge ecosystem.
+> Master feature registry for the Messaura ecosystem.
 > Update this file whenever a feature is added, removed or completed.
 
 ---

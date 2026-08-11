@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "ReplyForge AI",
-  "short_name": "ReplyForge",
+  "name": "Messaura AI",
+  "short_name": "Messaura",
   "description": "Create, rewrite and improve professional replies with AI.",
   "start_url": "/?source=pwa",
   "scope": "/",

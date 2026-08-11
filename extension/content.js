@@ -324,7 +324,7 @@ function insertReply(reply) {
 function getConversationContextSafely() {
   try {
     const api =
-      globalThis.ReplyForgeConversation;
+      globalThis.MessauraConversation;
 
     if (
       !api ||
@@ -342,7 +342,7 @@ function getConversationContextSafely() {
       : null;
   } catch (error) {
     console.warn(
-      "ReplyForge could not read conversation context:",
+      "Messaura could not read conversation context:",
       error
     );
 
@@ -373,7 +373,7 @@ function forwardGenerationRequest(
           success: false,
           error:
             chrome.runtime.lastError.message ||
-            "The ReplyForge background service is not ready.",
+            "The Messaura background service is not ready.",
         });
 
         return;
@@ -443,7 +443,7 @@ chrome.runtime.onMessage.addListener(
         });
       } catch (error) {
         console.error(
-          "ReplyForge insertion error:",
+          "Messaura insertion error:",
           error
         );
 

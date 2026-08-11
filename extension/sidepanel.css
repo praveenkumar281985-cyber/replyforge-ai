@@ -1,5 +1,5 @@
 
-/* ReplyForge v2.6 — Persistent Chrome Side Panel */
+/* Messaura v2.6 — Persistent Chrome Side Panel */
 html,
 body {
   width: 100%;
@@ -64,7 +64,7 @@ body {
 }
 
 
-/* ReplyForge v2.8 — Platform Detection */
+/* Messaura v2.8 — Platform Detection */
 .rf-platform-strip {
   display: flex;
   align-items: center;
@@ -144,7 +144,7 @@ body {
 }
 
 
-/* ReplyForge v2.8.2 — Conversation Debugger */
+/* Messaura v2.8.2 — Conversation Debugger */
 .rf-context-debugger {
   margin-bottom: 12px;
   border: 1px solid #e2e5ef;
@@ -231,7 +231,7 @@ body {
 }
 
 
-/* ReplyForge v2.10 — Clear Controls and Local History */
+/* Messaura v2.10 — Clear Controls and Local History */
 .rf-message-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -425,7 +425,7 @@ body {
 }
 
 
-/* ReplyForge v3.0 — Per-Tab Workspace Manager */
+/* Messaura v3.0 — Per-Tab Workspace Manager */
 .rf-platform-badges {
   display: flex;
   flex: 0 0 auto;
@@ -456,7 +456,7 @@ body {
 }
 
 
-/* ReplyForge v3.1 — Compact Premium UI */
+/* Messaura v3.1 — Compact Premium UI */
 :root {
   --rf-compact-gap: 9px;
 }
@@ -1027,7 +1027,7 @@ select {
 }
 
 
-/* ReplyForge v3.2 — Launch Settings, Dark Mode and Quick Commands */
+/* Messaura v3.2 — Launch Settings, Dark Mode and Quick Commands */
 .rf-header-actions {
   display: flex;
   align-items: center;
@@ -1285,7 +1285,7 @@ html[data-rf-motion="off"] *::after {
 }
 
 
-/* ReplyForge v3.2.1 — Settings Overlay Position and Blur Fix */
+/* Messaura v3.2.1 — Settings Overlay Position and Blur Fix */
 body:has(.rf-settings-backdrop:not([hidden])) {
   overflow: hidden;
 }
@@ -1315,7 +1315,7 @@ body:has(.rf-settings-backdrop:not([hidden])) {
   }
 }
 
-/* ReplyForge v3.3.6 — Compact compose flow and always-visible primary action */
+/* Messaura v3.3.6 — Compact compose flow and always-visible primary action */
 .popup-shell {
   padding: 10px 12px 82px;
 }

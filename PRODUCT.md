@@ -1,7 +1,7 @@
-# 🚀 ReplyForge AI - PRODUCT
+# 🚀 Messaura AI - PRODUCT
 
 ## Vision
-ReplyForge AI helps users generate, rewrite and insert professional replies directly where they work.
+Messaura AI helps users generate, rewrite and insert professional replies directly where they work.
 
 ## Target Users
 - Professionals

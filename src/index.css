@@ -2411,7 +2411,7 @@ select:focus-visible,
   }
 }
 
-/* ReplyForge AI — Streaming update */
+/* Messaura AI — Streaming update */
 .rf-v4-stop-button {
   display: inline-flex;
   min-height: 42px;
@@ -2477,7 +2477,7 @@ select:focus-visible,
     width: 100%;
   }
 }
-/* ReplyForge Step 8 — Dynamic AI Provider Status */
+/* Messaura Step 8 — Dynamic AI Provider Status */
 
 .rf-v4-online.is-offline {
   color: #dc2626;
@@ -2487,7 +2487,7 @@ select:focus-visible,
   background: #ef4444;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
 }
-/* ReplyForge — AI Provider Button */
+/* Messaura — AI Provider Button */
 .rf-provider-button {
   display: inline-flex;
   align-items: center;
@@ -2540,7 +2540,7 @@ select:focus-visible,
 
 
 
-/* ReplyForge Provider Center V2 */
+/* Messaura Provider Center V2 */
 .rf-provider-overlay {
   position: fixed;
   inset: 0;
@@ -2781,7 +2781,7 @@ select:focus-visible,
 }
 
 
-/* ReplyForge Provider Center V2.1 — Compact modal fix */
+/* Messaura Provider Center V2.1 — Compact modal fix */
 .rf-provider-overlay {
   padding: 58px 14px 14px;
   backdrop-filter: blur(3px);
@@ -2952,7 +2952,7 @@ select:focus-visible,
 
 
 /* =========================================================
-   ReplyForge V4.3 — Premium controls + compact AI activity
+   Messaura V4.3 — Premium controls + compact AI activity
    ========================================================= */
 
 /* Compact activity card */

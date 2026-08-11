@@ -232,7 +232,7 @@ async function restorePopupState() {
     }
   } catch (error) {
     console.error(
-      "ReplyForge state restore error:",
+      "Messaura state restore error:",
       error
     );
   } finally {
@@ -347,8 +347,8 @@ function setLoading(isLoading) {
 
   generateButton.textContent = isLoading
     ? generationModeSelect.value === "multiple"
-      ? "ReplyForge is creating 4 suggestions..."
-      : "ReplyForge is writing your reply..."
+      ? "Messaura is creating 4 suggestions..."
+      : "Messaura is writing your reply..."
     : generationModeSelect.value === "multiple"
       ? "Generate Suggestions"
       : "Generate Reply";
