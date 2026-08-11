@@ -10,7 +10,7 @@ function Header() {
         <h1>Turn any message into the right reply.</h1>
 
         <p>
-          Add context, choose the voice, and let ReplyForge shape the response.
+          Add context, choose the voice, and let Messaura shape the response.
         </p>
       </div>
 

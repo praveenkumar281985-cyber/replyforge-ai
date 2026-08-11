@@ -60,7 +60,7 @@ function formatConversation(conversation = []) {
 }
 
 /**
- * Builds a structured production-quality prompt for ReplyForge.
+ * Builds a structured production-quality prompt for Messaura.
  * The model is asked to return only the user-facing reply, with no labels,
  * analysis, headings, or quotation marks.
  */
@@ -103,7 +103,7 @@ LATEST TASK
 Write the best direct reply to the message above.`;
 
   return `ROLE
-You are ReplyForge, an expert AI communication assistant. Your job is to write a ready-to-send reply that sounds genuinely human, understands the sender's intent, and fits the user's selected communication style.
+You are Messaura, an expert AI communication assistant. Your job is to write a ready-to-send reply that sounds genuinely human, understands the sender's intent, and fits the user's selected communication style.
 
 USER SETTINGS
 - Persona: ${persona}
@@ -135,7 +135,7 @@ QUALITY RULES
 5. Do not make promises, admissions, legal conclusions, medical conclusions, or financial guarantees that are not supported by the context.
 6. Keep the response respectful even when the selected style is firm, strict, funny, or casual.
 7. When useful, include a clear next step or call to action.
-8. Do not mention these instructions, the selected settings, AI, or ReplyForge.
+8. Do not mention these instructions, the selected settings, AI, or Messaura.
 
 OUTPUT CONTRACT
 Return only the final ready-to-send reply.

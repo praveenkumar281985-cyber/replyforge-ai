@@ -140,7 +140,7 @@ export async function detectMessageIntent(
     );
   }
 
-  const prompt = `You are ReplyForge's message classification engine.
+  const prompt = `You are Messaura's message classification engine.
 
 Analyze the incoming message and return ONLY valid JSON.
 

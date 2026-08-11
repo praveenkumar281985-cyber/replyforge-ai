@@ -37,7 +37,7 @@ function ConversationMode({
         <div>
           <span className="rf-v4-conversation-kicker">Context memory on</span>
           <h2>Build the conversation</h2>
-          <p>ReplyForge will read every turn before writing the next response.</p>
+          <p>Messaura will read every turn before writing the next response.</p>
         </div>
 
         <span className="rf-v4-turn-count">

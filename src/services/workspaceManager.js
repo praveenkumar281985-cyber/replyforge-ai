@@ -137,7 +137,7 @@ export function saveWorkspace(
     return true;
   } catch (error) {
     console.warn(
-      "ReplyForge workspace could not be saved:",
+      "Messaura workspace could not be saved:",
       error
     );
 
@@ -163,7 +163,7 @@ export function loadWorkspace() {
     );
   } catch (error) {
     console.warn(
-      "ReplyForge workspace could not be loaded:",
+      "Messaura workspace could not be loaded:",
       error
     );
 
@@ -182,7 +182,7 @@ export function clearSavedWorkspace() {
     return true;
   } catch (error) {
     console.warn(
-      "ReplyForge workspace could not be cleared:",
+      "Messaura workspace could not be cleared:",
       error
     );
 

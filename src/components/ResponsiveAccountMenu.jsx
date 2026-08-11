@@ -81,7 +81,7 @@ export default function ResponsiveAccountMenu({
           <header>
             <span>{userName?.charAt(0)?.toUpperCase() || "U"}</span>
             <div>
-              <strong>{userName || "ReplyForge user"}</strong>
+              <strong>{userName || "Messaura user"}</strong>
               <small title={userEmail}>{userEmail}</small>
             </div>
             <em>Free</em>

@@ -195,7 +195,7 @@ function ReplyBox({
     const link = document.createElement("a");
 
     link.href = url;
-    link.download = "replyforge-reply.txt";
+    link.download = "messaura-reply.txt";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -444,7 +444,7 @@ function ReplyBox({
           <div className="rf-v4-reply-loading">
             <div className="rf-v4-loading-orb">✦</div>
             <strong>{loadingText}</strong>
-            <span>ReplyForge is refining the language and tone.</span>
+            <span>Messaura is refining the language and tone.</span>
           </div>
         )}
       </div>

@@ -62,7 +62,7 @@ function ResetPasswordPage({ onComplete }) {
             Set a new password
           </h1>
           <p className="mt-2 text-sm text-slate-500">
-            Choose a new password for your ReplyForge account.
+            Choose a new password for your Messaura account.
           </p>
         </div>
 

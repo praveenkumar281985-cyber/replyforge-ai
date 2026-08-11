@@ -8,7 +8,7 @@ function getAuthRedirectUrl() {
   if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
     return window.location.origin;
   }
-  return "https://replyforge-ai-w1n6.vercel.app";
+  return "https://messaura-ai.vercel.app";
 }
 
 function AuthPage() {
@@ -211,9 +211,9 @@ function AuthPage() {
       <div className="rf-auth-card w-full max-w-md rounded-3xl border border-white/15 bg-white/95 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-2xl font-black text-white shadow-lg">
-            R
+            M
           </div>
-          <h1 className="text-3xl font-black text-slate-900">ReplyForge AI</h1>
+          <h1 className="text-3xl font-black text-slate-900">Messaura AI</h1>
           <p className="mt-2 text-sm text-slate-500">
             Create clear, confident and professional replies.
           </p>
@@ -347,7 +347,7 @@ function AuthPage() {
             {loading
               ? "Please wait..."
               : mode === "login"
-                ? "Login to ReplyForge"
+                ? "Login to Messaura"
                 : "Create Free Account"}
           </button>
         </form>

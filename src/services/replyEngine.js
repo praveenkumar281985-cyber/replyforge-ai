@@ -3,7 +3,7 @@ import { buildSmartReplyPrompt } from "./promptBuilder";
 import { saveReplyToCloud } from "./history";
 
 /**
- * Runs the core ReplyForge generation workflow.
+ * Runs the core Messaura generation workflow.
  *
  * UI state remains in App.jsx. This module owns:
  * - prompt creation

@@ -127,10 +127,10 @@ function Sidebar({
   return (
     <aside className="rf-v4-sidebar">
       <div ref={accountMenuRef} className="rf-v4-brand">
-        <div className="rf-v4-brand-mark">R</div>
+        <div className="rf-v4-brand-mark">M</div>
 
         <div>
-          <strong>ReplyForge</strong>
+          <strong>Messaura</strong>
           <span>AI writing workspace</span>
         </div>
 

@@ -8,7 +8,7 @@ const productCards = [
     eyebrow: "Web workspace",
     title: "Create polished replies on any device",
     description:
-      "Draft, rewrite, translate, organize history, and run a detailed communication check from the full ReplyForge workspace.",
+      "Draft, rewrite, translate, organize history, and run a detailed communication check from the full Messaura workspace.",
     action: "Open web app",
     href: "/?view=app",
     icon: "✦",
@@ -18,7 +18,7 @@ const productCards = [
     eyebrow: "Chrome extension",
     title: "Reply without leaving your inbox",
     description:
-      "Use ReplyForge inside Gmail, WhatsApp Web, and LinkedIn with your same account and daily allowance.",
+      "Use Messaura inside Gmail, WhatsApp Web, and LinkedIn with your same account and daily allowance.",
     action: "Get extension",
     href: "/?view=extension",
     icon: "◉",
@@ -34,12 +34,12 @@ const capabilities = [
 ];
 
 function BrandMark() {
-  return <span className="rf-home-brand-mark">R</span>;
+  return <span className="rf-home-brand-mark">M</span>;
 }
 
 function PublicHomePage() {
   useEffect(() => {
-    document.title = "ReplyForge AI — The right reply, every time";
+    document.title = "Messaura AI — The right reply, every time";
 
     const sectionId = window.location.hash.slice(1);
     if (!sectionId) return undefined;
@@ -57,9 +57,9 @@ function PublicHomePage() {
       <div className="rf-home-glow rf-home-glow-two" />
 
       <header className="rf-home-nav">
-        <a href="/" className="rf-home-brand" aria-label="ReplyForge home">
+        <a href="/" className="rf-home-brand" aria-label="Messaura home">
           <BrandMark />
-          <span><strong>ReplyForge AI</strong><small>Intelligent reply workspace</small></span>
+          <span><strong>Messaura AI</strong><small>Intelligent reply workspace</small></span>
         </a>
 
         <nav aria-label="Main navigation">
@@ -77,7 +77,7 @@ function PublicHomePage() {
             <h1>The right reply.<br /><em>Every time.</em></h1>
             <p>
               Turn any message into a clear, confident response. Write on the
-              web, install ReplyForge on your phone, or reply directly from
+              web, install Messaura on your phone, or reply directly from
               your browser.
             </p>
 
@@ -93,7 +93,7 @@ function PublicHomePage() {
             </div>
           </div>
 
-          <div className="rf-home-product-preview" aria-label="ReplyForge product preview">
+          <div className="rf-home-product-preview" aria-label="Messaura product preview">
             <div className="rf-home-preview-bar">
               <div><BrandMark /><strong>Reply workspace</strong></div>
               <span>● Ready</span>
@@ -119,7 +119,7 @@ function PublicHomePage() {
         <section id="products" className="rf-home-products">
           <div className="rf-home-section-heading">
             <span>Choose your workspace</span>
-            <h2>ReplyForge wherever you communicate.</h2>
+            <h2>Messaura wherever you communicate.</h2>
             <p>Start with any app. Your account, allowance, and reply history stay connected.</p>
           </div>
 
@@ -137,7 +137,7 @@ function PublicHomePage() {
             <article className="rf-home-product-card is-mobile">
               <div className="rf-home-product-icon">▣</div>
               <span>Mobile app</span>
-              <h3>Install ReplyForge on your home screen</h3>
+              <h3>Install Messaura on your home screen</h3>
               <p>Get an app-like, full-screen experience with mobile navigation and one-tap access to AI Coach.</p>
               <PWAInstallButton className="rf-home-install-button" label="Install mobile app" />
             </article>
@@ -166,14 +166,14 @@ function PublicHomePage() {
             <h2>Write your next reply with confidence.</h2>
             <p>Open the workspace in your browser—no provider API key required.</p>
           </div>
-          <a href="/?view=app">Open ReplyForge <b>→</b></a>
+          <a href="/?view=app">Open Messaura <b>→</b></a>
         </section>
       </main>
 
       <footer className="rf-home-footer">
-        <div className="rf-home-brand"><BrandMark /><span><strong>ReplyForge AI</strong><small>Clearer replies, reviewed by you.</small></span></div>
+        <div className="rf-home-brand"><BrandMark /><span><strong>Messaura AI</strong><small>Clearer replies, reviewed by you.</small></span></div>
         <div><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href={`mailto:${CONTACT_EMAIL}`}>Contact</a></div>
-        <small>© {new Date().getFullYear()} ReplyForge AI</small>
+        <small>© {new Date().getFullYear()} Messaura AI</small>
       </footer>
     </div>
   );

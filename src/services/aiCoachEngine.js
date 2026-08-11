@@ -106,7 +106,7 @@ function normalizeCoachResult(
 }
 
 function buildCoachPrompt(reply) {
-  return `You are ReplyForge AI Coach.
+  return `You are Messaura AI Coach.
 
 Analyze the reply below and return ONLY valid JSON.
 Do not use markdown code blocks.

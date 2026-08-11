@@ -1,5 +1,5 @@
 /**
- * Pure helpers for ReplyForge conversation mode.
+ * Pure helpers for Messaura conversation mode.
  *
  * These functions do not know about React state. App.jsx passes the
  * current conversation in and receives the next conversation back.
