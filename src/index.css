@@ -191,6 +191,38 @@ select:focus-visible,
   display: none;
 }
 
+.rf-pwa-install {
+  display: none;
+  min-height: 34px;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(109, 74, 255, 0.22);
+  border-radius: 10px;
+  background: var(--rf-v4-purple-soft);
+  padding: 0 11px;
+  color: var(--rf-v4-purple);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.rf-pwa-install-note {
+  position: fixed;
+  top: 60px;
+  right: 12px;
+  z-index: 80;
+  max-width: min(280px, calc(100vw - 24px));
+  border: 1px solid var(--rf-v4-border);
+  border-radius: 12px;
+  background: var(--rf-v4-surface);
+  padding: 10px 12px;
+  box-shadow: var(--rf-v4-shadow);
+  color: var(--rf-v4-muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
 /* Sidebar */
 .rf-v4-sidebar {
   display: flex;
@@ -1530,6 +1562,10 @@ select:focus-visible,
     background: var(--rf-v4-purple);
     color: white;
     font-size: 10px;
+  }
+
+  .rf-pwa-install {
+    display: inline-flex;
   }
 
   .rf-v4-topbar-title {

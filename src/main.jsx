@@ -37,3 +37,11 @@ createRoot(document.getElementById('root')).render(
     <SpeedInsights />
   </StrictMode>,
 )
+
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // The web app must remain fully usable if service-worker registration fails.
+    })
+  })
+}

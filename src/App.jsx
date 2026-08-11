@@ -15,6 +15,7 @@ import LegalPage from "./components/LegalPage";
 import PublicHomePage from "./components/PublicHomePage";
 import ExtensionPage from "./components/ExtensionPage";
 import AIProviderModal from "./components/AIProviderModal";
+import PWAInstallButton from "./components/PWAInstallButton";
 
 import { getAiProviderStatus } from "./services/aiService";
 import { runReplyGeneration } from "./services/replyEngine";
@@ -1028,6 +1029,7 @@ async function runAiTool(tool) {
               <span>R</span>
               ReplyForge
             </div>
+            <PWAInstallButton />
           </header>
 
           <main className="rf-v4-workspace">
