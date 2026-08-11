@@ -1730,7 +1730,7 @@ select:focus-visible,
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .rf-v4-app {
     height: auto;
     min-height: 100vh;
@@ -3092,7 +3092,7 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
 }
 
 /* ===== MOBILE BOTTOM NAVIGATION ===== */
-@media (max-width: 900px) {
+@media (max-width: 1180px) {
   .rf-v4-insights-column {
     display: none !important;
   }
@@ -3194,6 +3194,34 @@ div.fixed.inset-0.z-50.flex:has(> div[class*="bg-[#f8f9fd]"])
 
   .rf-v4-main-column {
     padding-bottom: 82px !important;
+  }
+}
+
+/* Desktop account must remain visible even when the usage card grows. */
+@media (min-width: 1181px) {
+  .rf-v4-sidebar {
+    position: relative;
+    padding-bottom: 72px;
+  }
+
+  .rf-v4-profile {
+    position: absolute;
+    right: 11px;
+    bottom: 10px;
+    left: 11px;
+    z-index: 12;
+    margin: 0;
+    border: 1px solid var(--rf-v4-border);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--rf-v4-surface) 96%, transparent);
+    padding: 9px;
+    box-shadow: 0 12px 28px -24px rgba(20, 22, 30, 0.5);
+  }
+
+  .rf-v4-usage-analytics {
+    max-height: min(330px, calc(100vh - 455px));
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 }
 
