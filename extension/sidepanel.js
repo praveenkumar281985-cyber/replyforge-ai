@@ -116,6 +116,14 @@ const motionSetting =
   document.getElementById(
     "motionSetting"
   );
+const providerSelect =
+  document.getElementById(
+    "providerSelect"
+  );
+const providerStatus =
+  document.getElementById(
+    "providerStatus"
+  );
 const saveSettingsButton =
   document.getElementById(
     "saveSettingsButton"
@@ -367,6 +375,7 @@ const DEFAULT_RF_SETTINGS = {
   theme: "system",
   defaultLength: "Medium",
   defaultMode: "multiple",
+  providerId: "auto",
   saveHistory: true,
   quickCommands: true,
   motion: true,
@@ -405,6 +414,18 @@ function applyReplyForgeSettings() {
 
   quickCommandHint.hidden =
     !replyForgeSettings.quickCommands;
+
+  providerSelect.value =
+    ["auto", "groq", "openrouter", "gemini"].includes(
+      replyForgeSettings.providerId
+    )
+      ? replyForgeSettings.providerId
+      : "auto";
+
+  providerStatus.textContent =
+    providerSelect.value === "auto"
+      ? "Auto routing recommended"
+      : `Manual · ${providerSelect.options[providerSelect.selectedIndex]?.text || "Selected"}`;
 }
 
 function fillSettingsForm() {
@@ -2210,6 +2231,19 @@ mainSignInButton.addEventListener("click", signInFromPanel);
 settingsSignInButton.addEventListener("click", signInFromPanel);
 settingsSignOutButton.addEventListener("click", signOutFromPanel);
 
+providerSelect.addEventListener("change", async () => {
+  await persistReplyForgeSettings({
+    ...replyForgeSettings,
+    providerId: providerSelect.value,
+  });
+
+  showToast(
+    providerSelect.value === "auto"
+      ? "AI engine set to Auto"
+      : `${providerSelect.options[providerSelect.selectedIndex]?.text || "Provider"} selected`
+  );
+});
+
 closeSettingsButton.addEventListener(
   "click",
   closeSettingsDialog
@@ -2499,7 +2533,7 @@ generateButton.addEventListener("click", async () => {
         })
       );
 
-      showToast("4 reply suggestions are ready");
+      showToast(response.providerLabel ? `4 replies ready · ${response.providerLabel}` : "4 reply suggestions are ready");
     } else {
       renderSingleReply(response.reply);
       schedulePopupStateSave();
@@ -2518,7 +2552,10 @@ generateButton.addEventListener("click", async () => {
         })
       );
 
-      showToast("Your reply is ready");
+      showToast(response.providerLabel ? `Reply ready · ${response.providerLabel}` : "Your reply is ready");
+    }
+    if (response.providerLabel) {
+      providerStatus.textContent = `Last used · ${response.providerLabel}`;
     }
     await refreshUsage();
   } catch (error) {

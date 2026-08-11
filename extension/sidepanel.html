@@ -45,6 +45,18 @@
           <span id="usageProgress"></span>
         </div>
         <small id="usageResetText">30 replies available each day</small>
+        <div class="rf-provider-control">
+          <label for="providerSelect">
+            <span>AI engine</span>
+            <small id="providerStatus">Auto routing recommended</small>
+          </label>
+          <select id="providerSelect" aria-label="Choose AI provider">
+            <option value="auto">Auto · Recommended</option>
+            <option value="groq">Groq</option>
+            <option value="openrouter">OpenRouter</option>
+            <option value="gemini">Gemini</option>
+          </select>
+        </div>
       </section>
 
       <section id="authCard" class="rf-auth-card" hidden>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const configuredExtensionUrl = import.meta.env.VITE_EXTENSION_URL?.trim() || "";
-const extensionUrl = configuredExtensionUrl || "/replyforge-extension-v3.3.4.zip";
+const extensionUrl = configuredExtensionUrl || "/replyforge-extension-v3.3.5.zip";
 const isStoreInstall = Boolean(configuredExtensionUrl);
 
 const benefits = [
@@ -51,7 +51,7 @@ function ExtensionPage() {
                 href={extensionUrl}
                 target={isStoreInstall ? "_blank" : undefined}
                 rel={isStoreInstall ? "noreferrer" : undefined}
-                download={isStoreInstall ? undefined : "ReplyForge-Extension-v3.3.4.zip"}
+                download={isStoreInstall ? undefined : "ReplyForge-Extension-v3.3.5.zip"}
                 className="rf-extension-install"
               >
                 <ChromeIcon /> {isStoreInstall ? "Add to Chrome" : "Download for Chrome"}
@@ -67,7 +67,7 @@ function ExtensionPage() {
                   <button type="button" className={activeInstallStep === 3 ? "active" : ""} onClick={() => setActiveInstallStep(3)}><b>3</b> Add to Chrome</button>
                 </div>
                 <div className="rf-extension-step-detail" aria-live="polite">
-                  {activeInstallStep === 1 && <><span>Click “Download for Chrome” and save the ZIP file.</span><a href={extensionUrl} download="ReplyForge-Extension-v3.3.4.zip">Download again</a></>}
+                  {activeInstallStep === 1 && <><span>Click “Download for Chrome” and save the ZIP file.</span><a href={extensionUrl} download="ReplyForge-Extension-v3.3.5.zip">Download again</a></>}
                   {activeInstallStep === 2 && <span>Open Downloads, right-click the ZIP and choose <b>Extract all</b>. Keep the extracted folder.</span>}
                   {activeInstallStep === 3 && <><span>Open <b>chrome://extensions</b>, enable Developer mode, choose <b>Load unpacked</b>, then select the extracted folder.</span><button type="button" onClick={copyChromeExtensionsUrl}>{copiedChromeUrl ? "Copied ✓" : "Copy Chrome URL"}</button></>}
                 </div>

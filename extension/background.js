@@ -85,6 +85,13 @@ importScripts("improve.js");
 const SUPABASE_URL = "https://dyunvmfsastrhyxzscmp.supabase.co";
 const SUPABASE_KEY = "sb_publishable__bK9-276AJnDSEIqb1gjQA_-78UQwnY";
 const SESSION_STORAGE_KEY = "replyForgeSupabaseSession";
+const RF_SETTINGS_KEY = "replyforge_settings_v320";
+const PROVIDER_LABELS = {
+  groq: "Groq",
+  openrouter: "OpenRouter",
+  gemini: "Gemini",
+};
+let lastProviderId = "";
 
 const REPLY_STYLES = [
   {
@@ -354,8 +361,17 @@ Original reply:
 ${reply}`;
 }
 
+async function getProviderPreference() {
+  const stored = await chrome.storage.local.get(RF_SETTINGS_KEY);
+  const providerId = stored?.[RF_SETTINGS_KEY]?.providerId || "auto";
+  return ["groq", "openrouter", "gemini"].includes(providerId)
+    ? { mode: "manual", providerId }
+    : { mode: "auto", providerId: "" };
+}
+
 async function callReplyForgeBackend(prompt) {
   const session = await requireSession();
+  const providerPreference = await getProviderPreference();
   const response = await fetch(`${SUPABASE_URL}/functions/v1/generate-reply`, {
     method: "POST",
     headers: {
@@ -369,8 +385,8 @@ async function callReplyForgeBackend(prompt) {
       length: "Medium",
       language: "English",
       persona: "Professional",
-      mode: "auto",
-      providerId: "",
+      mode: providerPreference.mode,
+      providerId: providerPreference.providerId,
     }),
   });
   const data = await response.json().catch(() => ({}));
@@ -384,6 +400,7 @@ async function callReplyForgeBackend(prompt) {
   }
   const reply = typeof data?.reply === "string" ? data.reply.trim() : "";
   if (!reply) throw new Error("ReplyForge returned an empty response.");
+  lastProviderId = typeof data?.provider === "string" ? data.provider.toLowerCase() : providerPreference.providerId;
   return reply;
 }
 
@@ -619,6 +636,8 @@ chrome.runtime.onMessage.addListener(
           sendResponse({
             success: true,
             reply,
+            provider: lastProviderId,
+            providerLabel: PROVIDER_LABELS[lastProviderId] || "",
           });
         })
         .catch((error) => {
@@ -648,6 +667,8 @@ chrome.runtime.onMessage.addListener(
             success: true,
             replies,
             reply: replies[0]?.reply || "",
+            provider: lastProviderId,
+            providerLabel: PROVIDER_LABELS[lastProviderId] || "",
           });
         })
         .catch((error) => {

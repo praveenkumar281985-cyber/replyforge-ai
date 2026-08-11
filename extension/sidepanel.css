@@ -691,6 +691,52 @@ body {
 .rf-account-badge.connected { background: #dcfce7; color: #15803d; }
 .rf-account-badge.signed-out { background: #fee2e2; color: #b91c1c; }
 
+.rf-provider-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  margin-top: 9px;
+  border-top: 1px solid rgba(100, 116, 139, 0.14);
+  padding-top: 9px;
+}
+
+.rf-provider-control label {
+  min-width: 0;
+}
+
+.rf-provider-control label > span {
+  display: block;
+  color: #475569;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rf-provider-control label small {
+  overflow: hidden;
+  max-width: 145px;
+  margin-top: 2px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-provider-control select {
+  width: 132px;
+  height: 31px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(109, 40, 217, 0.18);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.84);
+  color: #312e81;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+html[data-rf-theme="dark"] .rf-provider-control label > span { color: #cbd5e1; }
+html[data-rf-theme="dark"] .rf-provider-control select { background: #1e1b4b; color: #ede9fe; }
+
 .rf-auth-card {
   margin-bottom: var(--rf-compact-gap);
   border: 1px solid rgba(109, 40, 217, 0.2);

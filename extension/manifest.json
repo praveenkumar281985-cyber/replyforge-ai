@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ReplyForge AI",
-  "version": "3.3.4",
+  "version": "3.3.5",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1dqsiMgxGlI4XfxU7zIAcgjcNPghWdGXLF0N325NFlr3Yz4XttxTB4VCvAa5WIKZ3UjrKf58sH3kLZn1M/iGz5mAWoK8AcENEftwGGQFkr0OPvWenbGYdoXI23hLzV9T0BrhSNPrpmCU9C9ehgEprZ6mpKLMxCWdWY/Y02nzi1Gjs8mD3bOJ836lI0bAq1UiUua/0V9cpxpkoYYl8Ki1QI9oyEG0YD3U+GpiV9yETy4l3TurpoU0EHazEnYkJj8xNuMNSU0YlrwpcyzguDw5yHcSf4nQDfdgpHrMHUF+Xr68WPYRTUlALs9goucIasfRRGu3URlQByJAY5kzy542PQIDAQAB",
   "description": "Generate, rewrite and insert AI replies directly inside Gmail, WhatsApp Web and LinkedIn.",
   "permissions": [
