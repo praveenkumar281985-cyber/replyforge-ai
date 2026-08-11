@@ -357,6 +357,71 @@ select:focus-visible,
   font-size: 8px;
 }
 
+.rf-responsive-account-provider {
+  display: grid;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--rf-v4-border);
+  border-radius: 12px;
+  background: var(--rf-v4-surface-soft);
+  padding: 8px 10px;
+  color: var(--rf-v4-text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.rf-responsive-account-provider:hover {
+  border-color: color-mix(in srgb, var(--rf-v4-purple) 38%, var(--rf-v4-border));
+  background: var(--rf-v4-purple-soft);
+}
+
+.rf-responsive-account-provider-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--rf-v4-purple-soft);
+  color: var(--rf-v4-purple);
+  font-size: 13px;
+}
+
+.rf-responsive-account-provider > span:nth-child(2) {
+  min-width: 0;
+}
+
+.rf-responsive-account-provider small,
+.rf-responsive-account-provider strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rf-responsive-account-provider small {
+  color: var(--rf-v4-faint);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.rf-responsive-account-provider strong {
+  margin-top: 2px;
+  font-size: 9px;
+}
+
+.rf-responsive-account-provider > b {
+  color: var(--rf-v4-purple);
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .rf-responsive-account-logout {
   display: flex;
   width: 100%;

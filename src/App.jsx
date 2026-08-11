@@ -1046,6 +1046,9 @@ async function runAiTool(tool) {
                 userEmail={session.user.email}
                 usageStats={usageStats}
                 onLogout={handleLogout}
+                providerStatus={providerStatus}
+                providerPreference={providerPreference}
+                onOpenProvider={() => setProviderModalOpen(true)}
               />
             </div>
           </header>

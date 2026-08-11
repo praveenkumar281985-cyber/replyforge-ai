@@ -8,6 +8,9 @@ export default function ResponsiveAccountMenu({
   userEmail,
   usageStats,
   onLogout,
+  providerStatus,
+  providerPreference,
+  onOpenProvider,
 }) {
   const [open, setOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -63,6 +66,17 @@ export default function ResponsiveAccountMenu({
     }
   }
 
+  function handleOpenProvider() {
+    setOpen(false);
+    onOpenProvider?.();
+  }
+
+  const providerLabel = providerPreference?.mode === "manual"
+    ? providerStatus?.configuredProviders?.find(
+        (provider) => provider.id === providerPreference.providerId
+      )?.label || providerStatus?.label || "Provider"
+    : "Auto (recommended)";
+
   return (
     <div className="rf-responsive-account" ref={menuRef}>
       <button
@@ -97,6 +111,19 @@ export default function ResponsiveAccountMenu({
             </div>
             <small>{serverUsage.remaining} replies remaining today</small>
           </div>
+
+          <button
+            type="button"
+            className="rf-responsive-account-provider"
+            onClick={handleOpenProvider}
+          >
+            <span className="rf-responsive-account-provider-icon" aria-hidden="true">✦</span>
+            <span>
+              <small>AI engine</small>
+              <strong>{providerLabel}</strong>
+            </span>
+            <b aria-hidden="true">›</b>
+          </button>
 
           <button
             type="button"
