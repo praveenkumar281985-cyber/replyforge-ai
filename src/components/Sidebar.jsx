@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import supabase from "../lib/supabase";
 import AIProviderButton from "./AIProviderButton";
 
@@ -25,6 +25,7 @@ function Sidebar({
   onOpenProvider,
 }) {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef(null);
   const [serverUsage, setServerUsage] = useState({
     used: 0,
     remaining: DAILY_AI_LIMIT,
@@ -66,11 +67,44 @@ function Sidebar({
     };
   }, [usageStats?.total]);
 
+  useEffect(() => {
+    if (!accountMenuOpen) return undefined;
+
+    function closeAccountMenu(event) {
+      if (event.key === "Escape") {
+        setAccountMenuOpen(false);
+        return;
+      }
+
+      if (
+        event.type === "pointerdown" &&
+        accountMenuRef.current &&
+        !accountMenuRef.current.contains(event.target)
+      ) {
+        setAccountMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", closeAccountMenu);
+    document.addEventListener("keydown", closeAccountMenu);
+
+    return () => {
+      document.removeEventListener("pointerdown", closeAccountMenu);
+      document.removeEventListener("keydown", closeAccountMenu);
+    };
+  }, [accountMenuOpen]);
+
   const favoriteCount =
     history.filter((item) => item.isFavorite).length || favorites.length;
 
   const navigation = [
-    { label: "Compose", icon: "✦", action: onNewReply, active: true },
+    {
+      label: "Compose",
+      icon: "✦",
+      action: onNewReply,
+      active: true,
+      mobileOnly: true,
+    },
     { label: "History", icon: "◷", action: onOpenHistory, count: history.length },
     { label: "Favorites", icon: "♡", action: onOpenFavorites, count: favoriteCount },
     { label: "Templates", icon: "▱", action: onOpenTemplates },
@@ -79,7 +113,7 @@ function Sidebar({
 
   return (
     <aside className="rf-v4-sidebar">
-      <div className="rf-v4-brand">
+      <div ref={accountMenuRef} className="rf-v4-brand">
         <div className="rf-v4-brand-mark">R</div>
 
         <div>
@@ -132,7 +166,9 @@ function Sidebar({
             key={item.label}
             type="button"
             onClick={item.action}
-            className={item.active ? "is-active" : ""}
+            className={`${item.active ? "is-active" : ""}${
+              item.mobileOnly ? " rf-v4-nav-mobile-only" : ""
+            }`}
           >
             <span className="rf-v4-nav-icon">{item.icon}</span>
             <span>{item.label}</span>
