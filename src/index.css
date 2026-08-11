@@ -2035,6 +2035,49 @@ select:focus-visible,
   .rf-home-final-cta { margin-bottom:48px; }
 }
 
+/* Final dense spacing system: avoids stacked section padding and dead space. */
+.rf-home-hero {
+  gap:44px;
+  padding-top:30px;
+  padding-bottom:42px;
+}
+.rf-home-products {
+  padding-top:42px;
+  padding-bottom:30px;
+}
+.rf-home-features {
+  padding-top:32px;
+  padding-bottom:42px;
+}
+.rf-home-section-heading h2 { margin-top:7px; }
+.rf-home-section-heading p { margin-top:9px; }
+.rf-home-product-grid { margin-top:21px; }
+.rf-home-product-card { min-height:238px; padding:18px; }
+.rf-home-product-card > span { margin-top:14px; }
+.rf-home-product-card h3 { margin-top:7px; }
+.rf-home-product-card p { margin-top:8px; line-height:1.55; }
+.rf-home-product-card > a,.rf-home-install-button { margin-top:14px; }
+.rf-home-feature-grid { gap:18px; margin-top:20px; }
+.rf-home-feature-grid article { padding-top:13px; }
+.rf-home-feature-grid h3 { margin-top:9px; }
+.rf-home-feature-grid p { margin-top:5px; line-height:1.5; }
+.rf-home-final-cta { margin-bottom:42px; padding:24px 28px; }
+.rf-home-footer { padding-top:20px; padding-bottom:24px; }
+
+@media (max-width:900px) {
+  .rf-home-hero { padding-top:28px; padding-bottom:40px; }
+  .rf-home-products { padding-top:36px; padding-bottom:26px; }
+  .rf-home-features { padding-top:28px; padding-bottom:36px; }
+}
+
+@media (max-width:560px) {
+  .rf-home-hero { padding-top:22px; padding-bottom:34px; }
+  .rf-home-products { padding-top:30px; padding-bottom:22px; }
+  .rf-home-features { padding-top:24px; padding-bottom:30px; }
+  .rf-home-feature-grid { gap:18px; }
+  .rf-home-final-cta { margin-bottom:34px; padding:21px; }
+}
+
 
 /* Conversation Mode */
 .rf-v4-mode-switch {
